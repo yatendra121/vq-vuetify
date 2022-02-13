@@ -1,16 +1,24 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import vuetify from "@vuetify/vite-plugin";
+
+import path from "path";
 
 // https://vitejs.dev/config/
-// export default defineConfig({
-//   plugins: [vue()],
-// });
-
-const path = require("path");
-const { defineConfig } = require("vite");
-
-module.exports = defineConfig({
-  plugins: [vue()],
+export default defineConfig({
+  plugins: [
+    vue(),
+    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
+    vuetify({
+      autoImport: true,
+    }),
+  ],
+  define: { "process.env": {} },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+    },
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/main.ts"),
@@ -22,6 +30,7 @@ module.exports = defineConfig({
       // into your library
       external: ["vue"],
       output: {
+        format: "esm",
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
@@ -30,4 +39,17 @@ module.exports = defineConfig({
       },
     },
   },
+  /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
+  resolve: {
+    extensions: [
+      '.js',
+      '.json',
+      '.jsx',
+      '.mjs',
+      '.ts',
+      '.tsx',
+      '.vue',
+    ]
+  },
+  */
 });

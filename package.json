@@ -24,7 +24,7 @@
     "@mdi/font": "5.9.55",
     "@vitejs/plugin-vue": "^1.9.3",
     "@vue/cli-service": "latest",
-    "@vuetify/vite-plugin": "^latest",
+    "@vuetify/vite-plugin": "latest",
     "roboto-fontface": "*",
     "sass": "^1.38.0",
     "sass-loader": "^10.0.0",

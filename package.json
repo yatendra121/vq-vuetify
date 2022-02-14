@@ -1,6 +1,6 @@
 {
   "name": "vq-vuetify",
-  "version": "0.0.1",
+  "version": "0.2.1",
   "scripts": {
     "serve": "vite preview",
     "build": "vite build",

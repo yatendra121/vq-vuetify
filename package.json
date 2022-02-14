@@ -7,7 +7,7 @@
     "dev": "vite"
   },
   "dependencies": {
-    "vq-core": "workspace:^0.0.30",
+    "vq-core": "^0.0.30",
     "vue": "^3.2.16"
   },
   "files": [

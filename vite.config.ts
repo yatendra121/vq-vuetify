@@ -21,6 +21,7 @@ export default defineConfig({
   define: { "process.env": {} },
   build: {
     lib: {
+      dts:true,
       entry: resolve(__dirname, "src/main.ts"),
       name: "vq-vuetify",
       fileName: (format) => `vq-vuetify.${format}.js`,

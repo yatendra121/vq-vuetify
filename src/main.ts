@@ -1,3 +1,4 @@
+import setAxiosInstance from './plugins/axios'
 import { defineAsyncComponent } from 'vue'
 const VQTextField = defineAsyncComponent(
     () => import(/* webpackChunkName: "vq-vuetify" */ './components/VqTextField')
@@ -28,3 +29,4 @@ export default {
     }
 }
 
+export { setAxiosInstance } 

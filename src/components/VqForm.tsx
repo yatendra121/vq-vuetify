@@ -31,9 +31,7 @@ export default defineComponent({
   emits: ['submitedSuccess', 'submitedError'],
   setup(props, { attrs, emit, slots }) {
 
-
     const onSubmit =  (values: SubmissionHandler<GenericFormValues>, actions: any) => {
-      alert('dasdasd')
       const postData = props.formData ? objectToFormData(values) : values
   
       _axios(props.action, { method: props.method, data: postData })

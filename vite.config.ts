@@ -22,19 +22,21 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/main.ts"),
-      name: "MyLib",
-      fileName: (format) => `my-lib.${format}.js`,
+      name: "vq-vuetify",
+      fileName: (format) => `vq-vuetify.${format}.js`,
+      formats:['es']
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue"],
+      external: ['vue', 'vuetify','vee-validate','axios'],
       output: {
-        format: "esm",
+        format: 'esm',
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
           vue: "Vue",
+          vuetify:"vuetify"
         },
       },
     },

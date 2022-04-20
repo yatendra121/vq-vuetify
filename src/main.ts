@@ -17,6 +17,7 @@ const VqForm = defineAsyncComponent(
 //     () => import(/* webpackChunkName: "vq-vuetify" */ './Tinymce/index.vue')
 // )
 
+
 export default {
     install: (app: any) => {
         app.component('VqTextField', VQTextField)
@@ -26,3 +27,4 @@ export default {
       //  app.component('VqTextEditor', VQTextEditor)
     }
 }
+

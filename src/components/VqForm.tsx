@@ -2,7 +2,7 @@
 import { defineComponent,PropType } from 'vue'
 import { objectToFormData } from '../composables/axios/formData'
 import { Form, SubmissionHandler } from 'vee-validate'
-import _axios from 'axios'
+import { _axios } from '@/plugins/axios'
 import { ApiResponse } from '@/utils/response'
 import { Method } from 'axios'
 
@@ -33,8 +33,9 @@ export default defineComponent({
 
 
     const onSubmit =  (values: SubmissionHandler<GenericFormValues>, actions: any) => {
+      alert('dasdasd')
       const postData = props.formData ? objectToFormData(values) : values
-
+  
       _axios(props.action, { method: props.method, data: postData })
         .then((response:any) => {
           const apiResponse = new ApiResponse(response)

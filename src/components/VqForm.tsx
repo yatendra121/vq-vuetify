@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { defineComponent,PropType } from 'vue'
 import { objectToFormData } from '../composables/axios/formData'
 import { Form, SubmissionHandler } from 'vee-validate'
@@ -46,7 +47,6 @@ export default defineComponent({
           emit('submitedError', apiResponse)
         })
     }
-
     return () => (
       <>
         <Form onSubmit={onSubmit} v-slots={slots} { ...attrs }></Form>

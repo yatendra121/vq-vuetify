@@ -2,11 +2,15 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vuetify from "@vuetify/vite-plugin";
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
-import path from "path";
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+      alias: {
+          '@': resolve(__dirname, './src')
+      }
+  },
   plugins: [
     vue(),
     vuetify({
@@ -15,14 +19,9 @@ export default defineConfig({
     vueJsx()
   ],
   define: { "process.env": {} },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
-  },
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/main.ts"),
+      entry: resolve(__dirname, "src/main.ts"),
       name: "vq-vuetify",
       fileName: (format) => `vq-vuetify.${format}.js`,
       formats:['es']
@@ -56,3 +55,7 @@ export default defineConfig({
   },
   */
 });
+function __dirname(__dirname: any, arg1: string): string {
+  throw new Error("Function not implemented.");
+}
+

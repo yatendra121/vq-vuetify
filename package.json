@@ -1,6 +1,6 @@
 {
   "name": "vq-vuetify",
-  "version": "0.4.5",
+  "version": "0.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/yatendra121/vq-vuetify.git"
@@ -15,10 +15,11 @@
   ],
   "main": "./dist/vq-vuetify.es.js",
   "module": "./dist/vq-vuetify.es.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/main.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/vq-vuetify.es.js"
+      "import": "./dist/vq-vuetify.es.js",
+      "require": "./dist/vq-vuetify.es.js"
     }
   },
   "dependencies": {
@@ -37,6 +38,7 @@
     "typescript": "^4.6.3",
     "vee-validate": "^4.5.11",
     "vite": "^2.9.5",
+    "vite-plugin-dts": "^1.1.0",
     "vue-tsc": "^0.34.7",
     "vuetify": "3.0.0-beta.0",
     "webfontloader": "^1.6.28",

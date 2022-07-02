@@ -1,6 +1,6 @@
 {
   "name": "vq-vuetify",
-  "version": "0.5.0",
+  "version": "0.5.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/yatendra121/vq-vuetify.git"
@@ -31,7 +31,7 @@
     "@vitejs/plugin-vue": "^2.3.1",
     "@vitejs/plugin-vue-jsx": "^1.3.10",
     "@vuetify/vite-plugin": "latest",
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "path": "^0.12.7",
     "roboto-fontface": "*",
     "sass": "^1.50.1",
@@ -45,7 +45,7 @@
     "yup": "^0.32.11"
   },
   "peerDependencies": {
-    "axios": "^0.24.0",
+    "axios": "*",
     "vee-validate": "^4.5.6",
     "vue": "^3.2.0",
     "vuetify": "*",

@@ -1,36 +1,33 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "baseUrl": ".",
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "preserve",
+    "useDefineForClassFields": true,
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "moduleResolution": "node",
-    "esModuleInterop": true,
     "strict": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
+    "resolveJsonModule": false,
+    "esModuleInterop": true,
     "declaration": true,
-    "resolveJsonModule": true,
-    "rootDir": ".",
-    "baseUrl": ".",
-    "outDir": "dist",
-    "jsx": "preserve",
-    "skipLibCheck": false,
-    "skipDefaultLibCheck": true,
-    "noUnusedLocals": true,
-    "inlineSourceMap": true,
+    "outFile": "dist/index",
     "declarationMap": true,
-    "paths": {
-      "@/*": ["src/*"],
-      "types": [
-        "esnext",
-        "node"
-      ]
-    },
+    "sourceMap": true,
     "noEmit": false,
-    "experimentalDecorators": true, 
-    "emitDecoratorMetadata": true ,
+    "outDir": "dist",
+    "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
+    "downlevelIteration": true,
+    "skipLibCheck": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "paths": {
+      "@/*": ["src/*"],
+      "types": ["jest", "node", "vue-router"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"]
-} 
+  "include": ["src/main.ts"]
+}

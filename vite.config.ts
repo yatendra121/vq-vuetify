@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vuetify({
-      autoImport: true,
+      autoImport: false,
     }),
     vueJsx(),
     //dts()
@@ -31,7 +31,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "vuetify", "vee-validate", "axios"],
+      external: ["vue", "vuetify", "vee-validate", "axios", "pinia"],
       // output: {
       //   //format: 'esm',
       //   // Provide global variables to use in the UMD build

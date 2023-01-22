@@ -1,9 +1,7 @@
 import { defineComponent, PropType, toRef } from "vue";
 import { useField } from "vee-validate";
 import { collectValidationListeners } from "./config";
-
-//types
-import type { VTextField } from "vuetify/components";
+import { VTextField } from "vuetify/components";
 
 export const VqTextField = defineComponent({
   name: "VqTextField",
@@ -12,6 +10,9 @@ export const VqTextField = defineComponent({
       type: String,
       required: true,
     },
+  },
+  components: {
+    VTextField,
   },
   setup(props, { attrs, slots }) {
     const { value, errorMessage, handleChange } = useField(
@@ -29,7 +30,7 @@ export const VqTextField = defineComponent({
 
     return () => (
       <>
-        <v-text-field
+        <VTextField
           error={!!errorMessage.value}
           v-model={value.value}
           error-messages={errorMessage.value}
@@ -39,7 +40,7 @@ export const VqTextField = defineComponent({
           // onChange={handleChange}
           // onInput={validationListeners.value.input}
           // onBlur={handleChange}
-        ></v-text-field>
+        ></VTextField>
       </>
     );
   },

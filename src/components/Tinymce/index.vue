@@ -1,5 +1,5 @@
 <template>
-  <editor
+  <Editor
     v-model="value"
     :init="{
       height: height,
@@ -17,7 +17,7 @@
     <div
       class="tw-m-4 tw-text-xs tw-text-red-700 tw-transition tw-duration-300 tw-ease-in-out tw-dark:text-gray-400 tw-mt-1"
     >
-      <p class="tw-min-h-[16px]">{{ errorMessage }}</p>
+      <p style="color: red" class="tw-min-h-[16px]">{{ errorMessage }}</p>
     </div>
   </transition>
 </template>
@@ -27,8 +27,6 @@ import { useField } from 'vee-validate'
 import Editor from '@tinymce/tinymce-vue'
 import plugins from './plugins'
 import toolbar from './toolbar'
-import { Portal } from '@/utils/portal'
-const currentPortal = Portal.getInstance()
 
 export default defineComponent({
   name: 'TextEditor',
@@ -38,8 +36,7 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true,
-      default: () => ''
+      required: true
     },
     label: {
       type: String,
@@ -56,6 +53,10 @@ export default defineComponent({
     isDark: {
       type: Boolean,
       default: () => true
+    },
+    baseUrl: {
+      type: String,
+      default: () => 'http://localhost:3000/'
     }
   },
   setup(props) {
@@ -66,10 +67,7 @@ export default defineComponent({
       toolbar,
       errorMessage,
       value,
-      baseUrl:
-        currentPortal.getBaseUrl() +
-        currentPortal.getDomianPrefix() +
-        'static/tinymce/tinymce.min.js'
+      baseUrl: props.baseUrl + 'static/tinymce/tinymce.min.js'
     }
   }
 })

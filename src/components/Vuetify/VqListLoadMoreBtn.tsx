@@ -1,11 +1,11 @@
 //@ts-nocheck
 import { defineComponent, inject, Ref } from "vue";
-import type { VBtn } from "vuetify/components";
+import { VBtn } from "vuetify/components";
 export const VqListLoadMoreBtn = defineComponent({
   name: "VqListLoadMoreBtn",
-  // components: {
-  //   VBtn,
-  // },
+  components: {
+    VBtn,
+  },
   setup(props, { attrs, slots }) {
     const vqList = inject<{
       loading: Ref<boolean>;
@@ -17,7 +17,7 @@ export const VqListLoadMoreBtn = defineComponent({
     return () => (
       <>
         {!vqList?.finished.value && (
-          <v-btn
+          <VBtn
             loading={vqList?.loading.value}
             disabled={vqList?.loading.value}
             color="primary"
@@ -26,7 +26,7 @@ export const VqListLoadMoreBtn = defineComponent({
             {...attrs}
           >
             Load More
-          </v-btn>
+          </VBtn>
         )}
       </>
     );

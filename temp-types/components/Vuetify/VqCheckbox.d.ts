@@ -1,5 +1,5 @@
-import { VTextarea } from "vuetify/components";
-export declare const VqTextarea: import("vue").DefineComponent<{
+import { VCheckbox } from "vuetify/components";
+export declare const VqCheckbox: import("vue").DefineComponent<{
     name: {
         type: StringConstructor;
         required: true;
@@ -10,5 +10,5 @@ export declare const VqTextarea: import("vue").DefineComponent<{
         required: true;
     };
 }>>, {}>;
-export type VqTextarea = typeof VTextarea & typeof VqTextarea;
-//# sourceMappingURL=VqTextarea.d.ts.map
+export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;
+//# sourceMappingURL=VqCheckbox.d.ts.map

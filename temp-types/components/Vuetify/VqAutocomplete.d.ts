@@ -1,4 +1,4 @@
-import type { VAutocomplete } from "vuetify/components";
+import { VAutocomplete } from "vuetify/components";
 export declare const VqAutocomplete: import("vue").DefineComponent<{
     name: {
         type: StringConstructor;

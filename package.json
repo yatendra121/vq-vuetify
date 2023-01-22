@@ -1,7 +1,8 @@
 {
-  "name": "vq-vuetify",
-  "version": "0.5.41",
+  "name": "@qnx/vuetify",
+  "version": "0.5.56",
   "type": "module",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/yatendra121/vq-vuetify.git"
@@ -21,8 +22,15 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/vq-vuetify.es.js",
-      "require": "./dist/vq-vuetify.es.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/main.es.js",
+      "require": "./dist/main.es.js"
+    },
+    "./*": "./*",
+    "./integrations": {
+      "types": "./dist/useAxios.d.ts",
+      "require": "./dist/integrations.es.js",
+      "import": "./dist/integrations.es.js"
     }
   },
   "dependencies": {
@@ -31,6 +39,7 @@
   "devDependencies": {
     "@mdi/js": "^7.1.96",
     "@rollup/plugin-alias": "^4.0.2",
+    "@tinymce/tinymce-vue": "^5.0.0",
     "@types/node": "^18.11.17",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
@@ -57,9 +66,14 @@
   },
   "peerDependencies": {
     "axios": "*",
-    "vee-validate": "^4.5.6",
-    "vue": "^3.2.0",
+    "vee-validate": "*",
+    "vue": "*",
     "vuetify": "*",
-    "yup": "^0.32.11"
+    "yup": "*"
+  },
+  "peerDependenciesMeta": {
+    "@tinymce/tinymce-vue": {
+      "optional": true
+    }
   }
 }

@@ -23,13 +23,12 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-
     "paths": {
       "@/*": ["src/*"],
       "types": ["jest", "node", "vue-router", "vuetify"]
     }
   },
-  "include": ["src/main.ts"]
+  "include": ["src/main.ts", "src/integrations.ts", "src/**/*.vue"]
 }
 
 //"src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"

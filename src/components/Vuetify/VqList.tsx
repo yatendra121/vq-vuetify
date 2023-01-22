@@ -1,4 +1,3 @@
-// @ts-nocheck
 import {
   defineComponent,
   reactive,
@@ -17,10 +16,8 @@ import { objectToQueryString } from "../../composables/axios/formData";
 import { useFormFilterStore } from "../../store/reactivity/formFiler";
 import { useAsyncAxios } from "../../composables/axios";
 import { useListRepository } from "../../composables/list";
-import { CancelToken } from "axios";
-
-//types
-import type { VList } from "vuetify/components";
+import axios, { CancelTokenSource } from "axios";
+import { VList } from "vuetify/components";
 
 export const VqList = defineComponent({
   name: "VqList",
@@ -37,6 +34,9 @@ export const VqList = defineComponent({
       type: Number as PropType<number>,
       default: () => 3,
     },
+  },
+  components: {
+    VList,
   },
   setup(props, { attrs, slots }) {
     const filterId = computed(() => {
@@ -90,6 +90,7 @@ export const VqList = defineComponent({
 
     watch(
       () => formFilterData.value,
+      //@ts-ignore
       (newVal, oldVal) => {
         if (oldVal === undefined) return;
         listOptions.page = 1;
@@ -111,19 +112,17 @@ export const VqList = defineComponent({
         .catch(() => {});
     };
 
-    let cancelToken = {
-      cancel: () => {
-        console.log("no cancel token assigned");
-      },
-    };
-    const fetchItems: Promise<{ data: any; total: number }> = async () => {
+    let cancelToken: CancelTokenSource;
+    const fetchItems = async () => {
       try {
-        cancelToken.cancel();
-        cancelToken = CancelToken.source();
+        cancelToken?.cancel();
+        cancelToken = axios.CancelToken.source();
 
         loading.value = true;
 
-        const response = await useAsyncAxios<unknown>(
+        const response = await useAsyncAxios<{
+          data: { data: any; total: number };
+        }>(
           `${props.action}?${objectToQueryString(
             { ...toRaw(listOptions), ...toRaw(formFilterData.value ?? {}) },
             ""
@@ -135,7 +134,7 @@ export const VqList = defineComponent({
         );
         loading.value = false;
         return response.data;
-      } catch (e: Error) {
+      } catch (e: any) {
         loading.value = false;
         throw new Error(e.message);
       }
@@ -154,7 +153,7 @@ export const VqList = defineComponent({
 
     return () => (
       <>
-        <v-list items={items.value} {...attrs}>
+        <VList items={items.value} {...attrs}>
           <>
             {slots.default?.({
               items: items.value,
@@ -169,7 +168,7 @@ export const VqList = defineComponent({
               <v-list-item-subtitle v-text={item.email}></v-list-item-subtitle>
             </v-list-item>
           ))} */}
-        </v-list>
+        </VList>
       </>
     );
   },

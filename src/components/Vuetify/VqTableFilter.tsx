@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType } from "vue";
-import { Form } from "vee-validate";
+import { Form as VForm } from "vee-validate";
 import { VqTableFilterHandler } from "../../components/Vuetify/VqTableFilterHandler";
 
 //types
@@ -7,14 +7,13 @@ import type { Form as VFormType } from "vee-validate";
 
 export const VqTableFilter = defineComponent({
   components: {
-    Form,
+    VForm,
     VqTableFilterHandler,
   },
   props: {
     id: {
       type: String as PropType<string>,
       required: true,
-      default: () => "",
     },
   },
   setup(props, { attrs, slots }) {
@@ -24,7 +23,7 @@ export const VqTableFilter = defineComponent({
 
     return () => (
       <>
-        <Form
+        <VForm
           //@ts-ignore
           id={filterId.value}
           {...attrs}
@@ -32,7 +31,7 @@ export const VqTableFilter = defineComponent({
           <VqTableFilterHandler id={filterId.value} v-slots={slots}>
             <>{slots.default?.()}</>
           </VqTableFilterHandler>
-        </Form>
+        </VForm>
       </>
     );
   },

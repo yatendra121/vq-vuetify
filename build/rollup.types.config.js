@@ -21,6 +21,10 @@ const importMap = {
       from: "components/VqTextarea.tsx",
       styles: [],
     },
+    VqCheckbox: {
+      from: "components/VqCheckbox.tsx",
+      styles: [],
+    },
     VqForm: {
       from: "components/VqForm.tsx",
       styles: [],
@@ -79,7 +83,7 @@ function createTypesConfig(input, output, renderChunk, filter) {
 
 async function getShims() {
   const components = Object.keys(importMap.components)
-    .map((name) => `    ${name}: ${name}`)
+    .map((name) => `    ${name}:${name}`)
     .join("\n");
 
   return (
@@ -98,6 +102,7 @@ export default [
   createTypesConfig("main.d.ts", "dist/index.d.ts", async (code) => {
     return code + "\n\n" + (await getShims());
   }),
+  createTypesConfig("integrations.d.ts", "dist/integrations.d.ts"),
   // createTypesConfig("main.d.ts", "dist/index.d.ts", async (code) => {
   //   console.log("importMap.components");
 
@@ -107,7 +112,7 @@ export default [
   //     (await getShims()).replace(", VNodeChild } from 'vue'", " } from 'vue'")
   //   );
   // }),
-  // createTypesConfig("blueprints/*.d.ts", "lib/blueprints/*.d.ts"),
+  //createTypesConfig("integrations.d.ts", "dist/index.d.ts"),
   // createTypesConfig("components/index.d.ts", "lib/components/index.d.ts"),
   // createTypesConfig(
   //   "components/*/index.d.ts",

@@ -1,9 +1,9 @@
 import { defineComponent, toRef } from "vue";
 import { useField } from "vee-validate";
-import { VTextarea } from "vuetify/components";
+import { VCheckbox } from "vuetify/components";
 
-export const VqTextarea = defineComponent({
-  name: "VqTextarea",
+export const VqCheckbox = defineComponent({
+  name: "VqCheckbox",
   props: {
     name: {
       type: String,
@@ -11,7 +11,7 @@ export const VqTextarea = defineComponent({
     },
   },
   components: {
-    VTextarea,
+    VCheckbox,
   },
   setup(props, { attrs, slots }) {
     const { value, errorMessage } = useField(toRef(props, "name"), undefined, {
@@ -20,18 +20,18 @@ export const VqTextarea = defineComponent({
 
     return () => (
       <>
-        <VTextarea
+        <VCheckbox
           error={!!errorMessage.value}
           v-model={value.value}
           error-messages={errorMessage.value}
           messages={errorMessage.value}
           v-slots={slots}
           {...attrs}
-        ></VTextarea>
+        ></VCheckbox>
       </>
     );
   },
 });
 
 // eslint-disable-next-line no-redeclare
-export type VqTextarea = typeof VTextarea & typeof VqTextarea;
+export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;

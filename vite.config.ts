@@ -23,15 +23,26 @@ export default defineConfig({
   define: { "process.env": {} },
   build: {
     lib: {
-      entry: resolve(__dirname, "src/main.ts"),
-      name: "vq-vuetify",
-      fileName: (format) => `vq-vuetify.${format}.js`,
+      entry: {
+        main: resolve(__dirname, "src/main.ts"),
+        integration: resolve(__dirname, "src/components/integration.ts"),
+      },
+      // name: "vq-vuetify",
+      fileName: (format, entryName) => `${entryName}.${format}.js`,
       formats: ["es"],
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "vuetify", "vee-validate", "axios", "pinia"],
+      external: [
+        "vue",
+        "vuetify",
+        "vuetify/components",
+        "vee-validate",
+        "@tinymce/tinymce-vue",
+        "axios",
+        "pinia",
+      ],
       // output: {
       //   //format: 'esm',
       //   // Provide global variables to use in the UMD build

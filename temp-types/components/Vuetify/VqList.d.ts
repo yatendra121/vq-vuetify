@@ -1,5 +1,5 @@
 import { PropType } from "vue";
-import type { VList } from "vuetify/components";
+import { VList } from "vuetify/components";
 export declare const VqList: import("vue").DefineComponent<{
     id: {
         type: PropType<string>;

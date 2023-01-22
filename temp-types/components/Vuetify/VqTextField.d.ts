@@ -1,4 +1,4 @@
-import type { VTextField } from "vuetify/components";
+import { VTextField } from "vuetify/components";
 export declare const VqTextField: import("vue").DefineComponent<{
     name: {
         type: StringConstructor;

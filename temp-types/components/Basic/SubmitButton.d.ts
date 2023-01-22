@@ -1,3 +1,4 @@
+import { VBtn } from "vuetify/components";
 export declare const VqSubmitBtn: import("vue").DefineComponent<{
     id: {
         type: StringConstructor;
@@ -11,4 +12,5 @@ export declare const VqSubmitBtn: import("vue").DefineComponent<{
 }>>, {
     id: string;
 }>;
+export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn;
 //# sourceMappingURL=SubmitButton.d.ts.map

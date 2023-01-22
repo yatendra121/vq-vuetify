@@ -1,8 +1,7 @@
 import { defineComponent, ref, toRef } from "vue";
 import { useField } from "vee-validate";
 import { useAsyncAxios } from "../../composables/axios";
-import type { VAutocomplete } from "vuetify/components";
-//import { collectValidationListeners } from "./config";
+import { VAutocomplete } from "vuetify/components";
 
 export const VqAutocomplete = defineComponent({
   name: "VqAutoComplete",
@@ -19,18 +18,13 @@ export const VqAutocomplete = defineComponent({
       default: () => [],
     },
   },
-  // components: {
-  //   VAutocomplete,
-  // },
+  components: {
+    VAutocomplete,
+  },
   setup(props, { attrs, slots }) {
     const { value, errorMessage } = useField(toRef(props, "name"), [], {
       validateOnValueUpdate: false,
     });
-
-    // const validationListeners = collectValidationListeners({
-    //   handleChange,
-    //   errorMessage
-    // })
 
     const updateModelValue = (val: any) => {
       value.value = val;
@@ -54,7 +48,7 @@ export const VqAutocomplete = defineComponent({
 
     return () => (
       <>
-        <v-autocomplete
+        <VAutocomplete
           loading={loading.value}
           error={!!errorMessage.value}
           modelValue={value.value}
@@ -64,8 +58,7 @@ export const VqAutocomplete = defineComponent({
           items={items.value}
           v-slots={slots}
           {...attrs}
-          // onChange={validationListeners.value.input}
-        ></v-autocomplete>
+        ></VAutocomplete>
       </>
     );
   },

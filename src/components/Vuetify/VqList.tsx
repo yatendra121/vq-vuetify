@@ -32,7 +32,7 @@ export const VqList = defineComponent({
     },
     pageSize: {
       type: Number as PropType<number>,
-      default: () => 3,
+      default: () => 10,
     },
   },
   components: {

@@ -1,71 +1,72 @@
-import { defineComponent, toRef } from 'vue'
-import { useField } from 'vee-validate'
-import TinyEditor from '@tinymce/tinymce-vue'
-import plugins from './plugins'
-import toolbar from './toolbar'
+import { defineComponent, ref, toRef } from "vue";
+import { useField } from "vee-validate";
+import TinyEditor from "@tinymce/tinymce-vue";
+import plugins from "./plugins";
+import toolbar from "./toolbar";
 
 export const VqTextEditor = defineComponent({
-  name: 'VqTextEditor',
+  name: "VqTextEditor",
   components: {
-    TinyEditor
+    TinyEditor,
   },
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     label: {
       type: String,
-      default: () => ''
+      default: () => "",
     },
     placeholder: {
       type: String,
-      default: () => ''
+      default: () => "",
     },
     height: {
       type: Number,
-      default: () => 250
+      default: () => 250,
     },
     isDark: {
       type: Boolean,
-      default: () => true
+      default: () => true,
     },
     baseUrl: {
       type: String,
-      default: () => 'http://localhost:3000/'
+      default: () => "http://localhost:3000/",
     },
     filesPath: {
       type: String,
-      default: () => 'static/tinymce/tinymce.min.js'
-    }
+      default: () => "static/tinymce/tinymce.min.js",
+    },
   },
   setup(props) {
-    const { errorMessage, value } = useField(toRef(props, 'name'), [], {
-      validateOnValueUpdate: false
-    })
+    const { errorMessage, value } = useField(toRef(props, "name"), [], {
+      validateOnValueUpdate: false,
+    });
 
     const updateModelValue = (val: string) => {
-      console.log(val)
-      value.value = val
-    }
+      value.value = val;
+    };
 
     return () => (
       <>
         <TinyEditor
-          initial-value={value.value}
-          onChange={(_event: any, editor: any) =>
-            updateModelValue(editor.getContent())
-          }
-          onKeyUp={(_event: any, editor: any) =>
-            updateModelValue(editor.getContent())
-          }
+          model-value={value.value}
+          /* @ts-ignore */
+          onUpdate:modelValue={updateModelValue}
+          // onKeyUp={(_event: any, editor: any) =>
+          //   updateModelValue(editor.getContent())
+          // }
+          // onChange={(_event: any, editor: any) =>
+          //   updateModelValue(editor.getContent())
+          // }
           init={{
             height: props.height,
             menubar: true,
             plugins,
             toolbar,
-            skin: props.isDark ? 'oxide' : 'oxide-dark',
-            content_css: props.isDark ? 'default' : 'dark'
+            skin: props.isDark ? "oxide" : "oxide-dark",
+            content_css: props.isDark ? "default" : "dark",
           }}
           tinymce-script-src={props.baseUrl + props.filesPath}
         ></TinyEditor>
@@ -75,8 +76,8 @@ export const VqTextEditor = defineComponent({
           </p>
         </div>
       </>
-    )
-  }
-})
+    );
+  },
+});
 
-export type VqTextEditor = typeof TinyEditor & typeof VqTextEditor
+export type VqTextEditor = typeof TinyEditor & typeof VqTextEditor;

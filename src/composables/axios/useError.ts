@@ -1,6 +1,5 @@
 const unauthenticationError = async () => {
-    //   const { logOutUser } = useAuthUserRepository();
-    //   await logOutUser();
-}
+  console.error("handle logout error");
+};
 
-export { unauthenticationError }
+export { unauthenticationError };

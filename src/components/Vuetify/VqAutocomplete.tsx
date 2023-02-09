@@ -1,6 +1,6 @@
 import { defineComponent, ref, toRef } from "vue";
 import { useField } from "vee-validate";
-import { useAsyncAxios } from "../../composables/axios";
+import { useAsyncAxios } from "@qnx/composables/axios";
 import { VAutocomplete } from "vuetify/components";
 
 export const VqAutocomplete = defineComponent({

@@ -24,11 +24,11 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        main: resolve(__dirname, "src/main.ts"),
-        integration: resolve(__dirname, "src/components/integration.ts"),
+        index: resolve(__dirname, "src/main.ts"),
+        integrations: resolve(__dirname, "src/integrations.ts"),
       },
       // name: "vq-vuetify",
-      fileName: (format, entryName) => `${entryName}.${format}.js`,
+      fileName: (format, entryName) => `${entryName}.js`,
       formats: ["es"],
     },
     rollupOptions: {
@@ -43,14 +43,14 @@ export default defineConfig({
         "axios",
         "pinia",
       ],
-      // output: {
-      //   //format: 'esm',
-      //   // Provide global variables to use in the UMD build
-      //   // for externalized deps
-      //   globals: {
-      //     vue: "Vue",
-      //   },
-      // },
+      output: {
+        //format: 'esm',
+        // Provide global variables to use in the UMD build
+        // for externalized deps
+        globals: {
+          vue: "Vue",
+        },
+      },
     },
   },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions

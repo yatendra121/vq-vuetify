@@ -28,7 +28,7 @@
       "types": ["jest", "node", "vue-router", "vuetify"]
     }
   },
-  "include": ["src/main.ts", "src/integrations.ts", "src/**/*.vue"]
+  "include": ["src/main.ts", "src/integrations.ts"]
 }
 
 //"src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"

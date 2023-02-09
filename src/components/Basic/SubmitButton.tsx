@@ -10,7 +10,7 @@ export const VqSubmitBtn = defineComponent({
       default: "form",
     },
   },
-  setup(props) {
+  setup(props, { attrs }) {
     const formStore = useFormStore();
     const loading = computed(() => formStore.forms[props.id]?.busy ?? false);
 
@@ -23,7 +23,7 @@ export const VqSubmitBtn = defineComponent({
     return () => (
       <>
         {/* @ts-ignore */}
-        <VBtn loading={loading.value} onClick={submit} color="primary">
+        <VBtn loading={loading.value} onClick={submit} color="primary" {...attrs}>
           Submit
         </VBtn>
       </>

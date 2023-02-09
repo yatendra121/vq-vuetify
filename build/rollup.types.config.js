@@ -70,10 +70,7 @@ function createTypesConfig(input, output, renderChunk, filter) {
         {
           async renderChunk(code) {
             if (renderChunk) code = await renderChunk(code);
-            return code.replaceAll(
-              /import([^;])*?from 'vue-router'/gm,
-              "// @ts-ignore\n$&"
-            );
+            return code.replaceAll(/import([^;])*?from 'vue-router'/gm, "// @ts-ignore\n$&");
           },
         },
       ],
@@ -83,7 +80,7 @@ function createTypesConfig(input, output, renderChunk, filter) {
 
 async function getShims() {
   const components = Object.keys(importMap.components)
-    .map((name) => `    ${name}:${name}`)
+    .map((name) => `    ${name}:  ${name}`)
     .join("\n");
 
   return (

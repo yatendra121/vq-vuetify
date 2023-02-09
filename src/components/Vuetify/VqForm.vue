@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { objectToFormData } from '@/composables/axios/formData'
+import { objectToFormData } from '@qnx/composables/axios/formData'
 import { Form as VeeForm, SubmissionHandler } from 'vee-validate'
 import { _axios } from '@/plugins/axios'
 import { ApiResponse } from '@/utils/response'

@@ -1,26 +1,14 @@
-import {
-  computed,
-  defineComponent,
-  onBeforeUnmount,
-  onMounted,
-  PropType,
-} from "vue";
+import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from "vue";
 import { objectToFormData } from "../../composables/axios/formData";
-import {
-  Form as VForm,
-  SubmissionHandler,
-  InvalidSubmissionHandler,
-} from "vee-validate";
-import { _axios } from "../../plugins/axios";
+import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from "vee-validate";
 import useErrorResponse from "../../composables/axios/useErrorResponse";
-import { ApiResponse } from "../../utils";
+import { ApiResponse } from "@qnx/composables";
 import { useAsyncAxios } from "../../composables/axios";
 import { useFormStore } from "../../store/reactivity/form";
 
 //types
 import type { Form as VFormType } from "vee-validate";
 import type { AxiosError, Method } from "axios";
-import type { ApiDataResponse } from "../../utils";
 import type { InitialValues } from "../../types";
 
 export type GenericFormValues = {
@@ -71,15 +59,12 @@ export const VqForm = defineComponent({
     // const initialValues = ref(
     //   transformObjValues(props.initialValues, props.valuesSchema)
     // )
-    const onSubmit: SubmissionHandler<GenericFormValues> = (
-      values,
-      actions
-    ) => {
+    const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
       const postData = props.formData ? objectToFormData(values) : values;
 
       formStore.changeBusy(props.id, true);
 
-      useAsyncAxios<ApiDataResponse>(props.action, {
+      useAsyncAxios<ApiResponse>(props.action, {
         method: props.method,
         data: postData,
       })
@@ -87,13 +72,15 @@ export const VqForm = defineComponent({
           const apiResponse = new ApiResponse(response);
           emit("submitedSuccess", apiResponse);
         })
-        .catch(async (response: AxiosError<ApiDataResponse>) => {
+        .catch(async (response: AxiosError<ApiResponse>) => {
           const { getErrorResponse } = useErrorResponse();
           const { eResponse } = await getErrorResponse(response);
-          const apiResponse = new ApiResponse(eResponse.value);
-          //@ts-ignore
-          actions.setErrors(apiResponse.getErrors());
-          emit("submitedError", apiResponse);
+          if (eResponse.value) {
+            const apiResponse = new ApiResponse(eResponse.value);
+            //@ts-ignore
+            actions.setErrors(apiResponse.getErrors());
+            emit("submitedError", apiResponse);
+          }
         })
         .finally(() => {
           formStore.changeBusy(props.id, false);
@@ -118,10 +105,7 @@ export const VqForm = defineComponent({
   },
 });
 
-const transformObjValues = (
-  item: unknown,
-  object: { [key: string]: string } | undefined
-) => {
+const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
   if (!item || !object) return item;
   return { ...collectFormObjValues(item, object), ...item };
 };

@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "vue": "^3.2.45",
-    "@qnx/composables": "workspace:*"
+    "@qnx/composables": "*"
   },
   "devDependencies": {
     "@mdi/js": "^7.1.96",

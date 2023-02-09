@@ -1,6 +1,6 @@
 {
   "name": "@qnx/vuetify",
-  "version": "0.5.66",
+  "version": "0.5.71",
   "type": "module",
   "license": "MIT",
   "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
@@ -18,30 +18,54 @@
   "files": [
     "dist"
   ],
-  "main": "./src/main.ts",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./src/main.ts",
-      "require": "./dist/index.js"
+      "types": "./dist/index.d.ts"
     },
     "./*": "./*",
     "./integrations": {
-      "types": "./dist/integrations.d.ts",
-      "require": "./dist/integrations.js",
-      "import": "./src/integrations.ts"
+      "import": "./src/integrations.ts",
+      "types": "./dist/integrations.d.ts"
     }
   },
   "typesVersions": {
     "*": {
       "*": [
-        "dist/index.d.ts"
+        "src/index.ts"
       ],
       "integrations": [
-        "dist/integrations.d.ts"
+        "src/integrations.ts"
       ]
+    }
+  },
+  "publishConfig": {
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.js"
+      },
+      "./*": "./*",
+      "./integrations": {
+        "types": "./dist/integrations.d.ts",
+        "require": "./dist/integrations.js",
+        "import": "./dist/integrations.js"
+      }
+    },
+    "typesVersions": {
+      "*": {
+        "*": [
+          "dist/index.d.ts"
+        ],
+        "integrations": [
+          "dist/integrations.d.ts"
+        ]
+      }
     }
   },
   "dependencies": {

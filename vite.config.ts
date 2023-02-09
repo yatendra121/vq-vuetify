@@ -24,7 +24,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: {
-        index: resolve(__dirname, "src/main.ts"),
+        index: resolve(__dirname, "src/index.ts"),
         integrations: resolve(__dirname, "src/integrations.ts"),
       },
       // name: "vq-vuetify",

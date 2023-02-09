@@ -96,7 +96,7 @@ export default [
   // createTypesConfig("framework.d.ts", "lib/index.d.ts", async (code) => {
   //   return code + "\n\n" + (await getShims());
   // }),
-  createTypesConfig("main.d.ts", "dist/index.d.ts", async (code) => {
+  createTypesConfig("index.d.ts", "dist/index.d.ts", async (code) => {
     return code + "\n\n" + (await getShims());
   }),
   createTypesConfig("integrations.d.ts", "dist/integrations.d.ts"),

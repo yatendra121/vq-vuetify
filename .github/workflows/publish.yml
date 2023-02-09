@@ -9,6 +9,11 @@ on:
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,8 +30,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
-
-      - run: pnpm update -g pnpm
 
       - run: pnpm install
 

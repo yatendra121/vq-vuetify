@@ -1,13 +1,44 @@
 # Vue 3 + Typescript + Vite
 
-This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+vq-vuetify
+vq-vuetify is a library that provides a set of components and directives for Vuetify, a popular UI library for Vue.js. The library allows you to easily create custom components and directives that are optimized for performance and seamless integration with Vuetify.
 
-## Recommended IDE Setup
+Installation
+You can install vq-vuetify using npm:
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+Copy code
+npm install vq-vuetify
+Or, you can use yarn:
 
-## Type Support For `.vue` Imports in TS
+csharp
+Copy code
+yarn add vq-vuetify
+Usage
+To use vq-vuetify, you will need to import the components and directives that you want to use in your project. For example:
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's `.vue` type support plugin by running `Volar: Switch TS Plugin on/off` from VSCode command palette.
+javascript
+Copy code
+import { VqButton } from 'vq-vuetify/components';
 
-# nx-vite
+export default {
+components: {
+VqButton,
+},
+};
+You can then use the imported components in your template:
+
+php
+Copy code
+<template>
+<vq-button>Click Me</vq-button>
+</template>
+Components and Directives
+vq-vuetify includes a variety of components and directives that you can use to build your application. Some of the most popular components and directives include:
+
+VqButton: A custom button component that is optimized for performance and seamless integration with Vuetify.
+VqCard: A custom card component that is optimized for performance and seamless integration with Vuetify.
+vq-ripple: A custom directive for adding ripple effects to your components.
+For more information on the components and directives provided by vq-vuetify, please refer to the library's documentation.
+
+Conclusion
+vq-vuetify is a powerful library for building applications with Vuetify. With its optimized components and directives, you can create high-performance applications with ease. So, if you're looking to get started with Vuetify, be sure to check out vq-vuetify!

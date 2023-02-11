@@ -14,7 +14,7 @@ import {
 } from "vue";
 import { objectToQueryString } from "../../composables/axios/formData";
 import { useFormFilterStore } from "../../store/reactivity/formFiler";
-import { useAsyncAxios } from "../../composables/axios";
+import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../composables/list";
 import axios, { CancelTokenSource } from "axios";
 import { VList } from "vuetify/components";
@@ -102,11 +102,9 @@ export const VqList = defineComponent({
     const loadMore = () => {
       fetchItems()
         .then((res) => {
-          items.value =
-            listOptions.page === 1 ? res.data : [...items.value, ...res.data];
+          items.value = listOptions.page === 1 ? res.data : [...items.value, ...res.data];
 
-          finished.value =
-            listOptions.page_size * listOptions.page >= (res?.total ?? 0);
+          finished.value = listOptions.page_size * listOptions.page >= (res?.total ?? 0);
           listOptions.page++;
         })
         .catch(() => {});

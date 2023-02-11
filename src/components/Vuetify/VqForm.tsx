@@ -3,7 +3,7 @@ import { objectToFormData } from "../../composables/axios/formData";
 import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from "vee-validate";
 import useErrorResponse from "../../composables/axios/useErrorResponse";
 import { ApiResponse } from "@qnx/composables";
-import { useAsyncAxios } from "../../composables/axios";
+import { useAsyncAxios } from "@qnx/composables/axios";
 import { useFormStore } from "../../store/reactivity/form";
 
 //types

@@ -39,9 +39,11 @@ export default defineConfig({
         "vuetify",
         "vuetify/components",
         "vee-validate",
-        "@tinymce/tinymce-vue",
         "axios",
         "pinia",
+        "@qnx/composables",
+        "@qnx/composables/axios",
+        "@tinymce/tinymce-vue",
       ],
       output: {
         //format: 'esm',

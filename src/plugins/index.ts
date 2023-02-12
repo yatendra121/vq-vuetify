@@ -1,1 +1,0 @@
-export { setAxiosInstance } from './axios'

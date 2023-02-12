@@ -5,7 +5,6 @@ import type { App } from "vue";
 export * from "./components";
 
 //Export utilities & composables
-export * from "./plugins";
 export * from "./composables";
 
 //Instance of main components of vq vuetify

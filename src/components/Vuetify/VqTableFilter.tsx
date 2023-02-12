@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType } from "vue";
 import { Form as VForm } from "vee-validate";
-import { VqTableFilterHandler } from "../../components/Vuetify/VqTableFilterHandler";
+import { VqTableFilterHandler } from "./VqTableFilterHandler";
 
 //types
 import type { Form as VFormType } from "vee-validate";

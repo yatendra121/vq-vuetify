@@ -1,7 +1,7 @@
 import { defineComponent, PropType, toRef } from "vue";
+import { VTextField } from "vuetify/components";
 import { useField } from "vee-validate";
 import { collectValidationListeners } from "./config";
-import { VTextField } from "vuetify/components";
 
 export const VqTextField = defineComponent({
   name: "VqTextField",

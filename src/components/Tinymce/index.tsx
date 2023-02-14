@@ -3,6 +3,7 @@ import { useField } from "vee-validate";
 import TinyEditor from "@tinymce/tinymce-vue";
 import plugins from "./plugins";
 import toolbar from "./toolbar";
+import { config } from "./config";
 
 export const VqTextEditor = defineComponent({
   name: "VqTextEditor",
@@ -32,7 +33,7 @@ export const VqTextEditor = defineComponent({
     },
     baseUrl: {
       type: String,
-      default: () => "http://localhost:3000/",
+      default: () => config.baseUrl,
     },
     filesPath: {
       type: String,
@@ -71,9 +72,7 @@ export const VqTextEditor = defineComponent({
           tinymce-script-src={props.baseUrl + props.filesPath}
         ></TinyEditor>
         <div>
-          <p style="color: red;padding:4px 0px 0px 10px;font-size:12px">
-            {errorMessage.value}
-          </p>
+          <p style="color: red;padding:4px 0px 0px 10px;font-size:12px">{errorMessage.value}</p>
         </div>
       </>
     );

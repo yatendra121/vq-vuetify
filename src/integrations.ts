@@ -1,4 +1,6 @@
 import * as components from "./components/integrations";
+export { setConfig } from "./components/Tinymce/config";
+
 import type { App } from "vue";
 
 export * from "./components/integrations";

@@ -1,44 +1,80 @@
-# Vue 3 + Typescript + Vite
+# @qnx/vuetify
 
-vq-vuetify
-vq-vuetify is a library that provides a set of components and directives for Vuetify, a popular UI library for Vue.js. The library allows you to easily create custom components and directives that are optimized for performance and seamless integration with Vuetify.
+@qnx/vuetify is providing components to simplify your codes.
 
-Installation
-You can install vq-vuetify using npm:
+## Installation
 
-Copy code
-npm install vq-vuetify
-Or, you can use yarn:
+Use the package manager [npm](https://www.npmjs.com/) to install @qnx/vuetify.
 
-csharp
-Copy code
-yarn add vq-vuetify
-Usage
-To use vq-vuetify, you will need to import the components and directives that you want to use in your project. For example:
+```bash
+npm install foobar
+```
 
-javascript
-Copy code
-import { VqButton } from 'vq-vuetify/components';
+You can also use [yarn](https://yarnpkg.com/) & [pnpm](https://pnpm.io/)
 
-export default {
-components: {
-VqButton,
-},
-};
-You can then use the imported components in your template:
+```bash
+yarn add @qnx/vuetify
+```
 
-php
-Copy code
+```bash
+pnpm install @qnx/vuetify
+```
+
+#### Peer-Dependencies
+
+@qnx/vuetify is resolving problems internally so it depends on some other libraries.
+
+```bash
+npm install vuetify@next @qnx/composables @vee-validate yup axios
+```
+
+## Usage
+
+```bash
+<script setup>
+import { VqForm, VqTextField } from '@qnx/vuetify'
+import { object, string } from 'yup';
+
+let validationSchema= object({
+  name: string().required(),
+  email: string().required().email(),
+});
+
+const initialValues = { name:'Test User', email:'test@gmail.com' }
+
+const onSuccess = (res) => { console.log(res) }
+
+</script>
 <template>
-<vq-button>Click Me</vq-button>
+ <VqForm
+    action="user/create"
+    method="POST"
+    :validation-schema="validationSchema"
+    :initial-values="initialValues"
+    @submited-success="onSuccess"
+  >
+    <vq-text-field
+      name="name"
+      label="Name"
+      placeholder="Name"
+    />
+    <vq-text-field
+      name="email"
+      label="Email"
+      placeholder="Email"
+    />
+    <button type="submit">Submit</button>
+ <VqForm />
 </template>
-Components and Directives
-vq-vuetify includes a variety of components and directives that you can use to build your application. Some of the most popular components and directives include:
+```
 
-VqButton: A custom button component that is optimized for performance and seamless integration with Vuetify.
-VqCard: A custom card component that is optimized for performance and seamless integration with Vuetify.
-vq-ripple: A custom directive for adding ripple effects to your components.
-For more information on the components and directives provided by vq-vuetify, please refer to the library's documentation.
+## Contributing
 
-Conclusion
-vq-vuetify is a powerful library for building applications with Vuetify. With its optimized components and directives, you can create high-performance applications with ease. So, if you're looking to get started with Vuetify, be sure to check out vq-vuetify!
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

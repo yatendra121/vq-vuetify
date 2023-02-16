@@ -7,7 +7,7 @@
 Use the package manager [npm](https://www.npmjs.com/) to install @qnx/vuetify.
 
 ```bash
-npm install foobar
+npm install @qnx/vuetify
 ```
 
 You can also use [yarn](https://yarnpkg.com/) & [pnpm](https://pnpm.io/)

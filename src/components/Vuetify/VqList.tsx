@@ -11,13 +11,17 @@ import {
   provide,
   readonly,
   toRef,
+  h,
+  VNode,
 } from "vue";
+
 import { VList } from "vuetify/components";
 import axios, { CancelTokenSource } from "axios";
 import { useAsyncAxios, objectToQueryString } from "@qnx/composables/axios";
 import { useListRepository } from "../../composables/list";
 import { useFormFilterStore } from "../../store/reactivity/formFiler";
 
+type TValue = unknown;
 export const VqList = defineComponent({
   name: "VqList",
   props: {
@@ -45,7 +49,7 @@ export const VqList = defineComponent({
 
     //Collect global values of list based on filter id
     const { removeList, collectListValues } = useListRepository(filterId.value);
-    const { items, finished, loading } = toRefs(collectListValues());
+    const { items, finished, loading } = toRefs(collectListValues<TValue>());
 
     onBeforeUnmount(() => {
       removeList();
@@ -173,3 +177,38 @@ export const VqList = defineComponent({
 
 // eslint-disable-next-line no-redeclare
 export type VqList = typeof VList & typeof VqList;
+
+export type ExtractComponentProps<TComponent> = TComponent extends new () => {
+  $props: infer P;
+}
+  ? P
+  : never;
+
+interface GenericProps
+  extends ExtractComponentProps<typeof VqList>,
+    ExtractComponentProps<typeof VList> {}
+
+interface GenericSlotsProps<TValue> {
+  items: TValue[];
+}
+
+export function useVqList<TValue = unknown>() {
+  const wrapper = defineComponent((props: GenericProps, { slots }) => {
+    // Returning functions in `setup` means this is the render function
+    return () => {
+      // Event handlers will also be passed in the `props` object
+      return h(VqList, props, slots);
+    };
+  });
+  return wrapper as typeof wrapper & {
+    new (): {
+      // Same trick as `$slots`, we override the emit information for that component
+      $emit: {
+        (e: "changed", value: TValue): void;
+      };
+      $slots: {
+        default: (arg: GenericSlotsProps<TValue>) => VNode[];
+      };
+    };
+  };
+}

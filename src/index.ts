@@ -6,6 +6,7 @@ export * from "./components";
 
 //Export utilities & composables
 export * from "./composables";
+export { useVqList } from "./components/Vuetify/VqList";
 
 //Instance of main components of vq vuetify
 export default {

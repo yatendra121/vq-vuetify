@@ -16,6 +16,7 @@ export default defineConfig({
     vue(),
     vuetify({
       autoImport: false,
+      styles: "none",
     }),
     vueJsx(),
     //dts()
@@ -55,6 +56,7 @@ export default defineConfig({
       },
     },
   },
+
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
     extensions: [
@@ -69,3 +71,6 @@ export default defineConfig({
   },
   */
 });
+
+//git tag <tagname>
+//git push origin --tags

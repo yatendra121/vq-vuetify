@@ -29,7 +29,7 @@ export const VqTextEditor = defineComponent({
     },
     isDark: {
       type: Boolean,
-      default: () => true,
+      default: () => false,
     },
     baseUrl: {
       type: String,
@@ -66,8 +66,8 @@ export const VqTextEditor = defineComponent({
             menubar: true,
             plugins,
             toolbar,
-            skin: props.isDark ? "oxide" : "oxide-dark",
-            content_css: props.isDark ? "default" : "dark",
+            skin: props.isDark ? "oxide-dark" : "oxide",
+            content_css: props.isDark ? "dark" : "default",
           }}
           tinymce-script-src={props.baseUrl + props.filesPath}
         ></TinyEditor>

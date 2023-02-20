@@ -6,7 +6,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import vuetify from "vite-plugin-vuetify";
 
 export default defineConfig({
-  plugins: [Vue(), vuetify({ autoImport: false }), vueJsx()],
+  plugins: [Vue(), vueJsx(), vuetify({ autoImport: false, styles: "none" })],
   //@ts-ignore
   test: {
     deps: {
@@ -14,5 +14,8 @@ export default defineConfig({
     },
     globals: true,
     environment: "jsdom",
+    transformMode: {
+      web: [/.[tj]sx$/],
+    },
   },
 });

@@ -4,12 +4,10 @@
     :init="{
       height: height,
       menubar: true,
-
       plugins: plugins,
       toolbar: toolbar,
-
       skin: isDark ? 'oxide' : 'oxide-dark',
-      content_css: isDark ? 'default' : 'dark'
+      content_css: isDark ? 'default' : 'dark',
     }"
     :tinymce-script-src="baseUrl"
   />
@@ -22,53 +20,53 @@
   </transition>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useField } from 'vee-validate'
-import Editor from '@tinymce/tinymce-vue'
-import plugins from './plugins'
-import toolbar from './toolbar'
+import { defineComponent } from "vue";
+import { useField } from "vee-validate";
+import Editor from "@tinymce/tinymce-vue";
+import plugins from "./plugins";
+import toolbar from "./toolbar";
 
 export default defineComponent({
-  name: 'TextEditor',
+  name: "TextEditor",
   components: {
-    Editor
+    Editor,
   },
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     label: {
       type: String,
-      default: () => ''
+      default: () => "",
     },
     placeholder: {
       type: String,
-      default: () => ''
+      default: () => "",
     },
     height: {
       type: Number,
-      default: () => 250
+      default: () => 250,
     },
     isDark: {
       type: Boolean,
-      default: () => true
+      default: () => true,
     },
     baseUrl: {
       type: String,
-      default: () => 'http://localhost:3000/'
-    }
+      default: () => "http://localhost:3000/",
+    },
   },
   setup(props) {
-    const { errorMessage, value } = useField(props.name)
+    const { errorMessage, value } = useField(props.name);
 
     return {
       plugins,
       toolbar,
       errorMessage,
       value,
-      baseUrl: props.baseUrl + 'static/tinymce/tinymce.min.js'
-    }
-  }
-})
+      baseUrl: props.baseUrl + "static/tinymce/tinymce.min.js",
+    };
+  },
+});
 </script>

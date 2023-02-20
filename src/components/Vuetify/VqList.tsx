@@ -178,6 +178,9 @@ export const VqList = defineComponent({
 // eslint-disable-next-line no-redeclare
 export type VqList = typeof VList & typeof VqList;
 
+/**
+ * Creating composable function types to create strong typed component
+ */
 export type ExtractComponentProps<TComponent> = TComponent extends new () => {
   $props: infer P;
 }
@@ -192,6 +195,9 @@ interface GenericSlotsProps<TValue> {
   items: TValue[];
 }
 
+/**
+ * Creating composable function to create strong typed component with VqList
+ */
 export function useVqList<TValue = unknown>() {
   const wrapper = defineComponent((props: GenericProps, { slots }) => {
     // Returning functions in `setup` means this is the render function

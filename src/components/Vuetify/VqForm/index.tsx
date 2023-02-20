@@ -2,12 +2,12 @@ import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from 
 import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from "vee-validate";
 import { useAsyncAxios, useErrorResponse, objectToFormData } from "@qnx/composables/axios";
 import { ApiResponse } from "@qnx/composables";
-import { useFormStore } from "../../store/reactivity/form";
+import { useFormStore } from "../../../store/reactivity/form";
 
 //types
 import type { Form as VFormType } from "vee-validate";
 import type { AxiosError, Method } from "axios";
-import type { InitialValues } from "../../types";
+import type { InitialValues } from "../../../types";
 
 export type GenericFormValues = {
   [key: string]: unknown;

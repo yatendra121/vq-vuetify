@@ -3,12 +3,10 @@
 export { VqTextField } from "./Vuetify/VqTextField";
 export { VqTextarea } from "./Vuetify/VqTextarea";
 export { VqAutocomplete } from "./Vuetify/VqAutocomplete";
-export { VqList } from "./Vuetify/VqList";
-export { VqTableFilter } from "./Vuetify/VqTableFilter";
+export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
 export { VqForm } from "./Vuetify/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
-export { VqListLoadMoreBtn } from "./Vuetify/VqListLoadMoreBtn";
 
 //Form element components
 // export const VqTextField = defineAsyncComponent(

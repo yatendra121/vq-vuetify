@@ -1,11 +1,11 @@
-import { VqTextField } from "../VqTextField";
+import { VqTextarea } from "..";
 
 // Utilities
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { createVuetify } from "vuetify";
 
-describe("VqTextField", () => {
+describe("VTextarea", () => {
   const vuetify = createVuetify();
 
   function mountFunction(component: any, options = {}) {
@@ -18,15 +18,17 @@ describe("VqTextField", () => {
   }
 
   it("has affixed icons", () => {
-    const wrapper = mountFunction(VqTextField, {
-      props: {
-        name: "test",
-        prependIcon: "mdi-vuetify",
-        prependInnerIcon: "mdi-vuetify",
-        appendInnerIcon: "mdi-vuetify",
-        appendIcon: "mdi-vuetify",
-      },
-    });
+    const wrapper = mountFunction(
+      //@ts-ignore
+      <VqTextarea
+        name="test1"
+        //@ts-ignore
+        prependIcon="mdi-vuetify"
+        prependInnerIcon="mdi-vuetify"
+        appendInnerIcon="mdi-vuetify"
+        appendIcon="mdi-vuetify"
+      />
+    );
 
     let el = wrapper.find(".v-input__prepend .v-icon");
     expect(el.attributes("aria-hidden")).toBe("true");
@@ -53,7 +55,7 @@ describe("VqTextField", () => {
 
     const wrapper = mountFunction(
       //@ts-ignore
-      <VqTextField
+      <VqTextarea
         name="test2"
         //@ts-ignore
         prependIcon="mdi-vuetify"

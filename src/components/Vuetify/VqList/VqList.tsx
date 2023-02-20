@@ -18,8 +18,8 @@ import {
 import { VList } from "vuetify/components";
 import axios, { CancelTokenSource } from "axios";
 import { useAsyncAxios, objectToQueryString } from "@qnx/composables/axios";
-import { useListRepository } from "../../composables/list";
-import { useFormFilterStore } from "../../store/reactivity/formFiler";
+import { useListRepository } from "../../../composables/list";
+import { useFormFilterStore } from "../../../store/reactivity/formFiler";
 
 type TValue = unknown;
 export const VqList = defineComponent({

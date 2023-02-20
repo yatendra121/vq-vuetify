@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         node: [14.x, 16.x, 18.x]
-    fail-fast: false
 
     steps:
       - name: Checkout

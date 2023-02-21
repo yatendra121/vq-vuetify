@@ -1,8 +1,5 @@
 import { computed } from 'vue'
-export function collectValidationListeners({
-    handleChange,
-    errorMessage
-}: any) {
+export function collectValidationListeners({ handleChange, errorMessage }: any) {
     return computed(() => {
         // If the field is valid or have not been validated yet
         // lazy

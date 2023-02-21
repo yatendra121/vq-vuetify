@@ -1,1 +1,1 @@
-export { VqTextEditor } from "./Tinymce";
+export { VqTextEditor } from './Tinymce'

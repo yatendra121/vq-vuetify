@@ -1,31 +1,31 @@
-import { useFormFilterStore } from "../../../store/reactivity/formFiler";
-import { useFormValues } from "vee-validate";
-import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from "vue";
+import { useFormFilterStore } from '../../../store/reactivity/formFiler'
+import { useFormValues } from 'vee-validate'
+import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from 'vue'
 
 export const VqTableFilterHandler = defineComponent({
-  props: {
-    id: {
-      type: String as PropType<string>,
-      required: true,
+    props: {
+        id: {
+            type: String as PropType<string>,
+            required: true
+        }
     },
-  },
-  setup(props, { slots }) {
-    const filterId = computed(() => {
-      return `${props.id}`;
-    });
+    setup(props, { slots }) {
+        const filterId = computed(() => {
+            return `${props.id}`
+        })
 
-    const formValues = useFormValues();
-    const formFilterStore = useFormFilterStore();
+        const formValues = useFormValues()
+        const formFilterStore = useFormFilterStore()
 
-    onMounted(() => {
-      formFilterStore.addForm(filterId.value, formValues.value);
-    });
+        onMounted(() => {
+            formFilterStore.addForm(filterId.value, formValues.value)
+        })
 
-    onBeforeUnmount(() => formFilterStore.removeForm(filterId.value));
+        onBeforeUnmount(() => formFilterStore.removeForm(filterId.value))
 
-    return () => <>{slots.default?.()}</>;
-  },
-});
+        return () => <>{slots.default?.()}</>
+    }
+})
 
 // eslint-disable-next-line no-redeclare
-export type VqTableFilterHandler = typeof VqTableFilterHandler;
+export type VqTableFilterHandler = typeof VqTableFilterHandler

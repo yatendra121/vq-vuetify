@@ -1,12 +1,12 @@
 //import { defineAsyncComponent } from 'vue'
 
-export { VqTextField } from "./Vuetify/VqTextField";
-export { VqTextarea } from "./Vuetify/VqTextarea";
-export { VqAutocomplete } from "./Vuetify/VqAutocomplete";
-export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
-export { VqForm } from "./Vuetify/VqForm";
-export { VqCheckbox } from "./Vuetify/VqCheckbox";
-export { VqSubmitBtn } from "./Basic/SubmitButton";
+export { VqTextField } from './Vuetify/VqTextField'
+export { VqTextarea } from './Vuetify/VqTextarea'
+export { VqAutocomplete } from './Vuetify/VqAutocomplete'
+export { VqList, VqTableFilter, VqListLoadMoreBtn } from './Vuetify/VqList'
+export { VqForm } from './Vuetify/VqForm'
+export { VqCheckbox } from './Vuetify/VqCheckbox'
+export { VqSubmitBtn } from './Basic/SubmitButton'
 
 //Form element components
 // export const VqTextField = defineAsyncComponent(

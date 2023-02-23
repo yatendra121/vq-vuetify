@@ -1,17 +1,17 @@
-import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from 'vue'
-import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from 'vee-validate'
-import { useAsyncAxios, useErrorResponse, objectToFormData } from '@qnx/composables/axios'
-import { ApiResponse } from '@qnx/composables'
-import { useFormStore } from '../../../store/reactivity/form'
+import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from "vue";
+import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from "vee-validate";
+import { useAsyncAxios, useErrorResponse, objectToFormData } from "@qnx/composables/axios";
+import { ApiResponse } from "@qnx/composables";
+import { useFormStore } from "../../../store/reactivity/form";
 
 //types
-import type { Form as VFormType } from 'vee-validate'
-import type { AxiosError, Method } from 'axios'
-import type { InitialValues } from '../../../types'
+import type { Form as VFormType } from "vee-validate";
+import type { AxiosError, Method } from "axios";
+import type { InitialValues } from "../../../types";
 
 export type GenericFormValues = {
-    [key: string]: unknown
-}
+    [key: string]: unknown;
+};
 export const VqForm = defineComponent({
     components: {
         VForm
@@ -27,7 +27,7 @@ export const VqForm = defineComponent({
         },
         method: {
             type: String as PropType<Method>,
-            default: () => 'POST'
+            default: () => "POST"
         },
         initialValues: {
             type: Object as PropType<InitialValues | undefined>,
@@ -42,48 +42,48 @@ export const VqForm = defineComponent({
             default: () => false
         }
     },
-    emits: ['submitedSuccess', 'submitedError', 'submitedClientError'],
+    emits: ["submitedSuccess", "submitedError", "submitedClientError"],
     setup(props, { attrs, emit, slots }) {
         const initialValues = computed(() => {
-            return transformObjValues(props.initialValues, props.valuesSchema)
-        })
-        const formStore = useFormStore()
+            return transformObjValues(props.initialValues, props.valuesSchema);
+        });
+        const formStore = useFormStore();
         onMounted(() => {
-            formStore.addForm(props.id)
-        })
+            formStore.addForm(props.id);
+        });
 
-        onBeforeUnmount(() => formStore.removeForm(props.id))
+        onBeforeUnmount(() => formStore.removeForm(props.id));
 
         // const initialValues = ref(
         //   transformObjValues(props.initialValues, props.valuesSchema)
         // )
         const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
-            const postData = props.formData ? objectToFormData(values) : values
+            const postData = props.formData ? objectToFormData(values) : values;
 
-            formStore.changeBusy(props.id, true)
+            formStore.changeBusy(props.id, true);
 
             useAsyncAxios<ApiResponse>(props.action, {
                 method: props.method,
                 data: postData
             })
                 .then((response) => {
-                    const apiResponse = new ApiResponse(response)
-                    emit('submitedSuccess', apiResponse)
+                    const apiResponse = new ApiResponse(response);
+                    emit("submitedSuccess", apiResponse);
                 })
                 .catch(async (response: AxiosError<ApiResponse>) => {
-                    const { getErrorResponse } = useErrorResponse()
-                    const { eResponse } = await getErrorResponse(response)
+                    const { getErrorResponse } = useErrorResponse();
+                    const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {
-                        const apiResponse = new ApiResponse(eResponse.value)
+                        const apiResponse = new ApiResponse(eResponse.value);
                         //@ts-ignore
-                        actions.setErrors(apiResponse.getErrors())
-                        emit('submitedError', apiResponse)
+                        actions.setErrors(apiResponse.getErrors());
+                        emit("submitedError", apiResponse);
                     }
                 })
                 .finally(() => {
-                    formStore.changeBusy(props.id, false)
-                })
-        }
+                    formStore.changeBusy(props.id, false);
+                });
+        };
 
         return () => (
             <>
@@ -91,7 +91,7 @@ export const VqForm = defineComponent({
                     //@ts-ignore
                     id={props.id}
                     onSubmit={(e, actions) => onSubmit(e, actions)}
-                    onInvalidSubmit={(e) => emit('submitedClientError', e)}
+                    onInvalidSubmit={(e) => emit("submitedClientError", e)}
                     initial-values={initialValues.value}
                     v-slots={slots}
                     {...attrs}
@@ -99,45 +99,45 @@ export const VqForm = defineComponent({
                     <>{slots.default?.()}</>
                 </VForm>
             </>
-        )
+        );
     }
-})
+});
 
 const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
-    if (!item || !object) return item
-    return { ...collectFormObjValues(item, object), ...item }
-}
+    if (!item || !object) return item;
+    return { ...collectFormObjValues(item, object), ...item };
+};
 
 const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
-    const finalVal: any = []
+    const finalVal: any = [];
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
-            const element = object[key]
-            const arrKeys = element.split('.')
-            let lastItemValue = item
+            const element = object[key];
+            const arrKeys = element.split(".");
+            let lastItemValue = item;
             for (const [arrKeyIndex, arrKey] of arrKeys.entries()) {
-                if (arrKey === '*') {
-                    let newArray: any = []
-                    let index = 0
+                if (arrKey === "*") {
+                    let newArray: any = [];
+                    let index = 0;
                     for (const iterator of lastItemValue) {
                         newArray = [
                             collectFormObjValues(lastItemValue[index++], {
-                                key: arrKeys.slice(arrKeyIndex + 1).join('.')
+                                key: arrKeys.slice(arrKeyIndex + 1).join(".")
                             }).key,
                             ...newArray
-                        ]
+                        ];
                     }
-                    lastItemValue = newArray
-                    break
-                } else if (typeof arrKey === 'string') {
-                    lastItemValue = lastItemValue?.[arrKey]
+                    lastItemValue = newArray;
+                    break;
+                } else if (typeof arrKey === "string") {
+                    lastItemValue = lastItemValue?.[arrKey];
                 }
             }
-            finalVal[key] = lastItemValue ?? object
+            finalVal[key] = lastItemValue ?? object;
         }
     }
-    return finalVal
-}
+    return finalVal;
+};
 
 // eslint-disable-next-line no-redeclare
-export type VqForm = typeof VFormType & typeof VqForm
+export type VqForm = typeof VFormType & typeof VqForm;

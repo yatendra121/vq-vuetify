@@ -1,12 +1,12 @@
-import { defineComponent, toRef } from 'vue'
-import { useField } from 'vee-validate'
-import TinyEditor from '@tinymce/tinymce-vue'
-import plugins from './plugins'
-import toolbar from './toolbar'
-import { config } from './config'
+import { defineComponent, toRef } from "vue";
+import { useField } from "vee-validate";
+import TinyEditor from "@tinymce/tinymce-vue";
+import plugins from "./plugins";
+import toolbar from "./toolbar";
+import { config } from "./config";
 
 export const VqTextEditor = defineComponent({
-    name: 'VqTextEditor',
+    name: "VqTextEditor",
     components: {
         TinyEditor
     },
@@ -17,11 +17,11 @@ export const VqTextEditor = defineComponent({
         },
         label: {
             type: String,
-            default: () => ''
+            default: () => ""
         },
         placeholder: {
             type: String,
-            default: () => ''
+            default: () => ""
         },
         height: {
             type: Number,
@@ -37,17 +37,17 @@ export const VqTextEditor = defineComponent({
         },
         filesPath: {
             type: String,
-            default: () => 'static/tinymce/tinymce.min.js'
+            default: () => "static/tinymce/tinymce.min.js"
         }
     },
     setup(props) {
-        const { errorMessage, value } = useField(toRef(props, 'name'), [], {
+        const { errorMessage, value } = useField(toRef(props, "name"), [], {
             validateOnValueUpdate: false
-        })
+        });
 
         const updateModelValue = (val: string) => {
-            value.value = val
-        }
+            value.value = val;
+        };
 
         return () => (
             <>
@@ -66,8 +66,8 @@ export const VqTextEditor = defineComponent({
                         menubar: true,
                         plugins,
                         toolbar,
-                        skin: props.isDark ? 'oxide-dark' : 'oxide',
-                        content_css: props.isDark ? 'dark' : 'default'
+                        skin: props.isDark ? "oxide-dark" : "oxide",
+                        content_css: props.isDark ? "dark" : "default"
                     }}
                     tinymce-script-src={props.baseUrl + props.filesPath}
                 ></TinyEditor>
@@ -77,8 +77,8 @@ export const VqTextEditor = defineComponent({
                     </p>
                 </div>
             </>
-        )
+        );
     }
-})
+});
 
-export type VqTextEditor = typeof TinyEditor & typeof VqTextEditor
+export type VqTextEditor = typeof TinyEditor & typeof VqTextEditor;

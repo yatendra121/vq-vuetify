@@ -21,7 +21,7 @@
 
             <template #actions>
                 <v-btn color="white" variant="text" @click="removeItem(item.id)">
-                    {{ items.length > 1 ? `Next(${items.length - 1})` : 'Close' }}
+                    {{ items.length > 1 ? `Next(${items.length - 1})` : "Close" }}
                 </v-btn>
             </template>
         </v-snackbar>
@@ -29,12 +29,12 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import { mdiInformation } from '@mdi/js'
+import { defineComponent } from "vue";
+import { mdiInformation } from "@mdi/js";
 
 export default defineComponent({
-    name: 'VSnackbarQueue',
-    emits: ['remove'],
+    name: "VSnackbarQueue",
+    emits: ["remove"],
     props: {
         items: {
             type: Array,
@@ -51,7 +51,7 @@ export default defineComponent({
         },
         color: {
             type: String,
-            default: 'success'
+            default: "success"
         },
         top: {
             type: Boolean,
@@ -88,10 +88,10 @@ export default defineComponent({
     },
     setup(props, { emit }) {
         const removeItem = (p) => {
-            emit('remove', p)
-        }
+            emit("remove", p);
+        };
 
-        return { mdiInformation, removeItem }
+        return { mdiInformation, removeItem };
     }
-})
+});
 </script>

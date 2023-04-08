@@ -7,6 +7,7 @@ import { useFormStore } from "../../../store/reactivity/form";
 //types
 import type { Form as VFormType } from "vee-validate";
 import type { AxiosError, Method } from "axios";
+import type { ApiResponseValue } from "@qnx/composables";
 import type { InitialValues } from "../../../types";
 
 export type GenericFormValues = {
@@ -62,7 +63,7 @@ export const VqForm = defineComponent({
 
             formStore.changeBusy(props.id, true);
 
-            useAsyncAxios<ApiResponse>(props.action, {
+            useAsyncAxios<ApiResponseValue>(props.action, {
                 method: props.method,
                 data: postData
             })
@@ -70,7 +71,7 @@ export const VqForm = defineComponent({
                     const apiResponse = new ApiResponse(response);
                     emit("submitedSuccess", apiResponse);
                 })
-                .catch(async (response: AxiosError<ApiResponse>) => {
+                .catch(async (response: AxiosError<ApiResponseValue>) => {
                     const { getErrorResponse } = useErrorResponse();
                     const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {
@@ -105,7 +106,7 @@ export const VqForm = defineComponent({
 
 const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
     if (!item || !object) return item;
-    return { ...collectFormObjValues(item, object), ...item };
+    return { ...item, ...collectFormObjValues(item, object) };
 };
 
 const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
@@ -136,6 +137,7 @@ const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
             finalVal[key] = lastItemValue ?? object;
         }
     }
+    console.log({ finalVal });
     return finalVal;
 };
 

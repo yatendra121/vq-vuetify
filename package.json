@@ -85,7 +85,7 @@
         }
     },
     "dependencies": {
-        "@qnx/composables": "workspace:^",
+        "@qnx/composables": "^0.0.23",
         "vue": "^3.2.47"
     },
     "devDependencies": {

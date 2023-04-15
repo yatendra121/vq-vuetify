@@ -141,5 +141,33 @@ const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
     return finalVal;
 };
 
+function transformToFormData(data: any, formData = new FormData(), parentKey?: string) {
+    if (data === null || data === undefined) {
+        return;
+    }
+
+    if (Array.isArray(data)) {
+        data.forEach((value, index) => {
+            const key = parentKey ? `${parentKey}[${index}]` : `[${index}]`;
+            transformToFormData(value, formData, key);
+        });
+    } else if (typeof data === "object") {
+        Object.keys(data).forEach((key) => {
+            const value = data[key];
+            const newKey = parentKey ? `${parentKey}.${key}` : key;
+
+            if (value instanceof File) {
+                formData.append(newKey, value);
+            } else {
+                transformToFormData(value, formData, newKey);
+            }
+        });
+    } else {
+        formData.append(parentKey, data.toString());
+    }
+
+    return formData;
+}
+
 // eslint-disable-next-line no-redeclare
 export type VqForm = typeof VFormType & typeof VqForm;

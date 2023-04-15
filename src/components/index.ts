@@ -5,6 +5,7 @@
 export { VqTextField } from "./Vuetify/VqTextField";
 export { VqTextarea } from "./Vuetify/VqTextarea";
 export { VqAutocomplete } from "./Vuetify/VqAutocomplete";
+export { VqFileInput } from "./Vuetify/VqFileInput";
 export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
 export { VqForm } from "./Vuetify/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";

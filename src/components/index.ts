@@ -10,6 +10,7 @@ export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
 export { VqForm } from "./Vuetify/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
+export { VqDataTable } from "./Vuetify/VqDataTable";
 
 // declare module "vue" {
 //     export interface GlobalComponents {

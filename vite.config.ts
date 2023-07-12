@@ -44,7 +44,8 @@ export default defineConfig({
                 "pinia",
                 "@qnx/composables",
                 "@qnx/composables/axios",
-                "@tinymce/tinymce-vue"
+                "@tinymce/tinymce-vue",
+                "vuetify/labs/VDataTable"
             ],
             output: {
                 //format: 'esm',

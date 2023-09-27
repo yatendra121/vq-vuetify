@@ -132,7 +132,7 @@ export const VqDataTable = defineComponent({
                 loading.value = false;
                 return response.data;
             } catch (e: any) {
-                loading.value = false;
+                // loading.value = false;
                 throw new Error(e.message);
             }
         };
@@ -162,7 +162,7 @@ export const VqDataTable = defineComponent({
         return () => (
             <>
                 <VDataTableServer
-                    loading={loading.value}
+                    loading={loading.value ? "primary" : false}
                     // page={props.page}
                     // itemsPerPage={props.itemsPerPage}
                     // sortBy={props.sortBy}

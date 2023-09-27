@@ -11,6 +11,7 @@ export { VqForm } from "./Vuetify/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
 export { VqDataTable } from "./Vuetify/VqDataTable";
+export { VqDatePicker } from "./Vuetify/VqDatePicker";
 
 // declare module "vue" {
 //     export interface GlobalComponents {

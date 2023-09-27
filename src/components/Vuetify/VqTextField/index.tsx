@@ -1,10 +1,10 @@
-import { defineComponent, PropType, toRef } from 'vue'
-import { VTextField } from 'vuetify/components'
-import { useField } from 'vee-validate'
-import { collectValidationListeners } from '../config'
+import { defineComponent, PropType, toRef } from "vue";
+import { VTextField } from "vuetify/components";
+import { useField } from "vee-validate";
+import { collectValidationListeners } from "../config";
 
 export const VqTextField = defineComponent({
-    name: 'VqTextField',
+    name: "VqTextField",
     props: {
         name: {
             type: String,
@@ -15,14 +15,14 @@ export const VqTextField = defineComponent({
         VTextField
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage, handleChange } = useField(toRef(props, 'name'), undefined, {
+        const { value, errorMessage, handleChange } = useField(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false
-        })
+        });
 
         const validationListeners = collectValidationListeners({
             handleChange,
             errorMessage
-        })
+        });
 
         return () => (
             <>
@@ -38,9 +38,9 @@ export const VqTextField = defineComponent({
                     // onBlur={handleChange}
                 ></VTextField>
             </>
-        )
+        );
     }
-})
+});
 
 // eslint-disable-next-line no-redeclare
-export type VqTextField = typeof VTextField & typeof VqTextField
+export type VqTextField = typeof VTextField & typeof VqTextField;

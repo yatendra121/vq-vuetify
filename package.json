@@ -1,0 +1,142 @@
+{
+    "name": "@qnx/vuetify",
+    "version": "0.5.87",
+    "type": "module",
+    "license": "MIT",
+    "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yatendra121/vq-vuetify.git"
+    },
+    "scripts": {
+        "serve": "vite preview",
+        "build": "vite build && vue-tsc --pretty  --declaration --emitDeclarationOnly",
+        "dev": "vite",
+        "build:types": "rollup --config build/rollup.types.config.js",
+        "build-force": "pnpm build && pnpm build:types",
+        "test:unit": "vitest",
+        "format": "prettier .  --write",
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    },
+    "files": [
+        "dist"
+    ],
+    "bugs": {
+        "url": "https://github.com/yatendra121/vq-vuetify/issues"
+    },
+    "keywords": [
+        "vue",
+        "components",
+        "form",
+        "form components"
+    ],
+    "engines": {
+        "node": "^12.20 || >=14.13"
+    },
+    "sideEffects": false,
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        },
+        "./*": "./*",
+        "./integrations": {
+            "import": "./src/integrations.ts",
+            "types": "./src/integrations.ts"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "*": [
+                "src/index.ts"
+            ],
+            "integrations": [
+                "src/integrations.ts"
+            ]
+        }
+    },
+    "publishConfig": {
+        "main": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.js",
+                "require": "./dist/index.js"
+            },
+            "./*": "./*",
+            "./integrations": {
+                "types": "./dist/integrations.d.ts",
+                "require": "./dist/integrations.js",
+                "import": "./dist/integrations.js"
+            }
+        },
+        "typesVersions": {
+            "*": {
+                "*": [
+                    "dist/index.d.ts"
+                ],
+                "integrations": [
+                    "dist/integrations.d.ts"
+                ]
+            }
+        }
+    },
+    "dependencies": {
+        "@qnx/composables": "*",
+        "vue": "^3.3.4"
+    },
+    "devDependencies": {
+        "@mdi/js": "^7.2.96",
+        "@rollup/plugin-alias": "^5.0.0",
+        "@rushstack/eslint-patch": "^1.3.2",
+        "@tinymce/tinymce-vue": "^5.1.0",
+        "@types/node": "^18.16.19",
+        "@vitejs/plugin-vue": "^4.2.3",
+        "@vitejs/plugin-vue-jsx": "^3.0.1",
+        "@vue/eslint-config-prettier": "^7.1.0",
+        "@vue/eslint-config-typescript": "^11.0.3",
+        "@vue/test-utils": "2.3.2",
+        "axios": "^1.4.0",
+        "eslint": "^8.44.0",
+        "eslint-plugin-vue": "^9.15.1",
+        "fast-glob": "^3.3.0",
+        "jsdom": "^21.1.2",
+        "micromatch": "^4.0.5",
+        "path": "^0.12.7",
+        "pinia": "^2.1.4",
+        "prettier": "^2.8.8",
+        "roboto-fontface": "^0.10.0",
+        "rollup": "^3.26.0",
+        "rollup-plugin-dts": "^5.3.0",
+        "sass": "^1.63.6",
+        "tslib": "^2.6.0",
+        "typescript": "^5.1.6",
+        "vee-validate": "^4.10.5",
+        "vite": "^4.3.9",
+        "vite-plugin-dts": "^2.3.0",
+        "vite-plugin-vuetify": "^1.0.2",
+        "vitest": "^0.29.8",
+        "vue-router": "^4.2.2",
+        "vue-tsc": "^1.8.4",
+        "vuetify": "3.3.17",
+        "webfontloader": "^1.6.28",
+        "yup": "^1.2.0"
+    },
+    "peerDependencies": {
+        "@qnx/composables": "*",
+        "axios": "*",
+        "pinia": "*",
+        "vee-validate": "*",
+        "vue": "*",
+        "vuetify": "*",
+        "yup": "*"
+    },
+    "peerDependenciesMeta": {
+        "@tinymce/tinymce-vue": {
+            "optional": true
+        }
+    }
+}

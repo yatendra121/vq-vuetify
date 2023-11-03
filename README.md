@@ -20,6 +20,10 @@ yarn add @qnx/vuetify
 pnpm install @qnx/vuetify
 ```
 
+```bash
+bun install @qnx/vuetify
+```
+
 #### Peer-Dependencies
 
 @qnx/vuetify is resolving problems internally so it depends on some other libraries.

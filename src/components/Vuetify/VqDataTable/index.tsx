@@ -15,7 +15,9 @@ import {
     onBeforeUnmount,
     onMounted
 } from "vue";
+
 import { VDataTableServer } from "vuetify/labs/VDataTable";
+import { useDisplay } from "vuetify";
 import axios, { CancelTokenSource } from "axios";
 import { objectToQueryString, useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
@@ -54,6 +56,10 @@ export const VqDataTable = defineComponent({
             type: Array as PropType<SortByValue[]>,
             default: () => [{ key: "name", order: "asc" }]
         }
+        // height: {
+        //     type: Number as PropType<number | undefined>,
+        //     default: () => undefined
+        // }
     },
     components: {
         VDataTableServer
@@ -73,8 +79,8 @@ export const VqDataTable = defineComponent({
 
         //Collect global values of list based on filter id
         const { removeList, collectListValues } = useListRepository(filterId.value);
-        const { items, loading } = toRefs(collectListValues<TValue>());
-        const totalItems = ref(0);
+        const { items, loading, totalItems } = toRefs(collectListValues<TValue>());
+        //const totalItems = ref(0);
 
         const formFilterStore = useFormFilterStore();
 
@@ -85,6 +91,7 @@ export const VqDataTable = defineComponent({
         watch(
             () => formFilterData.value,
             (_newVal, oldVal) => {
+                console.log(formFilterData.value);
                 if (oldVal === undefined) return;
                 fetchItems(defaultOptions).then(({ data, total }) => {
                     items.value = data;
@@ -132,7 +139,7 @@ export const VqDataTable = defineComponent({
                 loading.value = false;
                 return response.data;
             } catch (e: any) {
-                // loading.value = false;
+                loading.value = false;
                 throw new Error(e.message);
             }
         };
@@ -159,6 +166,33 @@ export const VqDataTable = defineComponent({
             removeList();
         });
 
+        // const { name } = useDisplay();
+
+        // const height = computed(() => {
+        //     if (props.height) return props.height;
+
+        //     if (items.value.length > 10) {
+        //         // name is reactive and
+        //         // must use .value
+        //         switch (name.value) {
+        //             case "xs":
+        //                 return 250;
+        //             case "sm":
+        //                 return 350;
+        //             case "md":
+        //                 return 450;
+        //             case "lg":
+        //                 return 550;
+        //             case "xl":
+        //                 return 700;
+        //             case "xxl":
+        //                 return 900;
+        //         }
+        //     }
+
+        //     return undefined;
+        // });
+
         return () => (
             <>
                 <VDataTableServer
@@ -171,6 +205,7 @@ export const VqDataTable = defineComponent({
                     onUpdate:options={updateOptions}
                     onUpdate:itemsPerPage={(val: number) => (defaultOptions.itemsPerPage = val)}
                     onUpdate:sortBy={(val: any[]) => (defaultOptions.sortBy = val)}
+                    // height={height.value}
                     v-slots={slots}
                     {...attrs}
                 ></VDataTableServer>
@@ -196,7 +231,8 @@ interface GenericProps
         ExtractComponentProps<typeof VqDataTable> {}
 
 interface GenericSlotsProps<TValue> {
-    item: { columns: TValue };
+    item: TValue;
+    index: number;
 }
 
 /**
@@ -222,3 +258,41 @@ export function useVqDataTable<TValue = unknown>() {
         };
     };
 }
+
+/**
+ * this function is
+ * @param headers
+ * @returns
+ */
+export function collectVqHeaders<T extends unknown[]>(headers: T) {
+    return [
+        {
+            title: "#",
+            sortable: false
+        },
+        ...headers
+    ];
+}
+
+export const VqSerialNo = defineComponent({
+    name: "VqSerialNo",
+    props: {
+        index: {
+            type: Number as PropType<number>,
+            required: true
+        }
+    },
+    components: {
+        VDataTableServer
+    },
+    setup(props) {
+        return () => (
+            <>
+                <td>{props.index + 1}</td>
+            </>
+        );
+    }
+});
+
+// eslint-disable-next-line no-redeclare
+export type VqSerialNo = typeof VqSerialNo;

@@ -10,8 +10,9 @@ export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
 export { VqForm } from "./Vuetify/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
-export { VqDataTable } from "./Vuetify/VqDataTable";
+export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
 export { VqDatePicker } from "./Vuetify/VqDatePicker";
+export { VqOtpInput } from "./Vuetify/VqOtpInput";
 
 // declare module "vue" {
 //     export interface GlobalComponents {

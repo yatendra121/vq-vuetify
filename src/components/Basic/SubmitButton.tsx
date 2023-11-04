@@ -1,24 +1,24 @@
-import { computed, defineComponent } from 'vue'
-import { useFormStore } from '../../store/reactivity/form'
-import { VBtn } from 'vuetify/components'
+import { computed, defineComponent } from "vue";
+import { useFormStore } from "../../store/reactivity/form";
+import { VBtn } from "vuetify/components";
 
 export const VqSubmitBtn = defineComponent({
-    name: 'VqSubmitButton',
+    name: "VqSubmitButton",
     props: {
         id: {
             type: String,
-            default: 'form'
+            default: "form"
         }
     },
     setup(props, { attrs }) {
-        const formStore = useFormStore()
-        const loading = computed(() => formStore.forms[props.id]?.busy ?? false)
+        const formStore = useFormStore();
+        const loading = computed(() => formStore.forms[props.id]?.busy ?? false);
 
         const submit = () => {
-            const form = document.getElementById(props.id)
+            const form = document.getElementById(props.id);
             // @ts-ignore
-            if (form) form._vei.onSubmit(form)
-        }
+            if (form) form._vei.onSubmit(form);
+        };
 
         return () => (
             <>
@@ -27,9 +27,9 @@ export const VqSubmitBtn = defineComponent({
                     Submit
                 </VBtn>
             </>
-        )
+        );
     }
-})
+});
 
 // eslint-disable-next-line no-redeclare
-export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn
+export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn;

@@ -88,8 +88,8 @@ export const VqForm = defineComponent({
 
         return () => (
             <>
+                {/*  @ts-ignore */}
                 <VForm
-                    //@ts-ignore
                     id={props.id}
                     onSubmit={(e, actions) => onSubmit(e, actions)}
                     onInvalidSubmit={(e) => emit("submitedClientError", e)}

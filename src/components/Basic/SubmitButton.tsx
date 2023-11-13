@@ -5,25 +5,25 @@ import { VBtn } from "vuetify/components";
 export const VqSubmitBtn = defineComponent({
     name: "VqSubmitButton",
     props: {
-        id: {
+        form: {
             type: String,
             default: "form"
         }
     },
     setup(props, { attrs }) {
         const formStore = useFormStore();
-        const loading = computed(() => formStore.forms[props.id]?.busy ?? false);
-
-        const submit = () => {
-            const form = document.getElementById(props.id);
-            // @ts-ignore
-            if (form) form._vei.onSubmit(form);
-        };
+        const loading = computed(() => formStore.forms[props.form]?.busy ?? false);
 
         return () => (
             <>
-                {/* @ts-ignore */}
-                <VBtn loading={loading.value} onClick={submit} color="primary" {...attrs}>
+                <VBtn
+                    loading={loading.value}
+                    /* @ts-ignore */
+                    type="submit"
+                    form={props.form}
+                    color="primary"
+                    {...attrs}
+                >
                     Submit
                 </VBtn>
             </>

@@ -67,7 +67,7 @@ export const VqForm = defineComponent({
                 method: props.method,
                 data: postData
             })
-                .then((response) => {
+                .then(async (response) => {
                     const apiResponse = new ApiResponse(response);
                     emit("submitedSuccess", apiResponse);
                 })

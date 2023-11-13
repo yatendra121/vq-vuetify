@@ -45,7 +45,9 @@ export default defineConfig({
                 "@qnx/composables",
                 "@qnx/composables/axios",
                 "@tinymce/tinymce-vue",
-                "vuetify/labs/VDataTable"
+                "vuetify/labs/VDataTable",
+                "vuetify/labs/VDatePicker",
+                "vuetify/labs/VOtpInput"
             ],
             output: {
                 //format: 'esm',

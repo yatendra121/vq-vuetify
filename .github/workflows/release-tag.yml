@@ -15,7 +15,7 @@ jobs:
 
             - name: Create Release for Tag
               id: release_tag
-              uses: yatendra121/vq-vuetify@main
+              uses: yyx990803/release-tag@master
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:

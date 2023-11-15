@@ -1,6 +1,6 @@
 import { computed, defineComponent, toRef } from "vue";
 import { useField } from "vee-validate";
-import { VDatePicker } from "vuetify/labs/VDatePicker";
+import { VDatePicker } from "vuetify/components";
 
 export const VqDatePicker = defineComponent({
     name: "VqDatePicker",

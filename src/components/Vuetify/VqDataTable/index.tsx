@@ -13,10 +13,11 @@ import {
     provide,
     watch,
     onBeforeUnmount,
-    onMounted
+    onMounted,
+    TdHTMLAttributes
 } from "vue";
 
-import { VDataTableServer } from "vuetify/labs/VDataTable";
+import { VDataTableServer } from "vuetify/components";
 import { useDisplay } from "vuetify";
 import axios, { CancelTokenSource } from "axios";
 import { objectToQueryString, useAsyncAxios } from "@qnx/composables/axios";
@@ -288,7 +289,8 @@ export const VqSerialNo = defineComponent({
     setup(props) {
         return () => (
             <>
-                <td>{props.index + 1}</td>
+                {/* @ts-ignore */}
+                <td>{props.index}</td>
             </>
         );
     }

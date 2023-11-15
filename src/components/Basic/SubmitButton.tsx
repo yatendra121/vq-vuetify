@@ -1,4 +1,4 @@
-import { computed, defineComponent } from "vue";
+import { Ref, computed, defineComponent, inject, readonly, ref, toRef } from "vue";
 import { useFormStore } from "../../store/reactivity/form";
 import { VBtn } from "vuetify/components";
 
@@ -7,12 +7,19 @@ export const VqSubmitBtn = defineComponent({
     props: {
         form: {
             type: String,
-            default: "form"
+            default: undefined
         }
     },
     setup(props, { attrs }) {
         const formStore = useFormStore();
-        const loading = computed(() => formStore.forms[props.form]?.busy ?? false);
+
+        const internalformId = inject<Readonly<Ref<string | undefined>>>("formId");
+        const externalformId = toRef(props, "form");
+        const formId = computed(() => internalformId?.value ?? externalformId?.value);
+
+        const loading = computed(
+            () => (formId.value && formStore.forms[formId.value]?.busy) ?? false
+        );
 
         return () => (
             <>

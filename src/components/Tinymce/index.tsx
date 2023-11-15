@@ -71,7 +71,9 @@ export const VqTextEditor = defineComponent({
                     }}
                     tinymce-script-src={props.baseUrl + props.filesPath}
                 ></TinyEditor>
+                {/* @ts-ignore */}
                 <div>
+                    {/* @ts-ignore */}
                     <p style="color: red;padding:4px 0px 0px 10px;font-size:12px">
                         {errorMessage.value}
                     </p>

@@ -1,6 +1,6 @@
 import { defineComponent, toRef } from "vue";
 import { useField } from "vee-validate";
-import { VOtpInput } from "vuetify/labs/VOtpInput";
+import { VOtpInput } from "vuetify/components";
 
 export const VqOtpInput = defineComponent({
     name: "VqOtpInput",

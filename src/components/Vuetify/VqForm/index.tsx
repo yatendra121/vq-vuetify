@@ -1,4 +1,13 @@
-import { computed, defineComponent, onBeforeUnmount, onMounted, PropType } from "vue";
+import {
+    computed,
+    defineComponent,
+    onBeforeUnmount,
+    onMounted,
+    PropType,
+    provide,
+    readonly,
+    toRef
+} from "vue";
 import { Form as VForm, SubmissionHandler, InvalidSubmissionHandler } from "vee-validate";
 import { useAsyncAxios, useErrorResponse, objectToFormData } from "@qnx/composables/axios";
 import { ApiResponse } from "@qnx/composables";
@@ -45,19 +54,18 @@ export const VqForm = defineComponent({
     },
     emits: ["submitedSuccess", "submitedError", "submitedClientError"],
     setup(props, { attrs, emit, slots }) {
+        provide("formId", readonly(toRef(props, "id")));
+
         const initialValues = computed(() => {
             return transformObjValues(props.initialValues, props.valuesSchema);
         });
+
         const formStore = useFormStore();
         onMounted(() => {
             formStore.addForm(props.id);
         });
-
         onBeforeUnmount(() => formStore.removeForm(props.id));
 
-        // const initialValues = ref(
-        //   transformObjValues(props.initialValues, props.valuesSchema)
-        // )
         const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
             const postData = props.formData ? objectToFormData(values) : values;
 

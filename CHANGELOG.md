@@ -8,4 +8,4 @@ Bug Fixes
 
 Bug Fixes
 
--   VqSubmitButton: Fixed form submit button if it defined from outside of form component
+-   VqSubmitButton: Fixed form submit button issue if it defined from outside of form component

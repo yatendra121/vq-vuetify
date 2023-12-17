@@ -1,3 +1,10 @@
+## 0.6.2 (2023-12-17)
+
+Bug Fixes
+
+-   VqForm: Fixed reactive initial value
+-   VqForm: Removed external submit button functionalilty
+
 ## 0.6.0 (2023-11-15)
 
 Bug Fixes

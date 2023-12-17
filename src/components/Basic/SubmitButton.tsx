@@ -13,12 +13,18 @@ export const VqSubmitBtn = defineComponent({
     setup(props, { attrs }) {
         const formStore = useFormStore();
 
-        const internalformId = inject<Readonly<Ref<string | undefined>>>("formId");
-        const externalformId = toRef(props, "form");
-        const formId = computed(() => internalformId?.value ?? externalformId?.value);
+        //const internalformId = inject<Readonly<Ref<string | undefined>>>("formId");
+        //  const externalformId = toRef(props, "form");
+        // const formId = computed(() => internalformId?.value ?? externalformId?.value);
+
+        // const loading = computed(
+        //     () => (formId.value && formStore.forms[formId.value]?.busy) ?? false
+        // );
+
+        const formId = inject<Readonly<Ref<string | undefined>>>("formId");
 
         const loading = computed(
-            () => (formId.value && formStore.forms[formId.value]?.busy) ?? false
+            () => (formId?.value && formStore.forms[formId.value]?.busy) ?? false
         );
 
         return () => (

@@ -8,6 +8,7 @@ export * from "./components";
 export * from "./composables";
 export { useVqList } from "./components/Vuetify/VqList/VqList";
 export { useVqDataTable } from "./components/Vuetify/VqDataTable";
+export { useVqForm } from "./components/Vuetify/VqForm/VqForm";
 
 //Instance of main components of vq vuetify
 export default {

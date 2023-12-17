@@ -14,7 +14,7 @@ import { ApiResponse } from "@qnx/composables";
 import { useFormStore } from "../../../store/reactivity/form";
 
 //types
-import type { Form as VFormType } from "vee-validate";
+import type { SubmissionContext, Form as VFormType } from "vee-validate";
 import type { AxiosError, Method } from "axios";
 import type { ApiResponseValue } from "@qnx/composables";
 import type { InitialValues } from "../../../types";
@@ -50,6 +50,16 @@ export const VqForm = defineComponent({
         formData: {
             type: Boolean,
             default: () => false
+        },
+        successResponseHandler: {
+            type: Function as PropType<
+                (response: ApiResponseValue, actions: SubmissionContext) => void
+            >
+        },
+        errorResponseHandler: {
+            type: Function as PropType<
+                (response: AxiosError<ApiResponseValue>, actions: SubmissionContext) => void
+            >
         }
     },
     emits: ["submitedSuccess", "submitedError", "submitedClientError"],
@@ -75,11 +85,19 @@ export const VqForm = defineComponent({
                 method: props.method,
                 data: postData
             })
-                .then(async (response) => {
+                .then((response) => {
+                    if (props.successResponseHandler) {
+                        props.successResponseHandler(response, actions);
+                        return;
+                    }
                     const apiResponse = new ApiResponse(response);
                     emit("submitedSuccess", apiResponse);
                 })
                 .catch(async (response: AxiosError<ApiResponseValue>) => {
+                    if (props.errorResponseHandler) {
+                        props.errorResponseHandler(response, actions);
+                        return;
+                    }
                     const { getErrorResponse } = useErrorResponse();
                     const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {

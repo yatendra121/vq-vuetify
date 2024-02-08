@@ -5,6 +5,7 @@
         "module": "ESNext",
         "allowJs": true,
         "jsx": "preserve",
+        "jsxImportSource": "vue",
         "useDefineForClassFields": true,
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "moduleResolution": "node",

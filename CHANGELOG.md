@@ -1,3 +1,10 @@
+## 0.6.3 (2024-02-08)
+
+Bug Fixes
+
+-   Updated dependencies
+-   Improved typescript support
+
 ## 0.6.2 (2023-12-17)
 
 Bug Fixes

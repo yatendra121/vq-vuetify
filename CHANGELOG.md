@@ -1,5 +1,16 @@
 ## 0.6.3 (2024-02-08)
 
+Features
+
+-   VqColorPicker: added component
+
+Bug Fixes
+
+-   VqDatePicker: model value issue
+-   VqOtpInput validate model value
+
+## 0.6.3 (2024-02-08)
+
 Bug Fixes
 
 -   Updated dependencies

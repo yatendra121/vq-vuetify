@@ -12,6 +12,7 @@ export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
 export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
 export { VqDatePicker } from "./Vuetify/VqDatePicker";
+export { VqColorPicker } from "./Vuetify/VqColorPicker";
 export { VqOtpInput } from "./Vuetify/VqOtpInput";
 
 // declare module "vue" {

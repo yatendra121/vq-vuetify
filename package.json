@@ -1,6 +1,6 @@
 {
     "name": "@qnx/vuetify",
-    "version": "0.6.3",
+    "version": "0.6.5",
     "type": "module",
     "license": "MIT",
     "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
@@ -86,7 +86,7 @@
     },
     "dependencies": {
         "@qnx/composables": "*",
-        "vue": "^3.4.15"
+        "vue": "^3.4.19"
     },
     "devDependencies": {
         "@mdi/js": "^7.4.47",

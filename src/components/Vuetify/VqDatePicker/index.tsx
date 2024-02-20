@@ -1,6 +1,8 @@
-import { computed, defineComponent, toRef } from "vue";
+import { computed, defineComponent, toRef, toRefs } from "vue";
 import { useField } from "vee-validate";
 import { VDatePicker } from "vuetify/components";
+
+type Value = string | Date;
 
 export const VqDatePicker = defineComponent({
     name: "VqDatePicker",
@@ -18,18 +20,22 @@ export const VqDatePicker = defineComponent({
         VDatePicker
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField<any>(toRef(props, "name"), undefined, {
+        const { name } = toRefs(props);
+        const { value, errorMessage } = useField<Value | undefined>(name, undefined, {
             validateOnValueUpdate: false
         });
 
-        const modelValue = computed<any[]>(() => {
-            return props.multiple ? value.value : value.value ? [new Date(value.value)] : undefined;
+        const modelValue = computed(() => {
+            return value.value ? new Date(value.value) : undefined;
+            //return props.multiple ? value.value : value.value ? [new Date(value.value)] : undefined;
         });
 
-        const updateValue = (val: readonly any[]) => {
+        const updateValue = (val: Value) => {
+            value.value = val;
+
             // /val: string[] | Date[]
-            if (props.multiple) value.value = val;
-            else value.value = formatDate(val.at(0));
+            // if (props.multiple) value.value = val;
+            // else value.value = formatDate(val);
         };
 
         function formatDate(date: Date | undefined | string) {

@@ -92,16 +92,20 @@ Here's a list of components provided by @qnx/vuetify:
 ### Other Components:
 
 -   VqDataTable
--   collectVqHeaders
 -   VqSerialNo
 -   VqList
 -   VqTableFilter
 -   VqListLoadMoreBtn
--   useVqForm
 
 ### Integration Components:
 
 -   VqTextEditor
+
+## Composables
+
+-   useVqForm
+-   collectVqHeaders
+-   useVqList
 
 Additionally, @qnx/vuetify extends existing components that are specifically useful in the context of forms. The library also includes additional components designed for displaying data. Overall, it appears to be a comprehensive solution for simplifying the implementation of forms and managing data presentation within Vuetify-based applications.
 

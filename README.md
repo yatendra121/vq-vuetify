@@ -1,6 +1,6 @@
 # @qnx/vuetify
 
-@qnx/vuetify is providing components to simplify your codes.
+`@qnx/vuetify` is a Vue.js library designed to simplify Vuetify form, streamlining code and handling various processes internally, including validation, data set management, and server data submission. This approach aims to reduce code complexity and promote clean and manageable code.
 
 ## Installation
 
@@ -10,7 +10,7 @@ Use the package manager [npm](https://www.npmjs.com/) to install @qnx/vuetify.
 npm install @qnx/vuetify
 ```
 
-You can also use [yarn](https://yarnpkg.com/) & [pnpm](https://pnpm.io/)
+You can also use [yarn](https://yarnpkg.com/), [pnpm](https://pnpm.io/), or [bun](https://bun.sh/)
 
 ```bash
 yarn add @qnx/vuetify
@@ -26,10 +26,10 @@ bun install @qnx/vuetify
 
 #### Peer-Dependencies
 
-@qnx/vuetify is resolving problems internally so it depends on some other libraries.
+@qnx/vuetify resolves problems internally and depends on some other libraries.
 
 ```bash
-npm install vuetify@next @qnx/composables @vee-validate yup axios
+npm install vuetify@latest @qnx/composables @vee-validate yup axios
 ```
 
 ## Usage
@@ -72,10 +72,42 @@ const onSuccess = (res) => { console.log(res) }
 </template>
 ```
 
+## Components
+
+Here's a list of components provided by @qnx/vuetify:
+
+### Vuetify Form Components:
+
+-   VqTextField
+-   VqTextarea
+-   VqAutocomplete
+-   VqFileInput
+-   VqForm
+-   VqCheckbox
+-   VqDatePicker
+-   VqColorPicker
+-   VqOtpInput
+-   VqSubmitBtn
+
+### Other Components:
+
+-   VqDataTable
+-   collectVqHeaders
+-   VqSerialNo
+-   VqList
+-   VqTableFilter
+-   VqListLoadMoreBtn
+-   useVqForm
+
+### Integration Components:
+
+-   VqTextEditor
+
+Additionally, @qnx/vuetify extends existing components that are specifically useful in the context of forms. The library also includes additional components designed for displaying data. Overall, it appears to be a comprehensive solution for simplifying the implementation of forms and managing data presentation within Vuetify-based applications.
+
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 

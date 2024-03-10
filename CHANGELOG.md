@@ -1,3 +1,9 @@
+## 0.6.6 (2024-03-10)
+
+Features
+
+-   docs: added more details of components
+
 ## 0.6.5 (2024-02-20)
 
 Features

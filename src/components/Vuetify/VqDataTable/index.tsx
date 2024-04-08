@@ -20,7 +20,8 @@ import {
 import { VDataTableServer } from "vuetify/components";
 import { useDisplay } from "vuetify";
 import axios, { CancelTokenSource } from "axios";
-import { objectToQueryString, useAsyncAxios } from "@qnx/composables/axios";
+import { useAsyncAxios } from "@qnx/composables/axios";
+import { objectToQueryString } from "@qnx/composables";
 import { useListRepository } from "../../../composables/list";
 import { useFormFilterStore } from "../../../store/reactivity/formFiler";
 

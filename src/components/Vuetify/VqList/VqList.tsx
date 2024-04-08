@@ -17,7 +17,8 @@ import {
 
 import { VList } from "vuetify/components";
 import axios, { CancelTokenSource } from "axios";
-import { useAsyncAxios, objectToQueryString } from "@qnx/composables/axios";
+import { objectToQueryString } from "@qnx/composables";
+import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useFormFilterStore } from "../../../store/reactivity/formFiler";
 

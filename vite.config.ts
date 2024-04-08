@@ -47,7 +47,8 @@ export default defineConfig({
                 "@tinymce/tinymce-vue",
                 "vuetify/labs/VDataTable",
                 "vuetify/labs/VDatePicker",
-                "vuetify/labs/VOtpInput"
+                "vuetify/labs/VOtpInput",
+                "vuetify/labs/VTimePicker"
             ],
             output: {
                 //format: 'esm',

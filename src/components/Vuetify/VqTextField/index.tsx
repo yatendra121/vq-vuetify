@@ -15,7 +15,6 @@ export const VqTextField = defineComponent({
         VTextField
     },
     setup(props, { attrs, slots }) {
-        //@ts-ignore
         const { value, errorMessage, handleChange } = useField(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false
         });

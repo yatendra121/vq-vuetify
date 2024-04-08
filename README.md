@@ -85,6 +85,7 @@ Here's a list of components provided by @qnx/vuetify:
 -   VqForm
 -   VqCheckbox
 -   VqDatePicker
+-   VqTimePicker
 -   VqColorPicker
 -   VqOtpInput
 -   VqSubmitBtn

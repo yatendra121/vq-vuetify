@@ -1,6 +1,6 @@
-import { computed, defineComponent, toRef, toRefs } from "vue";
+import { computed, defineComponent, ref, toRef, toRefs } from "vue";
 import { useField } from "vee-validate";
-import { VDatePicker } from "vuetify/components";
+import { VDatePicker, VDialog, VMenu, VTextField } from "vuetify/components";
 
 type Value = string | Date;
 
@@ -14,16 +14,29 @@ export const VqDatePicker = defineComponent({
         multiple: {
             type: Boolean,
             default: false
+        },
+        label: {
+            type: String,
+            default: ""
+        },
+        type: {
+            type: Boolean,
+            default: false
         }
     },
     components: {
-        VDatePicker
+        VDatePicker,
+        VDialog,
+        VMenu,
+        VTextField
     },
     setup(props, { attrs, slots }) {
         const { name } = toRefs(props);
-        const { value, errorMessage } = useField<Value | undefined>(name, undefined, {
+        const { value, errorMessage } = useField<string | Date | undefined>(name, undefined, {
             validateOnValueUpdate: false
         });
+
+        console.log(value.value);
 
         const modelValue = computed(() => {
             return value.value ? new Date(value.value) : undefined;
@@ -49,16 +62,44 @@ export const VqDatePicker = defineComponent({
             return [year, month, day].join("-");
         }
 
+        const modal = ref(false);
+
+        const ViewComponent = props.type ? VDialog : VMenu;
+
         return () => (
             <>
-                <VDatePicker
+                <VTextField
+                    modelValue={formatDate(modelValue.value)}
+                    error={!!errorMessage.value}
+                    error-messages={errorMessage.value}
+                    messages={errorMessage.value}
+                    active={modal.value}
+                    focused={modal.value}
+                    label={props.label}
+                    readonly
+                >
+                    <ViewComponent
+                        close-on-content-click={false}
+                        v-model={modal.value}
+                        activator="parent"
+                        width="auto"
+                    >
+                        <VDatePicker
+                            modelValue={modelValue.value}
+                            onUpdate:modelValue={updateValue}
+                            v-slots={slots}
+                            {...attrs}
+                        ></VDatePicker>
+                    </ViewComponent>
+                </VTextField>
+                {/* <VDatePicker
                     modelValue={modelValue.value}
                     onUpdate:modelValue={updateValue}
                     color="primary"
                     error-messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
-                ></VDatePicker>
+                ></VDatePicker> */}
             </>
         );
     }

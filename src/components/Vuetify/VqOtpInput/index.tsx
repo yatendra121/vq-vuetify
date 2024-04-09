@@ -23,6 +23,7 @@ export const VqOtpInput = defineComponent({
         return () => (
             <>
                 <VOtpInput
+                    baseColor="primary"
                     error={!!errorMessage.value}
                     v-model={value.value}
                     error-messages={errorMessage.value}

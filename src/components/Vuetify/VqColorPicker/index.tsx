@@ -1,6 +1,6 @@
-import { computed, defineComponent, toRef, toRefs } from "vue";
+import { computed, defineComponent, ref, toRef, toRefs } from "vue";
 import { useField } from "vee-validate";
-import { VColorPicker } from "vuetify/components";
+import { VColorPicker, VDialog, VMenu, VTextField } from "vuetify/components";
 
 type Value = string | Record<string, unknown> | null | undefined;
 
@@ -10,6 +10,14 @@ export const VqColorPicker = defineComponent({
         name: {
             type: String,
             required: true
+        },
+        label: {
+            type: String,
+            default: ""
+        },
+        type: {
+            type: Boolean,
+            default: false
         }
     },
     components: {
@@ -20,19 +28,35 @@ export const VqColorPicker = defineComponent({
             validateOnValueUpdate: false
         });
 
-        const updateValue = (val: string) => {
-            value.value = val;
-        };
+        const modal = ref(false);
+
+        const ViewComponent = props.type ? VDialog : VMenu;
 
         return () => (
             <>
-                <VColorPicker
+                <VTextField
                     modelValue={value.value}
-                    onUpdate:modelValue={updateValue}
+                    error={!!errorMessage.value}
                     error-messages={errorMessage.value}
-                    v-slots={slots}
-                    {...attrs}
-                ></VColorPicker>
+                    messages={errorMessage.value}
+                    active={modal.value}
+                    focused={modal.value}
+                    label={props.label}
+                    readonly
+                >
+                    <ViewComponent
+                        close-on-content-click={false}
+                        v-model={modal.value}
+                        activator="parent"
+                        width="auto"
+                    >
+                        <VColorPicker
+                            v-model={value.value}
+                            v-slots={slots}
+                            {...attrs}
+                        ></VColorPicker>
+                    </ViewComponent>
+                </VTextField>
             </>
         );
     }

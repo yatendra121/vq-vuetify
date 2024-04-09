@@ -1,3 +1,14 @@
+## 0.6.12 (2024-04-09)
+
+Features
+
+-   VqColorPicker: integrated with textfield
+-   VqDatePicker: integrated with textfield
+
+Bug Fixes
+
+-   VqOtpInput: fix highlighted color
+
 ## 0.6.10 (2024-04-08)
 
 Features

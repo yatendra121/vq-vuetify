@@ -1,3 +1,9 @@
+## 0.6.14 (2024-04-12)
+
+Features
+
+-   Docs: added examples url
+
 ## 0.6.12 (2024-04-09)
 
 Features

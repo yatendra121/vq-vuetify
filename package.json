@@ -1,143 +1,143 @@
 {
-  "name": "@qnx/vuetify",
-  "version": "0.6.14",
-  "type": "module",
-  "license": "MIT",
-  "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yatendra121/vq-vuetify.git"
-  },
-  "scripts": {
-    "serve": "vite preview",
-    "build": "vite build && vue-tsc --pretty  --declaration --emitDeclarationOnly",
-    "dev": "vite",
-    "build:types": "rollup --config build/rollup.types.config.js",
-    "build-force": "pnpm build && pnpm build:types",
-    "test:unit": "vitest",
-    "format": "prettier .  --write",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
-  },
-  "files": [
-    "dist"
-  ],
-  "bugs": {
-    "url": "https://github.com/yatendra121/vq-vuetify/issues"
-  },
-  "keywords": [
-    "vue",
-    "components",
-    "form",
-    "form components",
-    "vuetify components"
-  ],
-  "engines": {
-    "node": "^12.20 || >=14.13"
-  },
-  "sideEffects": false,
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "types": "./src/index.ts"
+    "name": "@qnx/vuetify",
+    "version": "0.6.20",
+    "type": "module",
+    "license": "MIT",
+    "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yatendra121/vq-vuetify.git"
     },
-    "./*": "./*",
-    "./integrations": {
-      "import": "./src/integrations.ts",
-      "types": "./src/integrations.ts"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "src/index.ts"
-      ],
-      "integrations": [
-        "src/integrations.ts"
-      ]
-    }
-  },
-  "publishConfig": {
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "scripts": {
+        "serve": "vite preview",
+        "build": "vite build && vue-tsc --pretty  --declaration --emitDeclarationOnly",
+        "dev": "vite",
+        "build:types": "rollup --config build/rollup.types.config.js",
+        "build-force": "pnpm build && pnpm build:types",
+        "test:unit": "vitest",
+        "format": "prettier .  --write",
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    },
+    "files": [
+        "dist"
+    ],
+    "bugs": {
+        "url": "https://github.com/yatendra121/vq-vuetify/issues"
+    },
+    "keywords": [
+        "vue",
+        "components",
+        "form",
+        "form components",
+        "vuetify components"
+    ],
+    "engines": {
+        "node": "^12.20 || >=14.13"
+    },
+    "sideEffects": false,
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
     "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.js",
-        "require": "./dist/index.js"
-      },
-      "./*": "./*",
-      "./integrations": {
-        "types": "./dist/integrations.d.ts",
-        "require": "./dist/integrations.js",
-        "import": "./dist/integrations.js"
-      }
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        },
+        "./*": "./*",
+        "./integrations": {
+            "import": "./src/integrations.ts",
+            "types": "./src/integrations.ts"
+        }
     },
     "typesVersions": {
-      "*": {
-        "*": [
-          "dist/index.d.ts"
-        ],
-        "integrations": [
-          "dist/integrations.d.ts"
-        ]
-      }
+        "*": {
+            "*": [
+                "src/index.ts"
+            ],
+            "integrations": [
+                "src/integrations.ts"
+            ]
+        }
+    },
+    "publishConfig": {
+        "main": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.js",
+                "require": "./dist/index.js"
+            },
+            "./*": "./*",
+            "./integrations": {
+                "types": "./dist/integrations.d.ts",
+                "require": "./dist/integrations.js",
+                "import": "./dist/integrations.js"
+            }
+        },
+        "typesVersions": {
+            "*": {
+                "*": [
+                    "dist/index.d.ts"
+                ],
+                "integrations": [
+                    "dist/integrations.d.ts"
+                ]
+            }
+        }
+    },
+    "dependencies": {
+        "@qnx/composables": "*",
+        "vue": "3.4.38"
+    },
+    "devDependencies": {
+        "@mdi/js": "^7.4.47",
+        "@rollup/plugin-alias": "^5.1.1",
+        "@rushstack/eslint-patch": "^1.10.4",
+        "@tinymce/tinymce-vue": "^6.0.1",
+        "@types/node": "^22.7.4",
+        "@vitejs/plugin-vue": "^5.1.4",
+        "@vitejs/plugin-vue-jsx": "^4.0.1",
+        "@vue/eslint-config-prettier": "^9.0.0",
+        "@vue/eslint-config-typescript": "^13.0.0",
+        "@vue/test-utils": "2.4.6",
+        "axios": "^1.7.7",
+        "eslint": "^9.11.1",
+        "eslint-plugin-vue": "^9.28.0",
+        "fast-glob": "^3.3.2",
+        "jsdom": "^25.0.1",
+        "micromatch": "^4.0.8",
+        "path": "^0.12.7",
+        "pinia": "2.2.2",
+        "prettier": "^3.3.3",
+        "roboto-fontface": "^0.10.0",
+        "rollup": "^4.23.0",
+        "rollup-plugin-dts": "^6.1.1",
+        "sass": "^1.79.4",
+        "tslib": "^2.7.0",
+        "typescript": "^5.6.2",
+        "vee-validate": "^4.13.2",
+        "vite": "^5.4.8",
+        "vite-plugin-dts": "^4.2.3",
+        "vite-plugin-vuetify": "^2.0.4",
+        "vitest": "^2.1.1",
+        "vue-router": "^4.4.5",
+        "vue-tsc": "^2.1.6",
+        "vuetify": "^3.7.2",
+        "webfontloader": "^1.6.28",
+        "yup": "^1.4.0"
+    },
+    "peerDependencies": {
+        "@qnx/composables": "*",
+        "axios": "*",
+        "pinia": "*",
+        "vee-validate": "*",
+        "vue": "*",
+        "vuetify": "*",
+        "yup": "*"
+    },
+    "peerDependenciesMeta": {
+        "@tinymce/tinymce-vue": {
+            "optional": true
+        }
     }
-  },
-  "dependencies": {
-    "@qnx/composables": "workspace:^",
-    "vue": "3.4.38"
-  },
-  "devDependencies": {
-    "@mdi/js": "^7.4.47",
-    "@rollup/plugin-alias": "^5.1.1",
-    "@rushstack/eslint-patch": "^1.10.4",
-    "@tinymce/tinymce-vue": "^6.0.1",
-    "@types/node": "^22.7.4",
-    "@vitejs/plugin-vue": "^5.1.4",
-    "@vitejs/plugin-vue-jsx": "^4.0.1",
-    "@vue/eslint-config-prettier": "^9.0.0",
-    "@vue/eslint-config-typescript": "^13.0.0",
-    "@vue/test-utils": "2.4.6",
-    "axios": "^1.7.7",
-    "eslint": "^9.11.1",
-    "eslint-plugin-vue": "^9.28.0",
-    "fast-glob": "^3.3.2",
-    "jsdom": "^25.0.1",
-    "micromatch": "^4.0.8",
-    "path": "^0.12.7",
-    "pinia": "2.2.2",
-    "prettier": "^3.3.3",
-    "roboto-fontface": "^0.10.0",
-    "rollup": "^4.23.0",
-    "rollup-plugin-dts": "^6.1.1",
-    "sass": "^1.79.4",
-    "tslib": "^2.7.0",
-    "typescript": "^5.6.2",
-    "vee-validate": "^4.13.2",
-    "vite": "^5.4.8",
-    "vite-plugin-dts": "^4.2.3",
-    "vite-plugin-vuetify": "^2.0.4",
-    "vitest": "^2.1.1",
-    "vue-router": "^4.4.5",
-    "vue-tsc": "^2.1.6",
-    "vuetify": "^3.7.2",
-    "webfontloader": "^1.6.28",
-    "yup": "^1.4.0"
-  },
-  "peerDependencies": {
-    "@qnx/composables": "*",
-    "axios": "*",
-    "pinia": "*",
-    "vee-validate": "*",
-    "vue": "*",
-    "vuetify": "*",
-    "yup": "*"
-  },
-  "peerDependenciesMeta": {
-    "@tinymce/tinymce-vue": {
-      "optional": true
-    }
-  }
 }

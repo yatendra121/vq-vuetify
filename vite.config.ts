@@ -7,61 +7,47 @@ import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    resolve: {
-        alias: {
-            "@": resolve(__dirname, "./src")
-        }
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
     },
-    plugins: [
-        vue(),
-        vuetify({
-            autoImport: false,
-            styles: "none"
-        }),
-        vueJsx()
-        //dts()
-    ],
-    define: { "process.env": {} },
-    build: {
-        lib: {
-            entry: {
-                index: resolve(__dirname, "src/index.ts"),
-                integrations: resolve(__dirname, "src/integrations.ts")
-            },
-            // name: "vq-vuetify",
-            fileName: (format, entryName) => `${entryName}.js`,
-            formats: ["es"]
+  },
+  plugins: [
+    vue(),
+    vuetify({
+      autoImport: false,
+      styles: "none",
+    }),
+    vueJsx(),
+    //dts()
+  ],
+  define: { "process.env": {} },
+  build: {
+    lib: {
+      entry: {
+        //index: resolve(__dirname, "src/index.ts"),
+        integrations: resolve(__dirname, "src/integrations.ts"),
+      },
+      // name: "vq-vuetify",
+      fileName: (format, entryName) => `${entryName}.js`,
+      formats: ["es"],
+    },
+    rollupOptions: {
+      // make sure to externalize deps that shouldn't be bundled
+      // into your library
+      external: [],
+      output: {
+        //format: 'esm',
+        // Provide global variables to use in the UMD build
+        // for externalized deps
+        globals: {
+          vue: "Vue",
         },
-        rollupOptions: {
-            // make sure to externalize deps that shouldn't be bundled
-            // into your library
-            external: [
-                "vue",
-                "vuetify",
-                "vuetify/components",
-                "vee-validate",
-                "axios",
-                "pinia",
-                "@qnx/composables",
-                "@qnx/composables/axios",
-                "@tinymce/tinymce-vue",
-                "vuetify/labs/VDataTable",
-                "vuetify/labs/VDatePicker",
-                "vuetify/labs/VOtpInput",
-                "vuetify/labs/VTimePicker"
-            ],
-            output: {
-                //format: 'esm',
-                // Provide global variables to use in the UMD build
-                // for externalized deps
-                globals: {
-                    vue: "Vue"
-                }
-            }
-        }
-    }
+      },
+    },
+  },
 
-    /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
+  /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
     extensions: [
       '.js',

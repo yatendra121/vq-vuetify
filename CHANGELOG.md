@@ -1,3 +1,10 @@
+## 0.6.20 (2024-10-01)
+
+Bug Fixes
+
+-   workspace: fix dependencies conflict
+-   workspace: update dependencies
+
 ## 0.6.14 (2024-04-12)
 
 Features

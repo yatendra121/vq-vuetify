@@ -21,7 +21,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "downlevelIteration": true,
-    "skipLibCheck": false, // Skip checking types of external modules
+    "skipLibCheck": true, // Skip checking types of external modules
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {

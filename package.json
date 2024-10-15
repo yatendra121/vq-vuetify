@@ -1,6 +1,6 @@
 {
     "name": "@qnx/vuetify",
-    "version": "0.6.20",
+    "version": "0.6.25",
     "type": "module",
     "license": "MIT",
     "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
@@ -32,7 +32,7 @@
         "vuetify components"
     ],
     "engines": {
-        "node": "^12.20 || >=14.13"
+        "node": "^16.20 || >=18.13"
     },
     "sideEffects": false,
     "main": "./src/index.ts",

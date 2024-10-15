@@ -3,18 +3,18 @@
 //import { VqTextField } from "./Vuetify/VqTextField";
 
 export { VqTextField } from "./Vuetify/VqTextField";
-// export { VqTextarea } from "./Vuetify/VqTextarea";
-// export { VqAutocomplete } from "./Vuetify/VqAutocomplete";
-// export { VqFileInput } from "./Vuetify/VqFileInput";
-// export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
-// export { VqForm, useVqForm } from "./Vuetify/VqForm/VqForm";
-// export { VqCheckbox } from "./Vuetify/VqCheckbox";
-// export { VqSubmitBtn } from "./Basic/SubmitButton";
-// export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
-// export { VqDatePicker } from "./Vuetify/VqDatePicker";
-// export { VqColorPicker } from "./Vuetify/VqColorPicker";
-// export { VqTimePicker } from "./Vuetify/VqTimePicker";
-// export { VqOtpInput } from "./Vuetify/VqOtpInput";
+export { VqTextarea } from "./Vuetify/VqTextarea";
+export { VqAutocomplete } from "./Vuetify/VqAutocomplete";
+export { VqFileInput } from "./Vuetify/VqFileInput";
+export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
+export { VqForm, useVqForm } from "./Vuetify/VqForm/VqForm";
+export { VqCheckbox } from "./Vuetify/VqCheckbox";
+export { VqSubmitBtn } from "./Basic/SubmitButton";
+export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
+export { VqDatePicker } from "./Vuetify/VqDatePicker";
+export { VqColorPicker } from "./Vuetify/VqColorPicker";
+export { VqTimePicker } from "./Vuetify/VqTimePicker";
+export { VqOtpInput } from "./Vuetify/VqOtpInput";
 
 // declare module "vue" {
 //     export interface GlobalComponents {

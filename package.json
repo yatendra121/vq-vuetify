@@ -4,6 +4,7 @@
     "type": "module",
     "license": "MIT",
     "author": "Yatendra Kushwaha <yatendra121kushwaha@gmail.com>",
+    "description": "An extendable library of Vuetify form components & more.",
     "repository": {
         "type": "git",
         "url": "https://github.com/yatendra121/vq-vuetify.git"

@@ -1,3 +1,15 @@
+## 0.6.30 (2024-10-26)
+
+Bug Fixes
+
+-   workspace: handled external deps and deps version
+
+## 0.6.26 (2024-10-16)
+
+Bug Fixes
+
+-   workspace: update dependencies
+
 ## 0.6.20 (2024-10-01)
 
 Bug Fixes

@@ -4,7 +4,7 @@
 
 ## Example
 
-To see examples of components provided by @qnx/vuetify, please visit [here](https://qnx-vuetify-sample.vercel.app/).
+To see examples of components provided by @qnx/vuetify, please visit [here](https://qnx-vuetify-sample.vercel.app/). For complete documentation, visit [@qnx/vuetify Documentation](https://qnx-vuetify-docs.vercel.app/).
 
 ## Installation
 
@@ -82,35 +82,35 @@ Here's a list of components provided by @qnx/vuetify:
 
 ### Vuetify Form Components:
 
--   VqTextField
--   VqTextarea
--   VqAutocomplete
--   VqFileInput
--   VqForm
--   VqCheckbox
--   VqDatePicker
--   VqTimePicker
--   VqColorPicker
--   VqOtpInput
--   VqSubmitBtn
+- VqTextField
+- VqTextarea
+- VqAutocomplete
+- VqFileInput
+- VqForm
+- VqCheckbox
+- VqDatePicker
+- VqTimePicker
+- VqColorPicker
+- VqOtpInput
+- VqSubmitBtn
 
 ### Other Components:
 
--   VqDataTable
--   VqSerialNo
--   VqList
--   VqTableFilter
--   VqListLoadMoreBtn
+- VqDataTable
+- VqSerialNo
+- VqList
+- VqTableFilter
+- VqListLoadMoreBtn
 
 ### Integration Components:
 
--   VqTextEditor
+- VqTextEditor
 
 ## Composables
 
--   useVqForm
--   collectVqHeaders
--   useVqList
+- useVqForm
+- collectVqHeaders
+- useVqList
 
 Additionally, @qnx/vuetify extends existing components that are specifically useful in the context of forms. The library also includes additional components designed for displaying data. Overall, it appears to be a comprehensive solution for simplifying the implementation of forms and managing data presentation within Vuetify-based applications.
 

@@ -1,3 +1,10 @@
+## 0.7.0 (2024-12-05)
+
+Bug Fixes
+
+- Fix: build issue with vue 3.5
+- Feat: updated deps
+
 ## 0.6.32 (2024-11-02)
 
 Bug Fixes

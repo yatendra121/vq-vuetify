@@ -24,12 +24,6 @@ export const VqDatePicker = defineComponent({
             default: false
         }
     },
-    components: {
-        VDatePicker,
-        VDialog,
-        VMenu,
-        VTextField
-    },
     setup(props, { attrs, slots }) {
         const { name } = toRefs(props);
         const { value, errorMessage } = useField<string | Date | undefined>(name, undefined, {

@@ -8,6 +8,7 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
     resolve: {
+        //extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
         alias: {
             "@": resolve(__dirname, "./src")
         }

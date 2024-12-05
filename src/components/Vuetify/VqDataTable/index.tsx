@@ -63,9 +63,6 @@ export const VqDataTable = defineComponent({
         //     default: () => undefined
         // }
     },
-    components: {
-        VDataTableServer
-    },
     setup(props, { attrs, slots }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;
@@ -283,9 +280,6 @@ export const VqSerialNo = defineComponent({
             type: Number as PropType<number>,
             required: true
         }
-    },
-    components: {
-        VDataTableServer
     },
     setup(props) {
         return () => (

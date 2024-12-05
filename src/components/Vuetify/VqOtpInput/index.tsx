@@ -10,9 +10,6 @@ export const VqOtpInput = defineComponent({
             required: true
         }
     },
-    components: {
-        VOtpInput
-    },
     setup(props, { attrs, slots }) {
         const { value, resetField, errorMessage } = useField(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false

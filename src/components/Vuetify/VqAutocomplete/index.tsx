@@ -18,9 +18,6 @@ export const VqAutocomplete = defineComponent({
             default: () => []
         }
     },
-    components: {
-        VAutocomplete
-    },
     setup(props, { attrs, slots }) {
         const { value, errorMessage } = useField(toRef(props, "name"), [], {
             validateOnValueUpdate: false

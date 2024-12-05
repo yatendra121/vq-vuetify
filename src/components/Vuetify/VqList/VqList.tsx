@@ -39,9 +39,6 @@ export const VqList = defineComponent({
             default: () => 10
         }
     },
-    components: {
-        VList
-    },
     setup(props, { attrs, slots }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;

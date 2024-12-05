@@ -20,9 +20,6 @@ export const VqColorPicker = defineComponent({
             default: false
         }
     },
-    components: {
-        VColorPicker
-    },
     setup(props, { attrs, slots }) {
         const { value, errorMessage } = useField<Value>(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false

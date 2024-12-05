@@ -1,22 +1,19 @@
-import { defineComponent, toRef } from 'vue'
-import { useField } from 'vee-validate'
-import { VCheckbox } from 'vuetify/components'
+import { defineComponent, toRef } from "vue";
+import { useField } from "vee-validate";
+import { VCheckbox } from "vuetify/components";
 
 export const VqCheckbox = defineComponent({
-    name: 'VqCheckbox',
+    name: "VqCheckbox",
     props: {
         name: {
             type: String,
             required: true
         }
     },
-    components: {
-        VCheckbox
-    },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField(toRef(props, 'name'), undefined, {
+        const { value, errorMessage } = useField(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false
-        })
+        });
 
         return () => (
             <>
@@ -29,9 +26,9 @@ export const VqCheckbox = defineComponent({
                     {...attrs}
                 ></VCheckbox>
             </>
-        )
+        );
     }
-})
+});
 
 // eslint-disable-next-line no-redeclare
-export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox
+export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;

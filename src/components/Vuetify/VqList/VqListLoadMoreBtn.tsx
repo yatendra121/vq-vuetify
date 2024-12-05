@@ -1,18 +1,15 @@
 //@ts-nocheck
-import { defineComponent, inject, Ref } from 'vue'
-import { VBtn } from 'vuetify/components'
+import { defineComponent, inject, Ref } from "vue";
+import { VBtn } from "vuetify/components";
 export const VqListLoadMoreBtn = defineComponent({
-    name: 'VqListLoadMoreBtn',
-    components: {
-        VBtn
-    },
+    name: "VqListLoadMoreBtn",
     setup(props, { attrs, slots }) {
         const vqList = inject<{
-            loading: Ref<boolean>
-            finished: Ref<boolean>
-            tableListId: string
-            loadMore: () => void
-        }>('vqList')
+            loading: Ref<boolean>;
+            finished: Ref<boolean>;
+            tableListId: string;
+            loadMore: () => void;
+        }>("vqList");
 
         return () => (
             <>
@@ -29,9 +26,9 @@ export const VqListLoadMoreBtn = defineComponent({
                     </VBtn>
                 )}
             </>
-        )
+        );
     }
-})
+});
 
 // eslint-disable-next-line no-redeclare
-export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtn
+export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtn;

@@ -10,9 +10,6 @@ export const VqFileInput = defineComponent({
             required: true
         }
     },
-    components: {
-        VFileInput
-    },
     setup(props, { attrs, slots }) {
         const name = computed(() => `${props.name}[file]`);
         const { value, errorMessage } = useField(name, undefined, {

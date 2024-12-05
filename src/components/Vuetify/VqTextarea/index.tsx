@@ -1,22 +1,19 @@
-import { defineComponent, toRef } from 'vue'
-import { useField } from 'vee-validate'
-import { VTextarea } from 'vuetify/components'
+import { defineComponent, toRef } from "vue";
+import { useField } from "vee-validate";
+import { VTextarea } from "vuetify/components";
 
 export const VqTextarea = defineComponent({
-    name: 'VqTextarea',
+    name: "VqTextarea",
     props: {
         name: {
             type: String,
             required: true
         }
     },
-    components: {
-        VTextarea
-    },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField(toRef(props, 'name'), undefined, {
+        const { value, errorMessage } = useField(toRef(props, "name"), undefined, {
             validateOnValueUpdate: false
-        })
+        });
 
         return () => (
             <>
@@ -29,9 +26,9 @@ export const VqTextarea = defineComponent({
                     {...attrs}
                 ></VTextarea>
             </>
-        )
+        );
     }
-})
+});
 
 // eslint-disable-next-line no-redeclare
-export type VqTextarea = typeof VTextarea & typeof VqTextarea
+export type VqTextarea = typeof VTextarea & typeof VqTextarea;

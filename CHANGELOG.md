@@ -1,3 +1,9 @@
+## 0.7.2 (2024-01-19)
+
+Bug Fixes
+
+- Feat: updated deps
+
 ## 0.7.0 (2024-12-05)
 
 Bug Fixes

@@ -22,10 +22,10 @@ export const VqFileUpload = defineComponent({
         return () => (
             <>
                 <VFileUpload
-                    error={!!errorMessage.value}
+                    // error={!!errorMessage.value}
                     v-model={value.value}
                     error-messages={errorMessage.value}
-                    messages={errorMessage.value}
+                    // messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
                 ></VFileUpload>

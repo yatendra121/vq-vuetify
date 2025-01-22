@@ -15,6 +15,7 @@ export { VqDatePicker } from "./Vuetify/VqDatePicker";
 export { VqColorPicker } from "./Vuetify/VqColorPicker";
 export { VqTimePicker } from "./Vuetify/VqTimePicker";
 export { VqOtpInput } from "./Vuetify/VqOtpInput";
+export { VqFileUpload } from "./Vuetify/VqFileUpload";
 
 // declare module "vue" {
 //     export interface GlobalComponents {

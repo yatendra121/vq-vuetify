@@ -46,7 +46,8 @@ export default defineConfig({
                 "pinia",
                 "yup",
                 "@tinymce/tinymce-vue",
-                "vuetify/labs/VTimePicker"
+                "vuetify/labs/VTimePicker",
+                "vuetify/labs/VFileUpload"
             ],
             output: {
                 //format: 'esm',

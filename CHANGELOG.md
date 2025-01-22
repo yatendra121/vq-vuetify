@@ -1,5 +1,11 @@
 ## 0.7.2 (2024-01-19)
 
+Features
+
+- VqFileUpload: new component added
+
+## 0.7.2 (2024-01-19)
+
 Bug Fixes
 
 - Feat: updated deps

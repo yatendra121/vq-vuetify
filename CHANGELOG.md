@@ -1,3 +1,9 @@
+## 0.7.8 (2025-04-24)
+
+Bug Fixes
+
+- fix: update deps
+
 ## 0.7.7 (2024-01-22)
 
 Bug Fixes

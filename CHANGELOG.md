@@ -1,3 +1,8 @@
+## 0.7.10 (2025-06-25)
+
+- fix: update Pinia 3.x changes
+- fix: update deps
+
 ## 0.7.8 (2025-04-24)
 
 Bug Fixes

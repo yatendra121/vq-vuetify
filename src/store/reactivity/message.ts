@@ -1,39 +1,38 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export interface MessageItem {
-    id: number
-    message: string
-    color: string
+    id: number;
+    message: string;
+    color: string;
 }
 
 export interface MessageItemWithoutId {
-    message: string
-    color: string
+    message: string;
+    color: string;
 }
 
 export type MessageState = {
-    items: MessageItem[]
-    id: number
-}
+    items: MessageItem[];
+    id: number;
+};
 
-export const useMessageStore = defineStore({
-    id: 'message_lib',
+export const useMessageStore = defineStore("message_lib", {
     state: () =>
         ({
             items: [],
             id: 1
-        } as MessageState),
+        }) as MessageState,
     getters: {
         itemsArray(): MessageItem[] {
-            return this.items
+            return this.items;
         }
     },
     actions: {
         addMessage(item: MessageItemWithoutId) {
-            this.items.push({ id: this.id++, ...item })
+            this.items.push({ id: this.id++, ...item });
         },
         removeMessage() {
-            this.items.splice(0, 1)
+            this.items.splice(0, 1);
         }
     }
-})
+});

@@ -5,9 +5,8 @@ export type FormData = {
 };
 type FormDataState = { [key: string]: FormData };
 
-export const useFormStore = defineStore({
-    id: "form_data_lib",
-    state: () => ({ forms: {} } as { forms: FormDataState }),
+export const useFormStore = defineStore("form_data_lib", {
+    state: () => ({ forms: {} }) as { forms: FormDataState },
     actions: {
         addForm(key: string) {
             const newForm = {

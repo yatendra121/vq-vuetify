@@ -1,7 +1,6 @@
 import { defineComponent, ref, toRef } from "vue";
 import { useField } from "vee-validate";
-import { VTimePicker } from "vuetify/labs/VTimePicker";
-import { VTextField, VDialog, VMenu } from "vuetify/components";
+import { VTextField, VDialog, VMenu, VTimePicker } from "vuetify/components";
 
 export const VqTimePicker = defineComponent({
     name: "VqTimePicker",

@@ -8,7 +8,7 @@
         "jsxImportSource": "vue",
         "useDefineForClassFields": true,
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "strict": true,
         "resolveJsonModule": true, // Enable importing JSON modules
         "esModuleInterop": true,
@@ -24,9 +24,9 @@
         "skipLibCheck": true, // Skip checking types of external modules
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "types": ["node", "vue-router", "vuetify/components", "vue"],
         "paths": {
-            "@/*": ["src/*"],
-            "types": ["node", "vue-router", "vuetify/components", "vue"] // Adjusted path resolution
+            "@/*": ["src/*"]
         }
     },
     "include": ["src/index.ts", "src/integrations.ts"],

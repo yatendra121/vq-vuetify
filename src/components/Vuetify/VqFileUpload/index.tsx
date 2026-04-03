@@ -15,10 +15,6 @@ export const VqFileUpload = defineComponent({
             validateOnValueUpdate: false
         });
 
-        setInterval(() => {
-            console.log(value.value);
-        }, 1000);
-
         return () => (
             <>
                 <VFileUpload

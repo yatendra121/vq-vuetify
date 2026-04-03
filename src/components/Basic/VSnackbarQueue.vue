@@ -8,9 +8,7 @@
             :timeout="timeout"
             :color="item.color"
             :absolute="absolute"
-            :auto-height="autoHeight"
             location="center top"
-            :multi-line="multiLine"
             :vertical="vertical"
             transition="scale-transition"
         >
@@ -53,31 +51,7 @@ export default defineComponent({
             type: String,
             default: "success"
         },
-        top: {
-            type: Boolean,
-            default: true
-        },
-        right: {
-            type: Boolean,
-            default: true
-        },
         absolute: {
-            type: Boolean,
-            default: true
-        },
-        autoHeight: {
-            type: Boolean,
-            default: false
-        },
-        bottom: {
-            type: Boolean,
-            default: false
-        },
-        left: {
-            type: Boolean,
-            default: false
-        },
-        multiLine: {
             type: Boolean,
             default: true
         },

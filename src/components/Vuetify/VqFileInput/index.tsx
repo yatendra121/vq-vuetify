@@ -33,4 +33,4 @@ export const VqFileInput = defineComponent({
 });
 
 // eslint-disable-next-line no-redeclare
-export type VqTextarea = typeof VFileInput & typeof VqFileInput;
+export type VqFileInput = typeof VFileInput & typeof VqFileInput;

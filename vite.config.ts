@@ -33,47 +33,18 @@ export default defineConfig({
             fileName: (format, entryName) => `${entryName}.js`,
             formats: ["es"]
         },
-        rollupOptions: {
-            // make sure to externalize deps that shouldn't be bundled
-            // into your library
-            external: [
-                "vue",
-                "vuetify",
-                "vuetify/components",
-                "vee-validate",
-                "@qnx/composables",
-                "axios",
-                "pinia",
-                "yup",
-                "@tinymce/tinymce-vue",
-                "vuetify/labs/VTimePicker",
-                "vuetify/labs/VFileUpload"
-            ],
-            output: {
-                //format: 'esm',
-                // Provide global variables to use in the UMD build
-                // for externalized deps
-                globals: {
-                    vue: "Vue"
-                }
-            }
+        rolldownOptions: {
+            external: (id) =>
+                [
+                    "vue",
+                    "vuetify",
+                    "vee-validate",
+                    "@qnx/composables",
+                    "axios",
+                    "pinia",
+                    "yup",
+                    "@tinymce/tinymce-vue"
+                ].some((pkg) => id === pkg || id.startsWith(pkg + "/"))
         }
     }
-
-    /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
-  resolve: {
-    extensions: [
-      '.js',
-      '.json',
-      '.jsx',
-      '.mjs',
-      '.ts',
-      '.tsx',
-      '.vue',
-    ]
-  },
-  */
 });
-
-//git tag <tagname>
-//git push origin --tags

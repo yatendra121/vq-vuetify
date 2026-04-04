@@ -1,3 +1,8 @@
+## 0.7.20 (2026-04-04)
+
+- fix: update vuetify labs component
+- fix: update vite 8
+
 ## 0.7.12 (2026-01-13)
 
 - fix: update deps

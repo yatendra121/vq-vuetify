@@ -90,7 +90,7 @@
         "vue": "^3.5.30"
     },
     "devDependencies": {
-        "@qnx/composables": "workspace:^",
+        "@qnx/composables": "^0.7.0",
         "@mdi/js": "^7.4.47",
         "@rollup/plugin-alias": "^6.0.0",
         "@rushstack/eslint-patch": "^1.16.1",

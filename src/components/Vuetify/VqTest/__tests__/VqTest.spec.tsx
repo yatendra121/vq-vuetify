@@ -24,10 +24,9 @@ import { describe, it, expect } from 'vitest'
 //   });
 // });
 
-describe('HelloWorld.vue', () => {
+describe('VqTest', () => {
     it('should renders is page content is correct', () => {
         const title = 'Happy People'
-        const defaultTitle = 'Default Title'
         const wrapper = mount(VqTest, {
             props: { title }
         })

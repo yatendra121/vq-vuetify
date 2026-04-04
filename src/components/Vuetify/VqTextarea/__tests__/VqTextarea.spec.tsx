@@ -47,7 +47,7 @@ describe('VTextarea', () => {
         expect(el.attributes('aria-label')).toBeUndefined()
     })
 
-    it('has affixed icons with actions', () => {
+    it('has affixed icons with actions', async () => {
         const onClickPrepend = vi.fn()
         const onClickPrependInner = vi.fn()
         const onClickAppendInner = vi.fn()
@@ -77,29 +77,30 @@ describe('VTextarea', () => {
         let el = wrapper.find('.v-input__prepend .v-icon')
         expect(el.attributes('aria-hidden')).toBe('false')
         expect(el.attributes('aria-label')).toBeTruthy()
-        el.trigger('click')
+        await el.trigger('click')
         expect(onClickPrepend).toHaveBeenCalledTimes(1)
 
         el = wrapper.find('.v-field__prepend-inner .v-icon')
         expect(el.attributes('aria-hidden')).toBe('false')
         expect(el.attributes('aria-label')).toBeTruthy()
-        el.trigger('click')
+        await el.trigger('click')
         expect(onClickPrependInner).toHaveBeenCalledTimes(1)
 
         el = wrapper.find('.v-field__append-inner .v-icon')
         expect(el.attributes('aria-hidden')).toBe('false')
         expect(el.attributes('aria-label')).toBeTruthy()
-        el.trigger('click')
+        await el.trigger('click')
         expect(onClickAppendInner).toHaveBeenCalledTimes(1)
 
         el = wrapper.find('.v-input__append .v-icon')
         expect(el.attributes('aria-hidden')).toBe('false')
         expect(el.attributes('aria-label')).toBeTruthy()
-        el.trigger('click')
+        await el.trigger('click')
         expect(onClickAppend).toHaveBeenCalledTimes(1)
 
         expect(onClickPrepend).toHaveBeenCalledTimes(1)
         expect(onClickPrependInner).toHaveBeenCalledTimes(1)
         expect(onClickAppendInner).toHaveBeenCalledTimes(1)
+        expect(onClickAppend).toHaveBeenCalledTimes(1)
     })
 })

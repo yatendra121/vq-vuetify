@@ -26,7 +26,7 @@ bun add @qnx/vuetify
 Install the required peer dependencies alongside the library:
 
 ```bash
-npm install vuetify@^4.0.0 pinia vee-validate yup axios @qnx/composables
+npm install vuetify@^4.0.0 pinia vee-validate axios @qnx/composables
 ```
 
 | Dependency | Version | Notes |
@@ -34,10 +34,10 @@ npm install vuetify@^4.0.0 pinia vee-validate yup axios @qnx/composables
 | `vuetify` | `^4.0.0` | Required |
 | `pinia` | `3.x` | Required |
 | `vee-validate` | `*` | Required |
-| `yup` | `*` | Required for schema validation |
 | `axios` | `*` | Required for HTTP requests |
 | `@qnx/composables` | `*` | Required |
 | `@tinymce/tinymce-vue` | `*` | Optional — only for `VqTextEditor` |
+| `yup` | `*` | Optional — for schema-based validation with `vee-validate` |
 
 ## Basic Usage
 

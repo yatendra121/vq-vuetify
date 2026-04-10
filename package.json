@@ -33,7 +33,7 @@
         "vuetify components"
     ],
     "engines": {
-        "node": "^20.11 || >=18.13"
+        "node": "^18.13 || ^20.11 || >=22"
     },
     "sideEffects": false,
     "main": "./src/index.ts",
@@ -107,7 +107,6 @@
         "fast-glob": "^3.3.3",
         "jsdom": "^28.1.0",
         "micromatch": "^4.0.8",
-        "path": "^0.12.7",
         "pinia": "3.0.4",
         "prettier": "^3.8.1",
         "roboto-fontface": "^0.10.0",
@@ -129,6 +128,7 @@
     },
     "peerDependencies": {
         "@qnx/composables": "*",
+        "@tinymce/tinymce-vue": "*",
         "axios": "*",
         "pinia": "3.x",
         "vee-validate": "*",
@@ -138,6 +138,9 @@
     },
     "peerDependenciesMeta": {
         "@tinymce/tinymce-vue": {
+            "optional": true
+        },
+        "yup": {
             "optional": true
         }
     }

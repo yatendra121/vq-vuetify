@@ -1,3 +1,19 @@
+## 0.8.0 (2026-04-10)
+
+Features
+
+- Add `@qnx/composable` for axios functionality
+
+Bug Fixes
+
+- Correct engines field to exclude unstable Node versions
+- Add `yup` and `@tinymce/tinymce-vue` as optional peer dependency
+- Update deps
+
+Documentation
+
+- Updated documentation
+
 ## 0.7.20 (2026-04-04)
 
 - fix: update vuetify labs component

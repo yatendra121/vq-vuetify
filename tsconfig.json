@@ -15,6 +15,7 @@
         "declarationMap": true,
         "sourceMap": true,
         "noEmit": false,
+        "rootDir": "./src",
         "outDir": "temp-types",
         "noUnusedLocals": false,
         "noUnusedParameters": true,

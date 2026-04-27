@@ -1,3 +1,19 @@
+## 0.8.2 (2026-04-27)
+
+Improvements
+
+- VqTextField: enabled validation listeners (`onBlur`, `onChange`, `onInput`) for lazy/aggressive validation strategy
+- Removed unused imports across components
+
+Type Safety
+
+- Replaced `any` with proper types throughout all components and composables
+- `catch (e: any)` → `catch (e: unknown)` with `instanceof Error` guard
+- `Record<string, any>` → `Record<string, unknown>` in types, store, and composables
+- `collectFormObjValues` and `transformObjValues` in VqForm fully typed
+- `collectValidationListeners` in config.ts typed with vee-validate types
+- Removed `@ts-ignore` comments where proper typing was possible
+
 ## 0.8.0 (2026-04-10)
 
 Features

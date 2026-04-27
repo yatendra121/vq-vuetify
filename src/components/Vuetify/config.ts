@@ -1,21 +1,36 @@
-import { computed } from 'vue'
-export function collectValidationListeners({ handleChange, errorMessage }: any) {
+import { computed, ComputedRef, Ref } from 'vue'
+import { FieldContext } from 'vee-validate'
+
+type HandleChange = FieldContext['handleChange']
+
+interface ValidationListenersInput {
+    handleChange: HandleChange
+    errorMessage: Ref<string | undefined>
+}
+
+export type ValidationListeners = {
+    onChange: HandleChange
+    onInput: HandleChange
+    onBlur: HandleChange
+}
+
+export function collectValidationListeners({ handleChange, errorMessage }: ValidationListenersInput): ComputedRef<ValidationListeners> {
     return computed(() => {
-        // If the field is valid or have not been validated yet
-        // lazy
+        // If the field is valid or has not been validated yet — lazy strategy:
+        // only validate on blur/change, not on every keystroke
         if (!errorMessage.value) {
             return {
-                blur: handleChange,
-                change: handleChange,
-                // disable `shouldValidate` to avoid validating on input
-                input: (e: any) => handleChange(e, false)
+                onBlur: handleChange,
+                onChange: handleChange,
+                // disable `shouldValidate` to avoid marking invalid while typing
+                onInput: (e: Event | unknown) => handleChange(e, false)
             }
         }
-        // Aggressive
+        // Aggressive strategy: re-validate on every keystroke so users see recovery immediately
         return {
-            blur: handleChange,
-            change: handleChange,
-            input: handleChange // only switched this
+            onBlur: handleChange,
+            onChange: handleChange,
+            onInput: handleChange
         }
     })
 }

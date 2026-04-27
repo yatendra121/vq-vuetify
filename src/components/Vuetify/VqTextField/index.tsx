@@ -1,4 +1,4 @@
-import { defineComponent, h, PropType, toRef, VNode, defineProps } from "vue";
+import { defineComponent, toRef } from "vue";
 import { VTextField } from "vuetify/components";
 import { useField } from "vee-validate";
 import { collectValidationListeners } from "../config";
@@ -30,13 +30,12 @@ export const VqTextField = defineComponent({
                     messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
-                    // onChange={handleChange}
-                    // onInput={validationListeners.value.input}
-                    // onBlur={handleChange}
+                    {...(validationListeners.value)}
                 ></VTextField>
             </>
         );
     }
 });
 
-export type VqTextField = InstanceType<typeof VTextField & typeof VqTextField>;
+// eslint-disable-next-line no-redeclare
+export type VqTextField = typeof VTextField & typeof VqTextField;

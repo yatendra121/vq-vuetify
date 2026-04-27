@@ -1,1 +1,1 @@
-export type InitialValues = Record<string, any> | undefined
+export type InitialValues = Record<string, unknown> | undefined

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-type DataObject = Record<string, any>;
+type DataObject = Record<string, unknown>;
 
 export type FormFilterData = {
     values: DataObject;

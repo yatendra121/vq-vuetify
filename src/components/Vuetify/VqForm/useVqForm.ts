@@ -142,7 +142,7 @@ export const VqForm = defineComponent({
     }
 });
 
-const test = (opts: FormOptions<any>) => {
+const test = (opts: FormOptions<GenericFormValues>) => {
     const {
         errors,
         errorBag,

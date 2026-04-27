@@ -23,7 +23,7 @@ export const VqAutocomplete = defineComponent({
             validateOnValueUpdate: false
         });
 
-        const updateModelValue = (val: any) => {
+        const updateModelValue = (val: unknown) => {
             value.value = val;
         };
         const items = ref(props.items);

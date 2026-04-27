@@ -12,9 +12,7 @@ import {
     PropType,
     provide,
     watch,
-    onBeforeUnmount,
-    onMounted,
-    TdHTMLAttributes
+    onBeforeUnmount
 } from "vue";
 
 import { VDataTableServer } from "vuetify/components";
@@ -83,7 +81,7 @@ export const VqDataTable = defineComponent({
 
         const formFilterStore = useFormFilterStore();
 
-        const formFilterData = computed<Object>(() => {
+        const formFilterData = computed<Record<string, unknown> | undefined>(() => {
             return formFilterStore.forms[filterId.value]?.values;
         });
 
@@ -137,9 +135,9 @@ export const VqDataTable = defineComponent({
                 );
                 loading.value = false;
                 return response.data;
-            } catch (e: any) {
+            } catch (e: unknown) {
                 loading.value = false;
-                throw new Error(e.message);
+                throw new Error(e instanceof Error ? e.message : String(e));
             }
         };
 
@@ -203,7 +201,7 @@ export const VqDataTable = defineComponent({
                     itemsLength={totalItems.value}
                     onUpdate:options={updateOptions}
                     onUpdate:itemsPerPage={(val: number) => (defaultOptions.itemsPerPage = val)}
-                    onUpdate:sortBy={(val: any[]) => (defaultOptions.sortBy = val)}
+                    onUpdate:sortBy={(val: SortByValue[]) => (defaultOptions.sortBy = val)}
                     // height={height.value}
                     v-slots={slots}
                     {...attrs}

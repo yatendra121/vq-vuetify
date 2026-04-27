@@ -1,4 +1,4 @@
 declare module 'canAccess' {
-    let _canAccess: any
+    let _canAccess: unknown
     export = _canAccess
 }

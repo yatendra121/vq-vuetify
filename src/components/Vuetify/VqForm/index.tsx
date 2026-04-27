@@ -102,8 +102,8 @@ export const VqForm = defineComponent({
                     const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {
                         const apiResponse = new ApiResponse(eResponse.value);
-                        //@ts-ignore
-                        actions.setErrors(apiResponse.getErrors());
+                        const errors = apiResponse.getErrors();
+                        if (errors) actions.setErrors(errors);
                         emit("submitedError", apiResponse);
                     }
                 })
@@ -130,34 +130,38 @@ export const VqForm = defineComponent({
     }
 });
 
-const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
+const transformObjValues = (
+    item: Record<string, unknown> | undefined,
+    object: Record<string, string> | undefined
+): Record<string, unknown> | undefined => {
     if (!item || !object) return item;
     return { ...item, ...collectFormObjValues(item, object) };
 };
 
-const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
-    const finalVal: any = [];
+const collectFormObjValues = (item: Record<string, unknown>, object: Record<string, string>): Record<string, unknown> => {
+    const finalVal: Record<string, unknown> = {};
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
             const element = object[key];
             const arrKeys = element.split(".");
-            let lastItemValue = item;
+            let lastItemValue: unknown = item;
             for (const [arrKeyIndex, arrKey] of arrKeys.entries()) {
                 if (arrKey === "*") {
-                    let newArray: any = [];
+                    let newArray: unknown[] = [];
                     let index = 0;
-                    for (const iterator of lastItemValue) {
+                    for (const _item of lastItemValue as unknown[]) {
                         newArray = [
-                            collectFormObjValues(lastItemValue[index++], {
-                                key: arrKeys.slice(arrKeyIndex + 1).join(".")
-                            }).key,
+                            collectFormObjValues(
+                                (lastItemValue as Record<string, unknown>[])[index++],
+                                { key: arrKeys.slice(arrKeyIndex + 1).join(".") }
+                            ).key,
                             ...newArray
                         ];
                     }
                     lastItemValue = newArray;
                     break;
-                } else if (typeof arrKey === "string") {
-                    lastItemValue = lastItemValue?.[arrKey];
+                } else {
+                    lastItemValue = (lastItemValue as Record<string, unknown> | null | undefined)?.[arrKey];
                 }
             }
             finalVal[key] = lastItemValue ?? object;

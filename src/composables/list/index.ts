@@ -8,7 +8,7 @@ interface List<T> {
 }
 
 //
-const allList = reactive<{ [key: string]: List<any> }>({});
+const allList = reactive<{ [key: string]: List<unknown> }>({});
 
 /**
  * This function is using for internal uses only
@@ -29,9 +29,9 @@ export const useListRepository = (key: string) => {
             loading: false
         });
 
-        allList[key] = objData;
+        allList[key] = objData as List<unknown>;
 
-        return allList[key];
+        return allList[key] as unknown as List<T>;
     };
 
     /**
@@ -47,7 +47,7 @@ export const useListRepository = (key: string) => {
      * @returns A List
      */
     const collectListValues = <T>(): List<T> => {
-        return allList[key] ?? createNewList<T>();
+        return (allList[key] ?? createNewList<T>()) as unknown as List<T>;
     };
 
     /**
@@ -56,7 +56,7 @@ export const useListRepository = (key: string) => {
      * @returns
      */
     const getItemIndex = (itemId: string | number) => {
-        return allList[key]?.items.findIndex((item: any) => item?.id === itemId);
+        return allList[key]?.items.findIndex((item) => (item as { id?: unknown })?.id === itemId);
     };
 
     /**
@@ -68,7 +68,7 @@ export const useListRepository = (key: string) => {
     const updateListItemValue = (itemId: string, value: unknown, itemKey?: string) => {
         const itemIndex = getItemIndex(itemId);
         if (typeof itemIndex === "number") {
-            if (typeof itemKey === "string") allList[key].items[itemIndex][itemKey] = value;
+            if (typeof itemKey === "string") (allList[key].items[itemIndex] as Record<string, unknown>)[itemKey] = value;
             else allList[key].items[itemIndex] = value;
         } else console.error("Item id not exist");
     };
@@ -98,13 +98,13 @@ export const updateItemKeyValue = (
     filterListId: string,
     itemId: string,
     key: string,
-    value: any
+    value: unknown
 ) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value, key);
 };
 
-export const updateItemValue = (filterListId: string, itemId: string, value: any) => {
+export const updateItemValue = (filterListId: string, itemId: string, value: unknown) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value);
 };

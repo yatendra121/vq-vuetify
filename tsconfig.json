@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
         "target": "ESNext",
         "module": "ESNext",
         "allowJs": true,
@@ -20,13 +19,12 @@
         "noUnusedLocals": false,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "downlevelIteration": true,
         "skipLibCheck": true, // Skip checking types of external modules
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "types": ["node", "vue-router", "vuetify/components", "vue"],
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src/index.ts", "src/integrations.ts"],

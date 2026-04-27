@@ -105,8 +105,8 @@ export const VqForm = defineComponent({
                     const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {
                         const apiResponse = new ApiResponse(eResponse.value);
-                        //@ts-ignore
-                        actions.setErrors(apiResponse.getErrors());
+                        const errors = apiResponse.getErrors();
+                        if (errors) actions.setErrors(errors);
                         emit("submitedError", apiResponse);
                     }
                 })
@@ -140,15 +140,14 @@ export const VqForm = defineComponent({
     }
 });
 
-export interface VqFormOption extends FormOptions<any> {
+export interface VqFormOption extends FormOptions<GenericFormValues> {
     formId: string;
-    valuesSchema?: any;
-    validationSchema?: any;
+    valuesSchema?: Record<string, string>;
 }
 
 export const useVqForm = (opts: VqFormOption) => {
     const initialValues = computed(() => {
-        return transformObjValues(opts.initialValues, opts.valuesSchema);
+        return transformObjValues(toValue(opts.initialValues), opts.valuesSchema);
     });
 
     const {
@@ -174,11 +173,14 @@ export const useVqForm = (opts: VqFormOption) => {
         resetField
     } = useForm({ validationSchema: opts.validationSchema });
 
-    watch(opts.initialValues, () => {
-        resetForm({
-            values: transformObjValues(toValue(opts.initialValues), opts.valuesSchema)
-        });
-    });
+    watch(
+        () => toValue(opts.initialValues),
+        () => {
+            resetForm({
+                values: transformObjValues(toValue(opts.initialValues) ?? undefined, opts.valuesSchema)
+            });
+        }
+    );
 
     const { formId } = opts;
 
@@ -242,8 +244,8 @@ export const useVqForm = (opts: VqFormOption) => {
                         const { eResponse } = await getErrorResponse(response);
                         if (eResponse.value) {
                             const apiResponse = new ApiResponse(eResponse.value);
-                            //@ts-ignore
-                            actions.setErrors(apiResponse.getErrors());
+                            const errors = apiResponse.getErrors();
+                            if (errors) actions.setErrors(errors);
                             emit("submitedError", apiResponse);
                         }
                     })
@@ -265,7 +267,7 @@ export const useVqForm = (opts: VqFormOption) => {
         }
     });
 
-    const wrapper = defineComponent((props: any, { slots }) => {
+    const wrapper = defineComponent((props: InstanceType<typeof VqForm>['$props'], { slots }) => {
         // Returning functions in `setup` means this is the render function
         return () => {
             // Event handlers will also be passed in the `props` object
@@ -276,34 +278,38 @@ export const useVqForm = (opts: VqFormOption) => {
     return { wrapper, resetForm };
 };
 
-const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
-    if (!item || !object) return item;
+const transformObjValues = (
+    item: Record<string, unknown> | null | undefined,
+    object: Record<string, string> | undefined
+): Record<string, unknown> | undefined => {
+    if (!item || !object) return item ?? undefined;
     return { ...item, ...collectFormObjValues(item, object) };
 };
 
-const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
-    const finalVal: any = [];
+const collectFormObjValues = (item: Record<string, unknown>, object: Record<string, string>): Record<string, unknown> => {
+    const finalVal: Record<string, unknown> = {};
     for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
             const element = object[key];
             const arrKeys = element.split(".");
-            let lastItemValue = item;
+            let lastItemValue: unknown = item;
             for (const [arrKeyIndex, arrKey] of arrKeys.entries()) {
                 if (arrKey === "*") {
-                    let newArray: any = [];
+                    let newArray: unknown[] = [];
                     let index = 0;
-                    for (const iterator of lastItemValue) {
+                    for (const _item of lastItemValue as unknown[]) {
                         newArray = [
-                            collectFormObjValues(lastItemValue[index++], {
-                                key: arrKeys.slice(arrKeyIndex + 1).join(".")
-                            }).key,
+                            collectFormObjValues(
+                                (lastItemValue as Record<string, unknown>[])[index++],
+                                { key: arrKeys.slice(arrKeyIndex + 1).join(".") }
+                            ).key,
                             ...newArray
                         ];
                     }
                     lastItemValue = newArray;
                     break;
-                } else if (typeof arrKey === "string") {
-                    lastItemValue = lastItemValue?.[arrKey];
+                } else {
+                    lastItemValue = (lastItemValue as Record<string, unknown> | null | undefined)?.[arrKey];
                 }
             }
             finalVal[key] = lastItemValue ?? object;

@@ -61,7 +61,7 @@ export const VqList = defineComponent({
         const formFilterStore = useFormFilterStore();
         const { setReloadValue } = useFormFilterStore();
 
-        const formFilterData = computed<Object>(() => {
+        const formFilterData = computed<Record<string, unknown> | undefined>(() => {
             return formFilterStore.forms[filterId.value]?.values;
         });
 
@@ -91,8 +91,7 @@ export const VqList = defineComponent({
 
         watch(
             () => formFilterData.value,
-            //@ts-ignore
-            (newVal, oldVal) => {
+            (_newVal, oldVal) => {
                 if (oldVal === undefined) return;
                 listOptions.page = 1;
                 loadMore();
@@ -120,7 +119,7 @@ export const VqList = defineComponent({
                 loading.value = true;
 
                 const response = await useAsyncAxios<{
-                    data: { data: any; total: number };
+                    data: { data: unknown[]; total: number };
                 }>(
                     `${props.action}?${objectToQueryString(
                         { ...toRaw(listOptions), ...toRaw(formFilterData.value ?? {}) },
@@ -133,9 +132,9 @@ export const VqList = defineComponent({
                 );
                 loading.value = false;
                 return response.data;
-            } catch (e: any) {
+            } catch (e: unknown) {
                 loading.value = false;
-                throw new Error(e.message);
+                throw new Error(e instanceof Error ? e.message : String(e));
             }
         };
 
@@ -161,12 +160,6 @@ export const VqList = defineComponent({
                             loading: loading.value
                         })}
                     </>
-                    {/* {items.value.map((item, i) => (
-            <v-list-item key={i} value={item}>
-              <v-list-item-title v-text={item.name}></v-list-item-title>
-              <v-list-item-subtitle v-text={item.email}></v-list-item-subtitle>
-            </v-list-item>
-          ))} */}
                 </VList>
             </>
         );

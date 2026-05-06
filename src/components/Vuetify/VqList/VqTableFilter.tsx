@@ -23,13 +23,8 @@ export const VqTableFilter = defineComponent({
 
         return () => (
             <>
-                {/*  @ts-ignore */}
-                <VForm
-                    //@ts-ignore
-                    id={filterId.value}
-                    {...attrs}
-                >
-                    {/*  @ts-ignore */}
+                {/* @ts-ignore vee-validate VForm types omit id */}
+                <VForm id={filterId.value} {...attrs}>
                     <VqTableFilterHandler id={filterId.value} v-slots={slots}>
                         <>{slots.default?.()}</>
                     </VqTableFilterHandler>

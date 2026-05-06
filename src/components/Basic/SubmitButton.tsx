@@ -31,7 +31,7 @@ export const VqSubmitBtn = defineComponent({
             <>
                 <VBtn
                     loading={loading.value}
-                    /* @ts-ignore */
+                    /* @ts-ignore Vuetify VBtn types omit native button type */
                     type="submit"
                     form={props.form}
                     color="primary"

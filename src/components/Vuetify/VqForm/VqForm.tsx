@@ -105,8 +105,8 @@ export const VqForm = defineComponent({
                     const { eResponse } = await getErrorResponse(response);
                     if (eResponse.value) {
                         const apiResponse = new ApiResponse(eResponse.value);
-                        //@ts-ignore
-                        actions.setErrors(apiResponse.getErrors());
+                        const errors = apiResponse.getErrors();
+                        if (errors) actions.setErrors(errors);
                         emit("submitedError", apiResponse);
                     }
                 })
@@ -131,8 +131,7 @@ export const VqForm = defineComponent({
 
         return () => (
             <>
-                {/* @ts-ignore */}
-                <form novalidate id={props.id} onSubmit={onFinalSubmit} v-slots={slots} {...attrs}>
+                <form novalidate id={props.id} onSubmit={onFinalSubmit} {...attrs}>
                     {slots.default?.()}
                 </form>
             </>
@@ -242,8 +241,8 @@ export const useVqForm = (opts: VqFormOption) => {
                         const { eResponse } = await getErrorResponse(response);
                         if (eResponse.value) {
                             const apiResponse = new ApiResponse(eResponse.value);
-                            //@ts-ignore
-                            actions.setErrors(apiResponse.getErrors());
+                            const errors = apiResponse.getErrors();
+                            if (errors) actions.setErrors(errors);
                             emit("submitedError", apiResponse);
                         }
                     })
@@ -256,8 +255,7 @@ export const useVqForm = (opts: VqFormOption) => {
 
             return () => (
                 <>
-                    {/* @ts-ignore */}
-                    <form novalidate onSubmit={onSubmit} v-slots={slots} {...attrs}>
+                    <form novalidate onSubmit={onSubmit} {...attrs}>
                         {slots.default?.()}
                     </form>
                 </>

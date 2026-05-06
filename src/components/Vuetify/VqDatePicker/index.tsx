@@ -30,8 +30,6 @@ export const VqDatePicker = defineComponent({
             validateOnValueUpdate: false
         });
 
-        console.log(value.value);
-
         const modelValue = computed(() => {
             return value.value ? new Date(value.value) : undefined;
             //return props.multiple ? value.value : value.value ? [new Date(value.value)] : undefined;

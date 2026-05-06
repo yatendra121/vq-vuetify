@@ -3,7 +3,6 @@ import {
     computed,
     defineComponent,
     readonly,
-    ref,
     toRef,
     h,
     toRaw,
@@ -12,13 +11,10 @@ import {
     PropType,
     provide,
     watch,
-    onBeforeUnmount,
-    onMounted,
-    TdHTMLAttributes
+    onBeforeUnmount
 } from "vue";
 
 import { VDataTableServer } from "vuetify/components";
-import { useDisplay } from "vuetify";
 import axios, { CancelTokenSource } from "axios";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { objectToQueryString } from "@qnx/composables";
@@ -32,7 +28,7 @@ interface SortByValue {
 }
 
 export const VqDataTable = defineComponent({
-    name: "VqTextarea",
+    name: "VqDataTable",
     props: {
         id: {
             type: String as PropType<string>,
@@ -58,10 +54,6 @@ export const VqDataTable = defineComponent({
             type: Array as PropType<SortByValue[]>,
             default: () => [{ key: "name", order: "asc" }]
         }
-        // height: {
-        //     type: Number as PropType<number | undefined>,
-        //     default: () => undefined
-        // }
     },
     setup(props, { attrs, slots }) {
         const filterId = computed(() => {
@@ -90,8 +82,8 @@ export const VqDataTable = defineComponent({
         watch(
             () => formFilterData.value,
             (_newVal, oldVal) => {
-                console.log(formFilterData.value);
                 if (oldVal === undefined) return;
+                defaultOptions.page = 1;
                 fetchItems(defaultOptions).then(({ data, total }) => {
                     items.value = data;
                     totalItems.value = total;
@@ -154,57 +146,21 @@ export const VqDataTable = defineComponent({
             });
         };
 
-        // onMounted(() => {
-        //     fetchItems(defaultOptions).then(({data,total}) => {
-        // items.value = data;
-        // totalItems.value = total
-        //     });
-        // });
-
         onBeforeUnmount(() => {
             removeList();
         });
-
-        // const { name } = useDisplay();
-
-        // const height = computed(() => {
-        //     if (props.height) return props.height;
-
-        //     if (items.value.length > 10) {
-        //         // name is reactive and
-        //         // must use .value
-        //         switch (name.value) {
-        //             case "xs":
-        //                 return 250;
-        //             case "sm":
-        //                 return 350;
-        //             case "md":
-        //                 return 450;
-        //             case "lg":
-        //                 return 550;
-        //             case "xl":
-        //                 return 700;
-        //             case "xxl":
-        //                 return 900;
-        //         }
-        //     }
-
-        //     return undefined;
-        // });
 
         return () => (
             <>
                 <VDataTableServer
                     loading={loading.value ? "primary" : false}
-                    // page={props.page}
-                    // itemsPerPage={props.itemsPerPage}
-                    // sortBy={props.sortBy}
+                    page={defaultOptions.page}
                     items={items.value}
                     itemsLength={totalItems.value}
                     onUpdate:options={updateOptions}
+                    onUpdate:page={(val: number) => (defaultOptions.page = val)}
                     onUpdate:itemsPerPage={(val: number) => (defaultOptions.itemsPerPage = val)}
                     onUpdate:sortBy={(val: any[]) => (defaultOptions.sortBy = val)}
-                    // height={height.value}
                     v-slots={slots}
                     {...attrs}
                 ></VDataTableServer>

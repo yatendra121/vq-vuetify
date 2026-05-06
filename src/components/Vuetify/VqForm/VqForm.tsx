@@ -309,7 +309,6 @@ const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
             finalVal[key] = lastItemValue ?? object;
         }
     }
-    console.log({ finalVal });
     return finalVal;
 };
 

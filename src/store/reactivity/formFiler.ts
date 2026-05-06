@@ -1,4 +1,5 @@
-import { defineStore } from "pinia";
+import { reactive } from "vue";
+
 type DataObject = Record<string, any>;
 
 export type FormFilterData = {
@@ -8,25 +9,24 @@ export type FormFilterData = {
 };
 type FormFilterDataState = { [key: string]: FormFilterData };
 
-export const useFormFilterStore = defineStore("form_filter_values_lib", {
-    state: () => ({ forms: {} }) as { forms: FormFilterDataState },
-    actions: {
-        addForm(key: string, values: DataObject) {
-            const newForm = {
-                values,
-                resetRequired: false,
-                reloadRequired: false
-            };
-            this.forms[key] = newForm;
-        },
-        removeForm(key: string) {
-            delete this.forms[key];
-        },
-        setReloadValue(key: string, val: boolean) {
-            this.forms[key].reloadRequired = val;
-        },
-        setResetValue(key: string, val: boolean) {
-            this.forms[key].resetRequired = val;
-        }
+const store = reactive({
+    forms: {} as FormFilterDataState,
+    addForm(key: string, values: DataObject) {
+        store.forms[key] = {
+            values,
+            resetRequired: false,
+            reloadRequired: false
+        };
+    },
+    removeForm(key: string) {
+        delete store.forms[key];
+    },
+    setReloadValue(key: string, val: boolean) {
+        if (store.forms[key]) store.forms[key].reloadRequired = val;
+    },
+    setResetValue(key: string, val: boolean) {
+        if (store.forms[key]) store.forms[key].resetRequired = val;
     }
 });
+
+export const useFormFilterStore = () => store;

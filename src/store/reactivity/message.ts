@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { reactive } from "vue";
 
 export interface MessageItem {
     id: number;
@@ -11,28 +11,15 @@ export interface MessageItemWithoutId {
     color: string;
 }
 
-export type MessageState = {
-    items: MessageItem[];
-    id: number;
-};
-
-export const useMessageStore = defineStore("message_lib", {
-    state: () =>
-        ({
-            items: [],
-            id: 1
-        }) as MessageState,
-    getters: {
-        itemsArray(): MessageItem[] {
-            return this.items;
-        }
+const store = reactive({
+    items: [] as MessageItem[],
+    id: 1,
+    addMessage(item: MessageItemWithoutId) {
+        store.items.push({ id: store.id++, ...item });
     },
-    actions: {
-        addMessage(item: MessageItemWithoutId) {
-            this.items.push({ id: this.id++, ...item });
-        },
-        removeMessage() {
-            this.items.splice(0, 1);
-        }
+    removeMessage() {
+        store.items.splice(0, 1);
     }
 });
+
+export const useMessageStore = () => store;

@@ -26,13 +26,12 @@ bun add @qnx/vuetify
 Install the required peer dependencies alongside the library:
 
 ```bash
-npm install vuetify@^4.0.0 pinia vee-validate axios @qnx/composables
+npm install vuetify@^4.0.0 vee-validate axios @qnx/composables
 ```
 
 | Dependency | Version | Notes |
 |---|---|---|
 | `vuetify` | `^4.0.0` | Required |
-| `pinia` | `3.x` | Required |
 | `vee-validate` | `*` | Required |
 | `axios` | `*` | Required for HTTP requests |
 | `@qnx/composables` | `*` | Required |

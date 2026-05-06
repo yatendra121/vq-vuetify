@@ -41,7 +41,6 @@ export default defineConfig({
                     "vee-validate",
                     "@qnx/composables",
                     "axios",
-                    "pinia",
                     "yup",
                     "@tinymce/tinymce-vue"
                 ].some((pkg) => id === pkg || id.startsWith(pkg + "/"))

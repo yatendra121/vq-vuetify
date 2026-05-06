@@ -130,7 +130,6 @@
         "@qnx/composables": "*",
         "@tinymce/tinymce-vue": "*",
         "axios": "*",
-        "pinia": "3.x",
         "vee-validate": "*",
         "vue": "*",
         "vuetify": "^4.0.0",

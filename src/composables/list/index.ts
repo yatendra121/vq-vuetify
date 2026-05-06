@@ -7,90 +7,93 @@ interface List<T> {
     loading: boolean;
 }
 
-//
-const allList = reactive<{ [key: string]: List<any> }>({});
+const allLists = new Map<string, Set<List<any>>>();
+
+const updateAcrossInstances = (
+    key: string,
+    itemId: string,
+    value: unknown,
+    itemKey?: string
+) => {
+    const set = allLists.get(key);
+    if (!set || set.size === 0) {
+        console.error("Item id not exist");
+        return;
+    }
+    let touched = false;
+    for (const inst of set) {
+        const idx = inst.items.findIndex((item: any) => item?.id === itemId);
+        if (idx >= 0) {
+            if (typeof itemKey === "string") inst.items[idx][itemKey] = value;
+            else inst.items[idx] = value;
+            touched = true;
+        }
+    }
+    if (!touched) console.error("Item id not exist");
+};
+
+const deleteAcrossInstances = (key: string, itemId: string) => {
+    const set = allLists.get(key);
+    if (!set || set.size === 0) {
+        console.error("Item id not exist");
+        return;
+    }
+    let touched = false;
+    for (const inst of set) {
+        const idx = inst.items.findIndex((item: any) => item?.id === itemId);
+        if (idx >= 0) {
+            inst.items.splice(idx, 1);
+            inst.totalItems = inst.totalItems - 1;
+            touched = true;
+        }
+    }
+    if (!touched) console.error("Item id not exist");
+};
 
 /**
- * This function is using for internal uses only
- * Using for interact with reactive allList data
- * @param key
- * @returns Object
+ * Per-component list state. Each call returns fresh reactive state and
+ * registers it in a shared Map<key, Set<list>> so that two components
+ * mounted with the same id don't clobber each other's items/loading.
  */
 export const useListRepository = (key: string) => {
-    /**
-     * Using for create a new list
-     * @returns A single list
-     */
-    const createNewList = <T>(): List<T> => {
-        const objData = reactive<List<T>>({
-            items: [],
-            totalItems: 0,
-            finished: false,
-            loading: false
-        });
+    const list = reactive<List<unknown>>({
+        items: [],
+        totalItems: 0,
+        finished: false,
+        loading: false
+    });
 
-        allList[key] = objData;
+    let registered = false;
 
-        return allList[key];
+    const register = () => {
+        if (registered) return;
+        let set = allLists.get(key);
+        if (!set) {
+            set = new Set();
+            allLists.set(key, set);
+        }
+        set.add(list);
+        registered = true;
     };
 
-    /**
-     * Using for dalete a existing single list
-     * @returns void
-     */
     const removeList = () => {
-        delete allList[key];
+        const set = allLists.get(key);
+        set?.delete(list);
+        if (set && set.size === 0) allLists.delete(key);
+        registered = false;
     };
 
-    /**
-     * Using for colecting a list if it is not exist then create & return
-     * @returns A List
-     */
     const collectListValues = <T>(): List<T> => {
-        return allList[key] ?? createNewList<T>();
-    };
-
-    /**
-     * Using for get index of an item
-     * @param itemId
-     * @returns
-     */
-    const getItemIndex = (itemId: string | number) => {
-        return allList[key]?.items.findIndex((item: any) => item?.id === itemId);
-    };
-
-    /**
-     * Using for update an value of a single list
-     * @param itemId
-     * @param value
-     * @param itemKey
-     */
-    const updateListItemValue = (itemId: string, value: unknown, itemKey?: string) => {
-        const itemIndex = getItemIndex(itemId);
-        if (typeof itemIndex === "number") {
-            if (typeof itemKey === "string") allList[key].items[itemIndex][itemKey] = value;
-            else allList[key].items[itemIndex] = value;
-        } else console.error("Item id not exist");
-    };
-
-    /**
-     * Using for dalete an value of a single list
-     * @param itemId
-     */
-    const deleteListItemValue = (itemId: string) => {
-        const itemIndex = getItemIndex(itemId);
-
-        if (typeof itemIndex === "number") {
-            allList[key]?.items.splice(itemIndex, 1);
-            allList[key].totalItems = allList[key]?.totalItems - 1;
-        } else console.error("Item id not exist");
+        register();
+        return list as List<T>;
     };
 
     return {
         removeList,
         collectListValues,
-        updateListItemValue,
-        deleteListItemValue
+        updateListItemValue: (itemId: string, value: unknown, itemKey?: string) =>
+            updateAcrossInstances(key, itemId, value, itemKey),
+        deleteListItemValue: (itemId: string) => deleteAcrossInstances(key, itemId)
     };
 };
 
@@ -100,16 +103,13 @@ export const updateItemKeyValue = (
     key: string,
     value: any
 ) => {
-    const { updateListItemValue } = useListRepository(filterListId + "_filter");
-    updateListItemValue(itemId, value, key);
+    updateAcrossInstances(filterListId + "_filter", itemId, value, key);
 };
 
 export const updateItemValue = (filterListId: string, itemId: string, value: any) => {
-    const { updateListItemValue } = useListRepository(filterListId + "_filter");
-    updateListItemValue(itemId, value);
+    updateAcrossInstances(filterListId + "_filter", itemId, value);
 };
 
 export const deleteItemValue = (filterListId: string, itemId: string) => {
-    const { deleteListItemValue } = useListRepository(filterListId + "_filter");
-    deleteListItemValue(itemId);
+    deleteAcrossInstances(filterListId + "_filter", itemId);
 };

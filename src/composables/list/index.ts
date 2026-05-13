@@ -113,3 +113,54 @@ export const deleteItemValue = (filterListId: string, itemId: string) => {
     const { deleteListItemValue } = useListRepository(filterListId + "_filter");
     deleteListItemValue(itemId);
 };
+
+/**
+ * Non-creating peek for the mounted list at `key`. Returns undefined if no
+ * list is mounted for that id — callers (e.g. useVqCrud) should skip sync
+ * in that case rather than instantiating an orphan list.
+ *
+ * Exported for use by `useVqCrud`. Not part of the user-facing API.
+ */
+export const __peekListItem = (key: string, itemId: string | number) => {
+    const list = allList[key];
+    if (!list) return undefined;
+    const index = list.items.findIndex((item: any) => item?.id === itemId);
+    if (index < 0) return undefined;
+    return { item: list.items[index], index, list };
+};
+
+/**
+ * Insert an item at a specific index (or push if no index). Used by
+ * useVqCrud to roll back an optimistic remove. No-op if no list mounted.
+ */
+export const __insertListItem = (key: string, item: unknown, atIndex?: number) => {
+    const list = allList[key];
+    if (!list) return;
+    if (typeof atIndex === "number") list.items.splice(atIndex, 0, item);
+    else list.items.push(item);
+    list.totalItems += 1;
+};
+
+/**
+ * Prepend an item to the mounted list at `key`. Used by useVqCrud for
+ * optimistic create. No-op if no list mounted.
+ */
+export const __prependListItem = (key: string, item: unknown) => {
+    const list = allList[key];
+    if (!list) return;
+    list.items.unshift(item);
+    list.totalItems += 1;
+};
+
+/**
+ * Delete an item by id without logging a "not exist" error — used by
+ * useVqCrud after replacing a temp item with the server-confirmed one.
+ */
+export const __silentlyDeleteListItem = (key: string, itemId: string | number) => {
+    const list = allList[key];
+    if (!list) return;
+    const index = list.items.findIndex((item: any) => item?.id === itemId);
+    if (index < 0) return;
+    list.items.splice(index, 1);
+    list.totalItems = Math.max(0, list.totalItems - 1);
+};

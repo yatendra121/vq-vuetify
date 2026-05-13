@@ -224,6 +224,40 @@ interface Post { id: number; title: string }
 const PostList = useVqList<Post>()
 ```
 
+### `useVqCrud<T>({ resource, listId?, optimistic? })`
+
+REST conventions wrapper. Pairs with a mounted `<VqList>` or `<VqDataTable>` (via the shared `listId`) so successful mutations propagate into the on-screen list without a follow-up refetch. With `optimistic: true`, mutations apply locally first and roll back on HTTP failure.
+
+```ts
+import { useVqCrud } from '@qnx/vuetify'
+
+interface User { id: string; name: string; email: string }
+
+const users = useVqCrud<User>({
+  resource: 'users',
+  listId: 'users-table',
+  optimistic: true,
+})
+
+const created = await users.create({ name: 'Ada' })   // POST /users
+const updated = await users.update('42', { name: 'X' }) // PUT  /users/42
+await users.remove('42')                                 // DELETE /users/42
+const page = await users.list({ page: 2 })               // GET  /users?page=2
+const one  = await users.get('42')                       // GET  /users/42
+```
+
+Methods:
+
+| Method | HTTP | Sync to list when `listId` is set |
+|---|---|---|
+| `list(params?)` | `GET /{resource}?…` | — |
+| `get(id)` | `GET /{resource}/{id}` | — |
+| `create(data)` | `POST /{resource}` | Prepend the row |
+| `update(id, data)` | `PUT /{resource}/{id}` | Replace the row |
+| `remove(id)` | `DELETE /{resource}/{id}` | Drop the row |
+
+With `optimistic: true`, the list mutates synchronously before the request, then either confirms with the server response or rolls back on rejection.
+
 ### `collectVqHeaders(headers)`
 
 Prepends a `#` (serial number) column to a headers array for use with `VqDataTable`.

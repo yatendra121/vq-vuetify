@@ -35,8 +35,8 @@ export const VqForm = defineComponent({
             required: true
         },
         action: {
-            type: String as PropType<string>,
-            required: true
+            type: String as PropType<string | undefined>,
+            default: () => undefined
         },
         method: {
             type: String as PropType<Method>,
@@ -69,7 +69,7 @@ export const VqForm = defineComponent({
             default: undefined
         }
     },
-    emits: ["submitedSuccess", "submitedError", "submitedClientError"],
+    emits: ["submitedSuccess", "submitedError", "submitedClientError", "submit"],
     setup(props, { attrs, emit, slots }) {
         provide("formId", readonly(toRef(props, "id")));
 
@@ -80,6 +80,14 @@ export const VqForm = defineComponent({
         onBeforeUnmount(() => formStore.removeForm(props.id));
 
         const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
+            // Uncontrolled mode: no `action`, caller submits themselves.
+            // We forward the validated values + vee-validate actions and stay
+            // out of busy/error/HTTP plumbing.
+            if (!props.action) {
+                emit("submit", values, actions);
+                return;
+            }
+
             const postData = props.formData ? objectToFormData(values) : values;
 
             formStore.changeBusy(props.id, true);
@@ -185,8 +193,8 @@ export const useVqForm = (opts: VqFormOption) => {
     const VqForm = defineComponent({
         props: {
             action: {
-                type: String as PropType<string>,
-                required: true
+                type: String as PropType<string | undefined>,
+                default: () => undefined
             },
             method: {
                 type: String as PropType<Method>,
@@ -207,6 +215,7 @@ export const useVqForm = (opts: VqFormOption) => {
                 >
             }
         },
+        emits: ["submitedSuccess", "submitedError", "submitedClientError", "submit"],
         setup(props, { attrs, emit, slots }) {
             provide("formId", readonly(ref(formId)));
 
@@ -217,6 +226,12 @@ export const useVqForm = (opts: VqFormOption) => {
             onBeforeUnmount(() => formStore.removeForm(formId));
 
             const defaultOnSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
+                // Uncontrolled mode — see VqForm comment above.
+                if (!props.action) {
+                    emit("submit", values, actions);
+                    return;
+                }
+
                 const postData = props.formData ? objectToFormData(values) : values;
 
                 formStore.changeBusy(formId, true);

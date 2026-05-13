@@ -98,7 +98,7 @@ These components must be used inside a `VqForm` or `useVqForm` wrapper. They aut
 | Prop | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `id` | `string` | Yes | — | Unique identifier for the form. Used internally to coordinate with submit buttons and filters. |
-| `action` | `string` | Yes | — | API endpoint URL for form submission. |
+| `action` | `string` | No | `undefined` | API endpoint URL. When omitted, the form runs in **uncontrolled mode** — validation still runs, but submission is delegated via the `submit` event. |
 | `method` | `string` | No | `"POST"` | HTTP method (`POST`, `PUT`, `PATCH`, etc.). |
 | `initialValues` | `object` | No | `undefined` | Initial field values. Resets the form when this value changes. |
 | `validationSchema` | `object` | No | `undefined` | Yup validation schema. |
@@ -111,9 +111,10 @@ These components must be used inside a `VqForm` or `useVqForm` wrapper. They aut
 
 | Event | Payload | Description |
 |---|---|---|
-| `submited-success` | `ApiResponse` | Emitted on successful server response. |
-| `submited-error` | `ApiResponse` | Emitted when the server returns a validation error. |
+| `submited-success` | `ApiResponse` | Emitted on successful server response (controlled mode). |
+| `submited-error` | `ApiResponse` | Emitted when the server returns a validation error (controlled mode). |
 | `submited-client-error` | — | Emitted on client-side validation failure. |
+| `submit` | `(values, actions)` | Emitted in uncontrolled mode (no `action` prop) — caller performs the submission and may call `actions.setErrors(...)` on failure. |
 
 ### Data Table Components
 

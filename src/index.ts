@@ -10,6 +10,10 @@ export { useVqList } from "./components/Vuetify/VqList/VqList";
 export { useVqDataTable } from "./components/Vuetify/VqDataTable";
 export { useVqForm } from "./components/Vuetify/VqForm/VqForm";
 
+//Typed API factory
+export { defineVqApi } from "./api";
+export type { VqApiSchema } from "./api";
+
 //Instance of main components of vq vuetify
 export default {
     install: (app: App) => {

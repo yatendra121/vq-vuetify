@@ -22,7 +22,7 @@ import { useListRepository } from "../../../composables/list";
 import { useFormFilterStore } from "../../../store/reactivity/formFiler";
 
 type TValue = unknown;
-interface SortByValue {
+export interface SortByValue {
     key: string;
     order: "asc" | "desc";
 }

@@ -224,6 +224,51 @@ interface Post { id: number; title: string }
 const PostList = useVqList<Post>()
 ```
 
+### `defineVqApi<Schema>()`
+
+Type-safe component factory. Declare your API endpoints once as a schema mapping action string → row type, then mint typed table/list wrappers with the `action` prop pre-bound and slot props inferred from the row type. Typos and missing endpoints are TypeScript errors at the call site.
+
+```ts
+import { defineVqApi } from '@qnx/vuetify'
+
+interface User { id: string; name: string; email: string }
+interface Post { id: string; title: string }
+
+type Api = {
+  'users.list': User
+  'posts.list': Post
+}
+
+const api = defineVqApi<Api>()
+
+const UsersTable = api.useDataTable('users.list')
+const PostsList  = api.useList('posts.list')
+
+// @ts-expect-error — 'orders.list' is not in the schema
+api.useDataTable('orders.list')
+```
+
+```vue
+<template>
+  <UsersTable id="users">
+    <template #item="{ item }">
+      <!-- item is typed as User — name & email autocomplete here -->
+      <tr><td>{{ item.name }}</td><td>{{ item.email }}</td></tr>
+    </template>
+  </UsersTable>
+
+  <PostsList id="posts">
+    <template #default="{ items, loadMore, loading }">
+      <!-- items is typed as Post[] -->
+      <div v-for="p in items" :key="p.id">{{ p.title }}</div>
+      <button :disabled="loading" @click="loadMore">More</button>
+    </template>
+  </PostsList>
+</template>
+```
+
+The wrapper's `action` is set in stone — it's not in the props anymore, so consumers can't override it. Other `VqDataTable` / `VqList` props (`id`, `itemsPerPage`, `method`, etc.) pass through normally.
+
 ### `collectVqHeaders(headers)`
 
 Prepends a `#` (serial number) column to a headers array for use with `VqDataTable`.

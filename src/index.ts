@@ -10,6 +10,10 @@ export { useVqList } from "./components/Vuetify/VqList/VqList";
 export { useVqDataTable } from "./components/Vuetify/VqDataTable";
 export { useVqForm } from "./components/Vuetify/VqForm/VqForm";
 
+//Locale / i18n
+export { setVqLocale, resetVqLocale } from "./config/locale";
+export type { VqLocale } from "./config/locale";
+
 //Instance of main components of vq vuetify
 export default {
     install: (app: App) => {

@@ -1,6 +1,7 @@
 //@ts-nocheck
 import { defineComponent, inject, Ref } from "vue";
 import { VBtn } from "vuetify/components";
+import { useVqLocale } from "../../../config/locale";
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
     setup(props, { attrs, slots }) {
@@ -10,6 +11,7 @@ export const VqListLoadMoreBtn = defineComponent({
             tableListId: string;
             loadMore: () => void;
         }>("vqList");
+        const locale = useVqLocale();
 
         return () => (
             <>
@@ -22,7 +24,7 @@ export const VqListLoadMoreBtn = defineComponent({
                         v-slots={slots}
                         {...attrs}
                     >
-                        Load More
+                        {locale.loadMore}
                     </VBtn>
                 )}
             </>

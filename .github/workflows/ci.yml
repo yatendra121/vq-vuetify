@@ -37,7 +37,7 @@ jobs:
                   node-version: ${{ matrix.node }}
 
             - name: Install
-              run: pnpm install --no-frozen-lockfile
+              run: pnpm install --no-frozen-lockfile --ignore-scripts
 
             - name: Typecheck
               run: pnpm vue-tsc --noEmit

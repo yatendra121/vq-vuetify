@@ -11,6 +11,9 @@ on:
             - main
             - next
 
+permissions:
+    contents: read
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -35,7 +38,13 @@ jobs:
                   cache: pnpm
 
             - name: Install
-              run: pnpm install --no-frozen-lockfile
+              run: pnpm install --frozen-lockfile
 
-            - name: Test Vue
+            - name: Typecheck
+              run: pnpm vue-tsc --noEmit
+
+            - name: Test
               run: pnpm test:unit
+
+            - name: Audit
+              run: pnpm audit --audit-level=high

@@ -5,14 +5,13 @@ on:
         tags:
             - v*
 
+permissions:
+    contents: read
+    id-token: write
+
 jobs:
     publish-npm:
         runs-on: ubuntu-latest
-
-        strategy:
-            matrix:
-                node: [22.x]
-            fail-fast: false
 
         steps:
             - name: Checkout
@@ -25,18 +24,21 @@ jobs:
               with:
                   version: latest
 
-            - name: Use Node.js ${{ matrix.node-version }}
+            - name: Use Node.js 22.x
               uses: actions/setup-node@v4
               with:
-                  node-version: ${{ matrix.node-version }}
+                  node-version: 22.x
                   registry-url: https://registry.npmjs.org/
                   cache: pnpm
 
-            - run: pnpm install --no-frozen-lockfile
+            - name: Install
+              run: pnpm install --frozen-lockfile
 
-            - run: pnpm build-force
+            - name: Build
+              run: pnpm build-force
 
-            - run: pnpm publish --no-git-checks --access public
+            - name: Publish
+              run: pnpm publish --no-git-checks --access public
               env:
-                  NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
                   NODE_OPTIONS: "--max-old-space-size=61440"

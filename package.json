@@ -127,6 +127,7 @@
         "yup": "^1.7.1"
     },
     "peerDependencies": {
+        "@mdi/js": "*",
         "@qnx/composables": "*",
         "@tinymce/tinymce-vue": "*",
         "axios": "*",
@@ -137,6 +138,9 @@
         "yup": "*"
     },
     "peerDependenciesMeta": {
+        "@mdi/js": {
+            "optional": true
+        },
         "@tinymce/tinymce-vue": {
             "optional": true
         },

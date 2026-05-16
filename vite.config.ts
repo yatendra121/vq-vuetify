@@ -43,7 +43,8 @@ export default defineConfig({
                     "axios",
                     "pinia",
                     "yup",
-                    "@tinymce/tinymce-vue"
+                    "@tinymce/tinymce-vue",
+                    "@mdi/js"
                 ].some((pkg) => id === pkg || id.startsWith(pkg + "/"))
         }
     }

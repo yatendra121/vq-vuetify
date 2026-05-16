@@ -38,6 +38,7 @@ npm install vuetify@^4.0.0 pinia vee-validate axios @qnx/composables
 | `@qnx/composables` | `*` | Required |
 | `@tinymce/tinymce-vue` | `*` | Optional — only for `VqTextEditor` |
 | `yup` | `*` | Optional — for schema-based validation with `vee-validate` |
+| `@mdi/js` | `*` | Optional — only for `VqDatatableItemAction` (default delete icon) |
 
 ## Basic Usage
 

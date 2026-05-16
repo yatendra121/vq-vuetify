@@ -3,9 +3,10 @@ name: Add GitHub Release Tag
 on:
     push:
         tags:
-            - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
+            - "v*"
 
-# $GITHUB_REF_NAME - https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables
+permissions:
+    contents: write
 
 jobs:
     release:
@@ -14,11 +15,7 @@ jobs:
             - uses: actions/checkout@v4
 
             - name: Create Release for Tag
-              id: release_tag
-              uses: actions/create-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: softprops/action-gh-release@v2
               with:
-                  tag_name: ${{ github.ref }}
                   body: |
-                      Please refer to [CHANGELOG.md]( https://github.com/yatendra121/vq-vuetify/blob/${{ github.ref_name }}/CHANGELOG.md) for details.
+                      Please refer to [CHANGELOG.md](https://github.com/yatendra121/vq-vuetify/blob/${{ github.ref_name }}/CHANGELOG.md) for details.

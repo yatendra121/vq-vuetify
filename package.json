@@ -147,5 +147,8 @@
         "yup": {
             "optional": true
         }
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": ["@parcel/watcher"]
     }
 }

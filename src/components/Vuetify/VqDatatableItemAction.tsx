@@ -1,14 +1,22 @@
-// @ts-nocheck
-import { defineComponent, PropType, toRefs } from "vue";
-import { ConfirmState, useConfirmStore } from "../../store/reactivity/confirm";
-
+import { defineComponent, PropType, ref } from "vue";
 import { mdiDelete } from "@mdi/js";
+import {
+    VBtn,
+    VCard,
+    VCardActions,
+    VCardText,
+    VCardTitle,
+    VDialog,
+    VSpacer,
+    VTooltip
+} from "vuetify/components";
 import { useAsyncAxios } from "@qnx/composables/axios";
+import { ApiResponse } from "@qnx/composables";
+import type { ApiResponseValue } from "@qnx/composables";
 import { useMessageInstance } from "../../composables/message";
-import { ApiResponse } from "../../utils";
 import { useFormFilterRepository } from "../../composables/form";
 
-const VqDatatableItemAction = defineComponent({
+export const VqDatatableItemAction = defineComponent({
     name: "VqDatatableItemAction",
     props: {
         title: {
@@ -40,65 +48,76 @@ const VqDatatableItemAction = defineComponent({
             required: true
         }
     },
-
     setup(props) {
         const { reload } = useFormFilterRepository(`${props.id}_filter`);
-
-        const confirmStore = useConfirmStore();
         const useMessage = useMessageInstance();
 
-        const callback = () =>
-            executeConfirmAction({
-                url: props.action,
-                method: props.method,
-                id: props.itemId
+        const dialog = ref(false);
+        const loading = ref(false);
+
+        const onConfirm = () => {
+            loading.value = true;
+            useAsyncAxios<ApiResponseValue>(`${props.action}/${props.itemId}`, {
+                method: props.method
             })
-                .then((res: any) => {
+                .then((res) => {
                     const apiRes = new ApiResponse(res);
-                    confirmStore.close(false);
                     useMessage.success(apiRes.getMessage() ?? "");
+                    dialog.value = false;
                     reload();
                 })
-                .catch((res) => {
-                    console.log({ res });
-                    confirmStore.close(false);
+                .catch(() => {
                     useMessage.error("Please check input values.");
+                })
+                .finally(() => {
+                    loading.value = false;
                 });
-
-        const { title, description } = toRefs(props);
-        const showConfirmAction = () => {
-            confirmStore.setConfirmValues({
-                title: title.value,
-                description: description.value,
-                callback
-            } as ConfirmState);
-
-            confirmStore.showDialoag();
         };
+
         return () => (
             <>
-                <v-tooltip text="Change Status">
+                <VTooltip text="Change Status">
                     {{
-                        activator: ({ props }: any) => (
-                            <>
-                                <v-btn
-                                    variant="text"
-                                    {...props}
-                                    onClick={showConfirmAction}
-                                    color="primary"
-                                    icon={mdiDelete}
-                                ></v-btn>
-                            </>
+                        activator: ({ props: tooltipProps }: any) => (
+                            <VBtn
+                                {...tooltipProps}
+                                variant="text"
+                                color="primary"
+                                icon={props.icon}
+                                onClick={() => (dialog.value = true)}
+                            />
                         )
                     }}
-                </v-tooltip>
+                </VTooltip>
+                <VDialog v-model={dialog.value} maxWidth="400" persistent={loading.value}>
+                    <VCard>
+                        <VCardTitle>{props.title}</VCardTitle>
+                        <VCardText>{props.description}</VCardText>
+                        <VCardActions>
+                            <VSpacer />
+                            <VBtn
+                                variant="text"
+                                disabled={loading.value}
+                                /* @ts-ignore Vuetify VBtn types omit onClick */
+                                onClick={() => (dialog.value = false)}
+                            >
+                                Cancel
+                            </VBtn>
+                            <VBtn
+                                color="primary"
+                                loading={loading.value}
+                                /* @ts-ignore Vuetify VBtn types omit onClick */
+                                onClick={onConfirm}
+                            >
+                                Confirm
+                            </VBtn>
+                        </VCardActions>
+                    </VCard>
+                </VDialog>
             </>
         );
     }
 });
-export default VqDatatableItemAction;
-//export type VqDatatableItemAction = InstanceType<typeof VqDatatableItemAction>
 
-const executeConfirmAction = ({ url, method, id }: { url: string; method: string; id: string }) => {
-    return useAsyncAxios(`${url}/${id}`, { method });
-};
+// eslint-disable-next-line no-redeclare
+export type VqDatatableItemAction = typeof VqDatatableItemAction;

@@ -9,7 +9,7 @@ interface VqListInjection {
 }
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
-    setup(props, { attrs, slots }) {
+    setup(_props, { attrs, slots }) {
     const vqList = inject<VqListInjection>("vqList");
 
     const locale = useVqLocale();

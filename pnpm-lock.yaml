@@ -15,6 +15,9 @@ importers:
       '@mdi/js':
         specifier: ^7.4.47
         version: 7.4.47
+      '@qnx/client':
+        specifier: ^0.8.7
+        version: 0.8.7
       '@qnx/composables':
         specifier: ^0.8.0
         version: 0.8.0(axios@1.16.1)(vue@3.5.34(typescript@6.0.3))
@@ -523,6 +526,9 @@ packages:
   '@pkgr/core@0.2.9':
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@qnx/client@0.8.7':
+    resolution: {integrity: sha512-VqDuMRNv03KEewP2DTaNUM+HLoDOQog9GKOl9rIrvREFTlzwdjSmIdSH/w/1pDoKGiPfqACz227pt+rQjt+fxw==}
 
   '@qnx/composables@0.8.0':
     resolution: {integrity: sha512-TBggiH38bXApeUllqsJeP42Xxy1E3Ry9S1AGOkWO6vya6GgwVshLPBS+ts9W6z004G1iLP5olaiZb2Q8mZxRMA==}
@@ -2798,6 +2804,8 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.2.9': {}
+
+  '@qnx/client@0.8.7': {}
 
   '@qnx/composables@0.8.0(axios@1.16.1)(vue@3.5.34(typescript@6.0.3))':
     optionalDependencies:

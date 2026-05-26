@@ -91,6 +91,7 @@
     },
     "devDependencies": {
         "@mdi/js": "^7.4.47",
+        "@qnx/client": "^0.8.7",
         "@qnx/composables": "^0.8.0",
         "@rollup/plugin-alias": "^6.0.0",
         "@rushstack/eslint-patch": "^1.16.1",

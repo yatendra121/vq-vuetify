@@ -2,7 +2,6 @@
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
-        "allowJs": true,
         "jsx": "preserve",
         "jsxImportSource": "vue",
         "useDefineForClassFields": true,
@@ -20,23 +19,17 @@
         "noUnusedLocals": false,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
         "skipLibCheck": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
         "types": ["node", "vue-router", "vuetify/components", "vue"],
         "paths": {
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src/index.ts", "src/integrations.ts"],
-    "exclude": [
-        "node_modules", // Avoid type-checking node_modules
-        "dist" // Exclude built files
-    ],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
+    "exclude": ["node_modules", "dist"],
     "vueCompilerOptions": {
         "jsxSlots": true,
         "target": 3.5
     }
 }
-
-//"src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"

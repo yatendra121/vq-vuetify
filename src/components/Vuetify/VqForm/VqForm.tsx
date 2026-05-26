@@ -9,12 +9,10 @@ import {
     readonly,
     ref,
     toRef,
-    toRefs,
     toValue,
-    VNode,
     watch
 } from "vue";
-import { SubmissionHandler, InvalidSubmissionHandler, useForm } from "vee-validate";
+import { SubmissionHandler, useForm } from "vee-validate";
 import { useAsyncAxios, useErrorResponse } from "@qnx/composables/axios";
 import { ApiResponse, objectToFormData } from "@qnx/composables";
 import { useFormStore } from "../../../store/reactivity/form";
@@ -146,32 +144,7 @@ export interface VqFormOption extends FormOptions<any> {
 }
 
 export const useVqForm = (opts: VqFormOption) => {
-    const initialValues = computed(() => {
-        return transformObjValues(opts.initialValues, opts.valuesSchema);
-    });
-
-    const {
-        errors,
-        errorBag,
-        values,
-        meta,
-        isSubmitting,
-        isValidating,
-        submitCount,
-        controlledValues,
-        validate,
-        validateField,
-        handleReset,
-        resetForm,
-        handleSubmit,
-        setErrors,
-        setFieldError,
-        setFieldValue,
-        setValues,
-        setFieldTouched,
-        setTouched,
-        resetField
-    } = useForm({ validationSchema: opts.validationSchema });
+    const { resetForm, handleSubmit } = useForm({ validationSchema: opts.validationSchema });
 
     watch(opts.initialValues, () => {
         resetForm({
@@ -290,7 +263,7 @@ const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
                 if (arrKey === "*") {
                     let newArray: any = [];
                     let index = 0;
-                    for (const iterator of lastItemValue) {
+                    for (const _ of lastItemValue) {
                         newArray = [
                             collectFormObjValues(lastItemValue[index++], {
                                 key: arrKeys.slice(arrKeyIndex + 1).join(".")

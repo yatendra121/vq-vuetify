@@ -1,25 +1,27 @@
-//@ts-nocheck
 import { defineComponent, inject, Ref } from "vue";
 import { VBtn } from "vuetify/components";
 import { useVqLocale } from "../../../config/locale";
+interface VqListInjection {
+    loading: Ref<boolean>;
+    finished: Ref<boolean>;
+    tableListId: string;
+    loadMore: () => void;
+}
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
     setup(props, { attrs, slots }) {
-        const vqList = inject<{
-            loading: Ref<boolean>;
-            finished: Ref<boolean>;
-            tableListId: string;
-            loadMore: () => void;
-        }>("vqList");
-        const locale = useVqLocale();
+    const vqList = inject<VqListInjection>("vqList");
 
-        return () => (
+    const locale = useVqLocale();
+
+    return () => (
             <>
                 {!vqList?.finished.value && (
                     <VBtn
                         loading={vqList?.loading.value}
                         disabled={vqList?.loading.value}
                         color="primary"
+                        /* @ts-ignore Vuetify VBtn types omit onClick */
                         onClick={vqList?.loadMore}
                         v-slots={slots}
                         {...attrs}

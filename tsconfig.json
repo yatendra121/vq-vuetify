@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "baseUrl": ".",
         "target": "ESNext",
         "module": "ESNext",
         "allowJs": true,
@@ -10,23 +9,23 @@
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "moduleResolution": "bundler",
         "strict": true,
-        "resolveJsonModule": true, // Enable importing JSON modules
+        "resolveJsonModule": true,
         "esModuleInterop": true,
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
         "noEmit": false,
+        "rootDir": "src",
         "outDir": "temp-types",
         "noUnusedLocals": false,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "downlevelIteration": true,
-        "skipLibCheck": true, // Skip checking types of external modules
+        "skipLibCheck": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "types": ["node", "vue-router", "vuetify/components", "vue"],
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src/index.ts", "src/integrations.ts"],

@@ -11,6 +11,9 @@ on:
             - main
             - next
 
+permissions:
+    contents: read
+
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -32,10 +35,15 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ matrix.node }}
-                  cache: pnpm
 
             - name: Install
-              run: pnpm install --no-frozen-lockfile
+              run: pnpm install --no-frozen-lockfile --ignore-scripts
 
-            - name: Test Vue
+            - name: Typecheck
+              run: pnpm vue-tsc --noEmit
+
+            - name: Test
               run: pnpm test:unit
+
+            - name: Audit
+              run: pnpm audit --audit-level=high

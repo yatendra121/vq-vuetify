@@ -15,7 +15,6 @@ import {
 } from "vue";
 
 import { VDataTableServer } from "vuetify/components";
-import axios, { CancelTokenSource } from "axios";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { objectToQueryString } from "@qnx/composables";
 import { useListRepository } from "../../../composables/list";
@@ -92,7 +91,7 @@ export const VqDataTable = defineComponent({
             { deep: true }
         );
 
-        let cancelToken: CancelTokenSource;
+        let abortController: AbortController | undefined;
         const fetchItems = async ({
             page,
             itemsPerPage,
@@ -103,8 +102,8 @@ export const VqDataTable = defineComponent({
             sortBy: SortByValue[];
         }) => {
             try {
-                cancelToken?.cancel();
-                cancelToken = axios.CancelToken.source();
+                abortController?.abort();
+                abortController = new AbortController();
 
                 loading.value = true;
 
@@ -123,9 +122,9 @@ export const VqDataTable = defineComponent({
                         ""
                     )}`,
                     {
-                        method: props.method
-                    },
-                    { cancelToken }
+                        method: props.method,
+                        signal: abortController.signal
+                    }
                 );
                 loading.value = false;
                 return response.data;
@@ -181,9 +180,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-interface GenericProps
-    extends ExtractComponentProps<typeof VqDataTable>,
-        ExtractComponentProps<typeof VqDataTable> {}
+type GenericProps = ExtractComponentProps<typeof VqDataTable>;
 
 interface GenericSlotsProps<TValue> {
     item: TValue;
@@ -240,7 +237,6 @@ export const VqSerialNo = defineComponent({
     setup(props) {
         return () => (
             <>
-                {/* @ts-ignore */}
                 <td>{props.index}</td>
             </>
         );

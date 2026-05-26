@@ -38,6 +38,7 @@ npm install vuetify@^4.0.0 pinia vee-validate axios @qnx/composables
 | `@qnx/composables` | `*` | Required |
 | `@tinymce/tinymce-vue` | `*` | Optional — only for `VqTextEditor` |
 | `yup` | `*` | Optional — for schema-based validation with `vee-validate` |
+| `@mdi/js` | `*` | Optional — only for `VqDatatableItemAction` (default delete icon) |
 
 ## Basic Usage
 
@@ -91,7 +92,7 @@ These components must be used inside a `VqForm` or `useVqForm` wrapper. They aut
 | `VqOtpInput` | OTP (one-time password) input bound to form state. |
 | `VqFileInput` | File input bound to form state. |
 | `VqFileUpload` | File upload input with upload handling. |
-| `VqSubmitBtn` | Submit button that reflects form busy/loading state. |
+| `VqSubmitBtn` | Submit button that reflects form busy/loading state. Pass a custom label via the `text` prop or the default slot. |
 
 #### `VqForm` Props
 

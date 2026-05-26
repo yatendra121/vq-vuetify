@@ -16,7 +16,6 @@ import {
 } from "vue";
 
 import { VList } from "vuetify/components";
-import axios, { CancelTokenSource } from "axios";
 import { objectToQueryString } from "@qnx/composables";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
@@ -91,8 +90,7 @@ export const VqList = defineComponent({
 
         watch(
             () => formFilterData.value,
-            //@ts-ignore
-            (newVal, oldVal) => {
+            (_newVal, oldVal) => {
                 if (oldVal === undefined) return;
                 listOptions.page = 1;
                 loadMore();
@@ -111,11 +109,11 @@ export const VqList = defineComponent({
                 .catch(() => {});
         };
 
-        let cancelToken: CancelTokenSource;
+        let abortController: AbortController | undefined;
         const fetchItems = async () => {
             try {
-                cancelToken?.cancel();
-                cancelToken = axios.CancelToken.source();
+                abortController?.abort();
+                abortController = new AbortController();
 
                 loading.value = true;
 
@@ -127,9 +125,9 @@ export const VqList = defineComponent({
                         ""
                     )}`,
                     {
-                        method: "GET"
-                    },
-                    { cancelToken }
+                        method: "GET",
+                        signal: abortController.signal
+                    }
                 );
                 loading.value = false;
                 return response.data;
@@ -185,9 +183,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-interface GenericProps
-    extends ExtractComponentProps<typeof VqList>,
-        ExtractComponentProps<typeof VqList> {}
+type GenericProps = ExtractComponentProps<typeof VqList>;
 
 interface GenericSlotsProps<TValue> {
     items: TValue[];

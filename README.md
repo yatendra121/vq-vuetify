@@ -92,7 +92,7 @@ These components must be used inside a `VqForm` or `useVqForm` wrapper. They aut
 | `VqOtpInput` | OTP (one-time password) input bound to form state. |
 | `VqFileInput` | File input bound to form state. |
 | `VqFileUpload` | File upload input with upload handling. |
-| `VqSubmitBtn` | Submit button that reflects form busy/loading state. |
+| `VqSubmitBtn` | Submit button that reflects form busy/loading state. Pass a custom label via the `text` prop or the default slot. |
 
 #### `VqForm` Props
 

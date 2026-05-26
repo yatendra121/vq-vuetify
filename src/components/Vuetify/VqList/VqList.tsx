@@ -16,7 +16,6 @@ import {
 } from "vue";
 
 import { VList } from "vuetify/components";
-import axios, { CancelTokenSource } from "axios";
 import { objectToQueryString } from "@qnx/composables";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
@@ -111,11 +110,11 @@ export const VqList = defineComponent({
                 .catch(() => {});
         };
 
-        let cancelToken: CancelTokenSource;
+        let abortController: AbortController | undefined;
         const fetchItems = async () => {
             try {
-                cancelToken?.cancel();
-                cancelToken = axios.CancelToken.source();
+                abortController?.abort();
+                abortController = new AbortController();
 
                 loading.value = true;
 
@@ -127,9 +126,9 @@ export const VqList = defineComponent({
                         ""
                     )}`,
                     {
-                        method: "GET"
-                    },
-                    { cancelToken }
+                        method: "GET",
+                        signal: abortController.signal
+                    }
                 );
                 loading.value = false;
                 return response.data;

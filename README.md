@@ -143,8 +143,8 @@ These components must be used inside a `VqForm` or `useVqForm` wrapper. They aut
 | `itemId` | `string` | No | `"0"` | The ID of the row item to act on. |
 | `action` | `string` | No | `"user/change-status"` | API endpoint. The `itemId` is appended as a path segment: `action/itemId`. |
 | `method` | `string` | No | `"PUT"` | HTTP method for the action request. |
-| `title` | `string` | No | `"Confirmation"` | Confirmation dialog title. |
-| `description` | `string` | No | `"Are you sure to want delete this record?"` | Confirmation dialog message. |
+| `title` | `string` | No | `locale.confirmTitle` | Confirmation dialog title. |
+| `description` | `string` | No | `locale.confirmDeleteDescription` | Confirmation dialog message. |
 | `icon` | `string` | No | `mdiDelete` | MDI icon path for the action button. |
 
 ### List Components
@@ -276,6 +276,27 @@ const headers = collectVqHeaders([
   <VqDataTable id="users" action="users" :headers="headers" />
 </template>
 ```
+
+## Localization
+
+Built-in UI strings (`"Submit"`, `"Load More"`, the confirm dialog labels, etc.) can be overridden at app startup with `setVqLocale`:
+
+```ts
+import { setVqLocale } from '@qnx/vuetify'
+
+setVqLocale({
+  submit: 'Enviar',
+  loadMore: 'Cargar más',
+  confirmTitle: 'Confirmación',
+  confirmDeleteDescription: '¿Eliminar este registro?',
+  confirm: 'Confirmar',
+  cancel: 'Cancelar',
+  changeStatusTooltip: 'Cambiar estado',
+  submitErrorMessage: 'Revisa los campos.'
+})
+```
+
+`setVqLocale` accepts a partial — keys you omit stay on the English defaults. The locale store is reactive, so labels update live if you call it again. `resetVqLocale()` restores the bundled English. The `VqLocale` type is exported for typed locale configs.
 
 ## Contributing
 

@@ -1,19 +1,20 @@
 import { defineComponent, inject, Ref } from "vue";
 import { VBtn } from "vuetify/components";
-
+import { useVqLocale } from "../../../config/locale";
 interface VqListInjection {
     loading: Ref<boolean>;
     finished: Ref<boolean>;
     tableListId: string;
     loadMore: () => void;
 }
-
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
-    setup(_props, { attrs, slots }) {
-        const vqList = inject<VqListInjection>("vqList");
+    setup(props, { attrs, slots }) {
+    const vqList = inject<VqListInjection>("vqList");
 
-        return () => (
+    const locale = useVqLocale();
+
+    return () => (
             <>
                 {!vqList?.finished.value && (
                     <VBtn
@@ -25,7 +26,7 @@ export const VqListLoadMoreBtn = defineComponent({
                         v-slots={slots}
                         {...attrs}
                     >
-                        Load More
+                        {locale.loadMore}
                     </VBtn>
                 )}
             </>

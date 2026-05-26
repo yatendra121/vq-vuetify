@@ -1,5 +1,6 @@
 import { Ref, computed, defineComponent, inject, PropType } from "vue";
 import { useFormStore } from "../../store/reactivity/form";
+import { useVqLocale } from "../../config/locale";
 import { VBtn } from "vuetify/components";
 
 export const VqSubmitBtn = defineComponent({
@@ -16,6 +17,7 @@ export const VqSubmitBtn = defineComponent({
     },
     setup(props, { attrs, slots }) {
         const formStore = useFormStore();
+        const locale = useVqLocale();
 
         const formId = inject<Readonly<Ref<string | undefined>>>("formId");
 
@@ -33,7 +35,7 @@ export const VqSubmitBtn = defineComponent({
                     color="primary"
                     {...attrs}
                 >
-                    {slots.default ? slots.default() : (props.text ?? "Submit")}
+                    {slots.default ? slots.default() : (props.text ?? locale.submit)}
                 </VBtn>
             </>
         );

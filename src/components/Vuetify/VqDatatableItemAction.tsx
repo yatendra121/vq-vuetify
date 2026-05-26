@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import { mdiDelete } from "@mdi/js";
 import {
     VBtn,
@@ -15,17 +15,18 @@ import { ApiResponse } from "@qnx/composables";
 import type { ApiResponseValue } from "@qnx/composables";
 import { useMessageInstance } from "../../composables/message";
 import { useFormFilterRepository } from "../../composables/form";
+import { useVqLocale } from "../../config/locale";
 
 export const VqDatatableItemAction = defineComponent({
     name: "VqDatatableItemAction",
     props: {
         title: {
-            type: String as PropType<string>,
-            default: () => "Confirmation"
+            type: String as PropType<string | undefined>,
+            default: () => undefined
         },
         description: {
-            type: String as PropType<string>,
-            default: () => "Are you sure to want delete this record?"
+            type: String as PropType<string | undefined>,
+            default: () => undefined
         },
         action: {
             type: String as PropType<string>,
@@ -51,9 +52,15 @@ export const VqDatatableItemAction = defineComponent({
     setup(props) {
         const { reload } = useFormFilterRepository(`${props.id}_filter`);
         const useMessage = useMessageInstance();
+        const locale = useVqLocale();
 
         const dialog = ref(false);
         const loading = ref(false);
+
+        const dialogTitle = computed(() => props.title ?? locale.confirmTitle);
+        const dialogDescription = computed(
+            () => props.description ?? locale.confirmDeleteDescription
+        );
 
         const onConfirm = () => {
             loading.value = true;
@@ -67,7 +74,7 @@ export const VqDatatableItemAction = defineComponent({
                     reload();
                 })
                 .catch(() => {
-                    useMessage.error("Please check input values.");
+                    useMessage.error(locale.submitErrorMessage);
                 })
                 .finally(() => {
                     loading.value = false;
@@ -76,7 +83,7 @@ export const VqDatatableItemAction = defineComponent({
 
         return () => (
             <>
-                <VTooltip text="Change Status">
+                <VTooltip text={locale.changeStatusTooltip}>
                     {{
                         activator: ({ props: tooltipProps }: any) => (
                             <VBtn
@@ -91,8 +98,8 @@ export const VqDatatableItemAction = defineComponent({
                 </VTooltip>
                 <VDialog v-model={dialog.value} maxWidth="400" persistent={loading.value}>
                     <VCard>
-                        <VCardTitle>{props.title}</VCardTitle>
-                        <VCardText>{props.description}</VCardText>
+                        <VCardTitle>{dialogTitle.value}</VCardTitle>
+                        <VCardText>{dialogDescription.value}</VCardText>
                         <VCardActions>
                             <VSpacer />
                             <VBtn
@@ -101,7 +108,7 @@ export const VqDatatableItemAction = defineComponent({
                                 /* @ts-ignore Vuetify VBtn types omit onClick */
                                 onClick={() => (dialog.value = false)}
                             >
-                                Cancel
+                                {locale.cancel}
                             </VBtn>
                             <VBtn
                                 color="primary"
@@ -109,7 +116,7 @@ export const VqDatatableItemAction = defineComponent({
                                 /* @ts-ignore Vuetify VBtn types omit onClick */
                                 onClick={onConfirm}
                             >
-                                Confirm
+                                {locale.confirm}
                             </VBtn>
                         </VCardActions>
                     </VCard>

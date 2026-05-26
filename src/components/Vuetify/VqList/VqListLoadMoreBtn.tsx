@@ -1,15 +1,17 @@
-//@ts-nocheck
 import { defineComponent, inject, Ref } from "vue";
 import { VBtn } from "vuetify/components";
+
+interface VqListInjection {
+    loading: Ref<boolean>;
+    finished: Ref<boolean>;
+    tableListId: string;
+    loadMore: () => void;
+}
+
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
-    setup(props, { attrs, slots }) {
-        const vqList = inject<{
-            loading: Ref<boolean>;
-            finished: Ref<boolean>;
-            tableListId: string;
-            loadMore: () => void;
-        }>("vqList");
+    setup(_props, { attrs, slots }) {
+        const vqList = inject<VqListInjection>("vqList");
 
         return () => (
             <>
@@ -18,6 +20,7 @@ export const VqListLoadMoreBtn = defineComponent({
                         loading={vqList?.loading.value}
                         disabled={vqList?.loading.value}
                         color="primary"
+                        /* @ts-ignore Vuetify VBtn types omit onClick */
                         onClick={vqList?.loadMore}
                         v-slots={slots}
                         {...attrs}

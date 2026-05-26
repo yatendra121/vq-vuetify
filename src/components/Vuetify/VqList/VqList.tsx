@@ -90,8 +90,7 @@ export const VqList = defineComponent({
 
         watch(
             () => formFilterData.value,
-            //@ts-ignore
-            (newVal, oldVal) => {
+            (_newVal, oldVal) => {
                 if (oldVal === undefined) return;
                 listOptions.page = 1;
                 loadMore();
@@ -184,9 +183,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-interface GenericProps
-    extends ExtractComponentProps<typeof VqList>,
-        ExtractComponentProps<typeof VqList> {}
+type GenericProps = ExtractComponentProps<typeof VqList>;
 
 interface GenericSlotsProps<TValue> {
     items: TValue[];

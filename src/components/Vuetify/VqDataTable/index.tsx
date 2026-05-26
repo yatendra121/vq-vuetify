@@ -180,9 +180,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-interface GenericProps
-    extends ExtractComponentProps<typeof VqDataTable>,
-        ExtractComponentProps<typeof VqDataTable> {}
+type GenericProps = ExtractComponentProps<typeof VqDataTable>;
 
 interface GenericSlotsProps<TValue> {
     item: TValue;
@@ -239,7 +237,6 @@ export const VqSerialNo = defineComponent({
     setup(props) {
         return () => (
             <>
-                {/* @ts-ignore */}
                 <td>{props.index}</td>
             </>
         );

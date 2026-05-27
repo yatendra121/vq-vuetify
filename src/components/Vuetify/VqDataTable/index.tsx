@@ -146,6 +146,7 @@ export const VqDataTable = defineComponent({
         };
 
         onBeforeUnmount(() => {
+            abortController?.abort();
             removeList();
         });
 

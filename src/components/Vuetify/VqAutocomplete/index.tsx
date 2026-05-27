@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRef } from "vue";
+import { defineComponent, onBeforeUnmount, ref, toRef } from "vue";
 import { useField } from "vee-validate";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { VAutocomplete } from "vuetify/components";
@@ -29,19 +29,23 @@ export const VqAutocomplete = defineComponent({
         const items = ref(props.items);
         const loading = ref(false);
 
+        let abortController: AbortController | undefined;
         if (props.action) {
+            abortController = new AbortController();
             loading.value = true;
-            useAsyncAxios(props.action, {})
+            useAsyncAxios(props.action, { signal: abortController.signal })
                 .then((res) => {
                     items.value = res.data.data;
                 })
                 .catch((err) => {
-                    console.error(err.message);
+                    if (err?.name !== "CanceledError") console.error(err.message);
                 })
                 .finally(() => {
                     loading.value = false;
                 });
         }
+
+        onBeforeUnmount(() => abortController?.abort());
 
         return () => (
             <>

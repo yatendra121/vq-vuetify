@@ -22,11 +22,14 @@ export const useFormFilterStore = defineStore("form_filter_values_lib", {
         removeForm(key: string) {
             delete this.forms[key];
         },
+        updateValues(key: string, values: DataObject) {
+            if (this.forms[key]) this.forms[key].values = values;
+        },
         setReloadValue(key: string, val: boolean) {
-            this.forms[key].reloadRequired = val;
+            if (this.forms[key]) this.forms[key].reloadRequired = val;
         },
         setResetValue(key: string, val: boolean) {
-            this.forms[key].resetRequired = val;
+            if (this.forms[key]) this.forms[key].resetRequired = val;
         }
     }
 });

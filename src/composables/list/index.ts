@@ -82,7 +82,7 @@ export const useListRepository = (key: string) => {
 
         if (typeof itemIndex === "number") {
             allList[key]?.items.splice(itemIndex, 1);
-            allList[key].totalItems = allList[key]?.totalItems - 1;
+            allList[key].totalItems = (allList[key]?.totalItems ?? 0) - 1;
         } else console.error("Item id not exist");
     };
 

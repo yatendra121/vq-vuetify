@@ -49,6 +49,7 @@ export const VqList = defineComponent({
         const { items, finished, loading } = toRefs(collectListValues<TValue>());
 
         onBeforeUnmount(() => {
+            abortController?.abort();
             removeList();
         });
 
@@ -58,7 +59,7 @@ export const VqList = defineComponent({
         });
 
         const formFilterStore = useFormFilterStore();
-        const { setReloadValue } = useFormFilterStore();
+        const { setReloadValue, setResetValue } = formFilterStore;
 
         const formFilterData = computed<Object>(() => {
             return formFilterStore.forms[filterId.value]?.values;
@@ -82,7 +83,7 @@ export const VqList = defineComponent({
 
         watch(resetRequired, (newVal) => {
             if (newVal) {
-                setReloadValue(filterId.value, false);
+                setResetValue(filterId.value, false);
                 listOptions.page = 1;
                 loadMore();
             }

@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, onBeforeUnmount, PropType, ref } from "vue";
 import { mdiDelete } from "@mdi/js";
 import {
     VBtn,
@@ -56,6 +56,8 @@ export const VqDatatableItemAction = defineComponent({
 
         const dialog = ref(false);
         const loading = ref(false);
+        let abortController: AbortController | undefined;
+        onBeforeUnmount(() => abortController?.abort());
 
         const dialogTitle = computed(() => props.title ?? locale.confirmTitle);
         const dialogDescription = computed(
@@ -64,8 +66,11 @@ export const VqDatatableItemAction = defineComponent({
 
         const onConfirm = () => {
             loading.value = true;
+            abortController?.abort();
+            abortController = new AbortController();
             useAsyncAxios<ApiResponseValue>(`${props.action}/${props.itemId}`, {
-                method: props.method
+                method: props.method,
+                signal: abortController.signal
             })
                 .then((res) => {
                     const apiRes = new ApiResponse(res);
@@ -73,8 +78,8 @@ export const VqDatatableItemAction = defineComponent({
                     dialog.value = false;
                     reload();
                 })
-                .catch(() => {
-                    useMessage.error(locale.submitErrorMessage);
+                .catch((err) => {
+                    if (err?.name !== "CanceledError") useMessage.error(locale.submitErrorMessage);
                 })
                 .finally(() => {
                     loading.value = false;

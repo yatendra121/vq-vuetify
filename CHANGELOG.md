@@ -1,3 +1,24 @@
+## 0.8.1 (2026-05-27)
+
+Bug Fixes
+
+- Fix `resetRequired` watch calling wrong store action (`setReloadValue` → `setResetValue`), causing the flag to never clear
+- Fix duplicate `useFormFilterStore()` call in `VqList`
+- Fix `VqTableFilterHandler` storing a stale snapshot of form values; now watches and syncs live changes to store
+- Fix `VqDatatableItemAction` and `VqAutocomplete` not cancelling in-flight requests on unmount
+- Fix false error message shown in `VqDatatableItemAction` when request is cancelled on unmount
+- Fix `totalItems` becoming `NaN` after item deletion in list composable
+- Fix `setReloadValue`/`setResetValue` crashing when called before `addForm`
+- Replace `toRefs(store)` with `storeToRefs` in `MessageQueue`
+- Add `updateValues` action to `formFiler` store for live form value sync
+- Abort in-flight requests in `VqDataTable` and `VqList` on unmount
+
+Chores
+
+- Update dependencies (`@qnx/composables`, `@types/node`, `sass`, `vite`, `vite-plugin-dts`, `vitest`, `vue-tsc`)
+- Add `@qnx/client` dev dependency to satisfy `@qnx/composables` 0.8.0 type declarations
+- Improve tsconfig: broaden include to all source files, add `noFallthroughCasesInSwitch`, remove unused `allowJs`/`experimentalDecorators`/`emitDecoratorMetadata`
+
 ## 0.8.0 (2026-04-10)
 
 Features

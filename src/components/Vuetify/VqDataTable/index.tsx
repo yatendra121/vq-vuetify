@@ -155,6 +155,8 @@ export const VqDataTable = defineComponent({
                 <VDataTableServer
                     loading={loading.value ? "primary" : false}
                     page={defaultOptions.page}
+                    itemsPerPage={defaultOptions.itemsPerPage}
+                    sortBy={defaultOptions.sortBy}
                     items={items.value}
                     itemsLength={totalItems.value}
                     onUpdate:options={updateOptions}

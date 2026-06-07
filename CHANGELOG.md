@@ -1,3 +1,19 @@
+## 0.8.5 (2026-06-07)
+
+Bug Fixes
+
+- `VqDataTable`: bind `itemsPerPage` and `sortBy` to `VDataTableServer` so the documented props actually control the table
+- `VqFileUpload`: import `VFileUpload` from `vuetify/components` (promoted out of labs in Vuetify 4.1) instead of `vuetify/labs/VFileUpload`
+
+Tests
+
+- Add Vitest coverage across all components, composables and stores (21 spec files, 92 tests), including a jsdom polyfill setup for Vuetify overlay/loading components
+
+Chores
+
+- Bump `vuetify` dev and peer dependency to `^4.1.0` (required for the stable `VFileUpload`)
+- Stop re-exporting `VqDatatableItemAction` from the components barrel
+
 ## 0.8.1 (2026-05-27)
 
 Bug Fixes

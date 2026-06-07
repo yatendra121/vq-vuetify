@@ -1,6 +1,6 @@
 import { defineComponent, toRef } from "vue";
 import { useField } from "vee-validate";
-import { VFileUpload } from "vuetify/labs/VFileUpload";
+import { VFileUpload } from "vuetify/components";
 
 export const VqFileUpload = defineComponent({
     name: "VqFileUpload",

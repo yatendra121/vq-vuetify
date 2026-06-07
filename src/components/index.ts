@@ -7,7 +7,7 @@ export { VqForm, useVqForm } from "./Vuetify/VqForm/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
 export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
-export { VqDatatableItemAction } from "./Vuetify/VqDatatableItemAction";
+//export { VqDatatableItemAction } from "./Vuetify/VqDatatableItemAction";
 export { VqDatePicker } from "./Vuetify/VqDatePicker";
 export { VqColorPicker } from "./Vuetify/VqColorPicker";
 export { VqTimePicker } from "./Vuetify/VqTimePicker";

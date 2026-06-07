@@ -123,7 +123,7 @@
         "vitest": "^4.1.7",
         "vue-router": "^5.0.7",
         "vue-tsc": "^3.3.2",
-        "vuetify": "^4.0.7",
+        "vuetify": "^4.1.0",
         "webfontloader": "^1.6.28",
         "yup": "^1.7.1"
     },
@@ -135,7 +135,7 @@
         "pinia": "3.x",
         "vee-validate": "*",
         "vue": "*",
-        "vuetify": "^4.0.0",
+        "vuetify": "^4.1.0",
         "yup": "*"
     },
     "peerDependenciesMeta": {

@@ -63,6 +63,33 @@ describe("VqList", () => {
         wrapper.unmount();
     });
 
+    it("emits `error` with the original error when a fetch fails", async () => {
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const failure = Object.assign(new Error("boom"), { name: "AxiosError" });
+        vi.mocked(useAsyncAxios).mockRejectedValueOnce(failure as never);
+
+        const wrapper = mountList("err");
+        await flushPromises();
+
+        expect(wrapper.emitted("error")?.[0]).toEqual([failure]);
+        wrapper.unmount();
+        errorSpy.mockRestore();
+    });
+
+    it("stays silent when a request is aborted (CanceledError)", async () => {
+        const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const aborted = Object.assign(new Error("canceled"), { name: "CanceledError" });
+        vi.mocked(useAsyncAxios).mockRejectedValueOnce(aborted as never);
+
+        const wrapper = mountList("abort");
+        await flushPromises();
+
+        expect(wrapper.emitted("error")).toBeUndefined();
+        expect(errorSpy).not.toHaveBeenCalled();
+        wrapper.unmount();
+        errorSpy.mockRestore();
+    });
+
     it("appends the next page when loadMore is invoked", async () => {
         vi.mocked(useAsyncAxios)
             .mockResolvedValueOnce(page([{ id: 1 }, { id: 2 }], 5) as never)

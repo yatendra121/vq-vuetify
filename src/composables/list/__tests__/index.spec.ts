@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
 import {
     useListRepository,
     updateItemKeyValue,
@@ -6,8 +7,8 @@ import {
     deleteItemValue
 } from "../index";
 
-// The repository is backed by a module-level reactive singleton keyed by
-// string, so every test removes the keys it touches to stay isolated.
+// The repository is backed by a Pinia store, so a fresh pinia per test gives
+// each case an isolated, empty list map.
 const seed = (key: string, items: any[], totalItems = items.length) => {
     const repo = useListRepository(key);
     const list = repo.collectListValues<any>();
@@ -20,14 +21,12 @@ describe("useListRepository", () => {
     let errorSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
+        setActivePinia(createPinia());
         errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     });
 
     afterEach(() => {
         errorSpy.mockRestore();
-        ["a", "b", "c", "d", "e", "f", "users_filter", "posts_filter"].forEach((k) =>
-            useListRepository(k).removeList()
-        );
     });
 
     it("collectListValues creates a fresh list with sane defaults", () => {

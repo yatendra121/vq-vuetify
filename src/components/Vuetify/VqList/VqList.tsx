@@ -38,7 +38,8 @@ export const VqList = defineComponent({
             default: () => 10
         }
     },
-    setup(props, { attrs, slots }) {
+    emits: ["error"],
+    setup(props, { attrs, slots, emit }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;
         });
@@ -99,6 +100,11 @@ export const VqList = defineComponent({
             { deep: true }
         );
 
+        // Aborting a request rejects its promise with a CanceledError; that is
+        // expected (a newer request superseded it) and must not surface as an
+        // error. Anything else is a real failure consumers should see.
+        const isAbortError = (e: unknown) => (e as { name?: string })?.name === "CanceledError";
+
         const loadMore = () => {
             fetchItems()
                 .then((res) => {
@@ -107,17 +113,21 @@ export const VqList = defineComponent({
                     finished.value = listOptions.page_size * listOptions.page >= (res?.total ?? 0);
                     listOptions.page++;
                 })
-                .catch(() => {});
+                .catch((e) => {
+                    if (isAbortError(e)) return;
+                    console.error(e);
+                    emit("error", e);
+                });
         };
 
         let abortController: AbortController | undefined;
         const fetchItems = async () => {
+            abortController?.abort();
+            const controller = new AbortController();
+            abortController = controller;
+
+            loading.value = true;
             try {
-                abortController?.abort();
-                abortController = new AbortController();
-
-                loading.value = true;
-
                 const response = await useAsyncAxios<{
                     data: { data: any; total: number };
                 }>(
@@ -127,14 +137,14 @@ export const VqList = defineComponent({
                     )}`,
                     {
                         method: "GET",
-                        signal: abortController.signal
+                        signal: controller.signal
                     }
                 );
-                loading.value = false;
                 return response.data;
-            } catch (e: any) {
-                loading.value = false;
-                throw new Error(e.message);
+            } finally {
+                // Only the latest request owns the shared loading flag, so a
+                // superseded request can't switch the spinner off prematurely.
+                if (abortController === controller) loading.value = false;
             }
         };
 
@@ -206,6 +216,7 @@ export function useVqList<TValue = unknown>() {
             // Same trick as `$slots`, we override the emit information for that component
             $emit: {
                 (e: "changed", value: TValue): void;
+                (e: "error", error: unknown): void;
             };
             $slots: {
                 default: (arg: GenericSlotsProps<TValue>) => VNode[];

@@ -54,7 +54,8 @@ export const VqDataTable = defineComponent({
             default: () => [{ key: "name", order: "asc" }]
         }
     },
-    setup(props, { attrs, slots }) {
+    emits: ["error"],
+    setup(props, { attrs, slots, emit }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;
         });
@@ -78,15 +79,34 @@ export const VqDataTable = defineComponent({
             return formFilterStore.forms[filterId.value]?.values;
         });
 
+        // Aborting a request rejects its promise with a CanceledError; that is
+        // expected (a newer request superseded it) and must not surface as an
+        // error. Anything else is a real failure consumers should see.
+        const isAbortError = (e: unknown) => (e as { name?: string })?.name === "CanceledError";
+
+        const loadItems = (options: {
+            page: number;
+            itemsPerPage: number;
+            sortBy: SortByValue[];
+        }) => {
+            fetchItems(options)
+                .then(({ data, total }) => {
+                    items.value = data;
+                    totalItems.value = total;
+                })
+                .catch((e) => {
+                    if (isAbortError(e)) return;
+                    console.error(e);
+                    emit("error", e);
+                });
+        };
+
         watch(
             () => formFilterData.value,
             (_newVal, oldVal) => {
                 if (oldVal === undefined) return;
                 defaultOptions.page = 1;
-                fetchItems(defaultOptions).then(({ data, total }) => {
-                    items.value = data;
-                    totalItems.value = total;
-                });
+                loadItems(defaultOptions);
             },
             { deep: true }
         );
@@ -101,12 +121,12 @@ export const VqDataTable = defineComponent({
             itemsPerPage: number;
             sortBy: SortByValue[];
         }) => {
+            abortController?.abort();
+            const controller = new AbortController();
+            abortController = controller;
+
+            loading.value = true;
             try {
-                abortController?.abort();
-                abortController = new AbortController();
-
-                loading.value = true;
-
                 const response = await useAsyncAxios<{
                     data: { data: unknown[]; total: number };
                 }>(
@@ -123,14 +143,14 @@ export const VqDataTable = defineComponent({
                     )}`,
                     {
                         method: props.method,
-                        signal: abortController.signal
+                        signal: controller.signal
                     }
                 );
-                loading.value = false;
                 return response.data;
-            } catch (e: any) {
-                loading.value = false;
-                throw new Error(e.message);
+            } finally {
+                // Only the latest request owns the shared loading flag, so a
+                // superseded request can't switch the spinner off prematurely.
+                if (abortController === controller) loading.value = false;
             }
         };
 
@@ -139,10 +159,7 @@ export const VqDataTable = defineComponent({
             itemsPerPage: number;
             sortBy: SortByValue[];
         }) => {
-            fetchItems(options).then(({ data, total }) => {
-                items.value = data;
-                totalItems.value = total;
-            });
+            loadItems(options);
         };
 
         onBeforeUnmount(() => {
@@ -206,6 +223,7 @@ export function useVqDataTable<TValue = unknown>() {
             // Same trick as `$slots`, we override the emit information for that component
             $emit: {
                 (e: "changed", value: TValue): void;
+                (e: "error", error: unknown): void;
             };
             $slots: {
                 item: (arg: GenericSlotsProps<TValue>) => VNode[];

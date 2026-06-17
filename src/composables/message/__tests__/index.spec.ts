@@ -1,26 +1,18 @@
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { useMessageInstance } from "../index";
 import { useMessageStore } from "../../../store/reactivity/message";
 
-// `useMessageInstance` returns a process-wide singleton that captures the
-// message store on first construction. We therefore install a single pinia
-// for the whole file, force the singleton to bind to it, and reset the
-// store's contents between tests rather than swapping pinia instances.
+// `useMessageInstance` resolves the message store from the active pinia on
+// every call, so a fresh pinia per test gives each case an isolated store.
 describe("useMessageInstance", () => {
-    beforeAll(() => {
-        setActivePinia(createPinia());
-        useMessageInstance(); // bind the singleton's store to this pinia
-    });
-
     beforeEach(() => {
-        const store = useMessageStore();
-        store.items.splice(0);
-        store.id = 1;
+        setActivePinia(createPinia());
     });
 
-    it("returns the same singleton instance on every call", () => {
-        expect(useMessageInstance()).toBe(useMessageInstance());
+    it("binds to the active pinia store on every call", () => {
+        useMessageInstance().success("hi");
+        expect(useMessageStore().items).toHaveLength(1);
     });
 
     it("success() adds a message with the success color", () => {

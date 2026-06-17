@@ -1,22 +1,16 @@
 import { reactive } from "vue";
-
-interface List<T> {
-    items: T[];
-    totalItems: number;
-    finished: boolean;
-    loading: boolean;
-}
-
-//
-const allList = reactive<{ [key: string]: List<any> }>({});
+import { useListDataStore, type List } from "../../store/reactivity/list";
 
 /**
  * This function is using for internal uses only
- * Using for interact with reactive allList data
+ * Using for interact with reactive list data
  * @param key
  * @returns Object
  */
 export const useListRepository = (key: string) => {
+    // Resolve per-app state lazily so it is not shared across SSR requests.
+    const allList = useListDataStore().lists;
+
     /**
      * Using for create a new list
      * @returns A single list

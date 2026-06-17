@@ -1,15 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { useFormStore } from "../form";
 
 describe("useFormStore", () => {
     beforeEach(() => {
         setActivePinia(createPinia());
-        vi.useFakeTimers();
-    });
-
-    afterEach(() => {
-        vi.useRealTimers();
     });
 
     it("starts with an empty forms map", () => {
@@ -38,16 +33,12 @@ describe("useFormStore", () => {
         expect(store.forms["create-user"].busy).toBe(true);
     });
 
-    it("changeBusy(key, false) clears busy after a 100ms debounce", () => {
+    it("changeBusy(key, false) clears busy synchronously", () => {
         const store = useFormStore();
         store.addForm("create-user");
         store.changeBusy("create-user", true);
 
         store.changeBusy("create-user", false);
-        // still busy immediately after the call
-        expect(store.forms["create-user"].busy).toBe(true);
-
-        vi.advanceTimersByTime(100);
         expect(store.forms["create-user"].busy).toBe(false);
     });
 
@@ -57,10 +48,9 @@ describe("useFormStore", () => {
         expect(store.forms["missing"]).toBeUndefined();
     });
 
-    it("changeBusy(key, false) does not create a missing form after the debounce", () => {
+    it("changeBusy(key, false) does not create a missing form", () => {
         const store = useFormStore();
         store.changeBusy("missing", false);
-        vi.advanceTimersByTime(100);
         expect(store.forms["missing"]).toBeUndefined();
     });
 });

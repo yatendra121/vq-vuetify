@@ -18,11 +18,7 @@ export const useFormStore = defineStore("form_data_lib", {
             delete this.forms[key];
         },
         changeBusy(key: string, val: boolean) {
-            if (val && this.forms[key]) this.forms[key].busy = val;
-            else
-                setTimeout(() => {
-                    if (this.forms[key]) this.forms[key].busy = val;
-                }, 100);
+            if (this.forms[key]) this.forms[key].busy = val;
         }
     }
 });

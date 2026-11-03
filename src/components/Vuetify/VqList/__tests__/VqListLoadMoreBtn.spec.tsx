@@ -47,6 +47,26 @@ describe("VqListLoadMoreBtn", () => {
         expect(wrapper.find(".v-btn").exists()).toBe(false);
     });
 
+    it("does not warn about attrs once the list is finished", () => {
+        const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+        mount(VqListLoadMoreBtn, {
+            attrs: { id: "more" },
+            global: {
+                plugins: [createVuetify()],
+                provide: {
+                    vqList: {
+                        loading: ref(false),
+                        finished: ref(true),
+                        tableListId: "users",
+                        loadMore: vi.fn()
+                    }
+                }
+            }
+        });
+        expect(warn.mock.calls.flat().join(" ")).not.toContain("Extraneous");
+        warn.mockRestore();
+    });
+
     it("reflects the loading state as a disabled, loading button", () => {
         const wrapper = mountBtn({
             loading: ref(true),

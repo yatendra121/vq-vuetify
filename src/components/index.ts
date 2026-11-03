@@ -6,6 +6,7 @@ export { VqList, VqTableFilter, VqListLoadMoreBtn } from "./Vuetify/VqList";
 export { VqForm, useVqForm } from "./Vuetify/VqForm/VqForm";
 export { VqCheckbox } from "./Vuetify/VqCheckbox";
 export { VqSubmitBtn } from "./Basic/SubmitButton";
+export { VqMessageQueue } from "./Basic/MessageQueue";
 export { VqDataTable, VqSerialNo, collectVqHeaders } from "./Vuetify/VqDataTable";
 //export { VqDatatableItemAction } from "./Vuetify/VqDatatableItemAction";
 export { VqDatePicker } from "./Vuetify/VqDatePicker";

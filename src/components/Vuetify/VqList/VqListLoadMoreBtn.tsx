@@ -9,12 +9,14 @@ interface VqListInjection {
 }
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
+    // Attrs go to the button, which isn't rendered once the list is finished.
+    inheritAttrs: false,
     setup(_props, { attrs, slots }) {
-    const vqList = inject<VqListInjection>("vqList");
+        const vqList = inject<VqListInjection | undefined>("vqList", undefined);
 
-    const locale = useVqLocale();
+        const locale = useVqLocale();
 
-    return () => (
+        return () => (
             <>
                 {!vqList?.finished.value && (
                     <VBtn
@@ -22,7 +24,7 @@ export const VqListLoadMoreBtn = defineComponent({
                         disabled={vqList?.loading.value}
                         color="primary"
                         /* @ts-ignore Vuetify VBtn types omit onClick */
-                        onClick={vqList?.loadMore}
+                        onClick={() => vqList?.loadMore()}
                         v-slots={slots}
                         {...attrs}
                     >
@@ -34,5 +36,4 @@ export const VqListLoadMoreBtn = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
 export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtn;

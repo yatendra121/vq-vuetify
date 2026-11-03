@@ -169,7 +169,7 @@ Now a component `action="users"` resolves to `GET {baseURL}/users`.
 
 ### Rich text editor *(optional)*
 
-`VqTextEditor` ships from the optional `/integrations` entry and requires `@tinymce/tinymce-vue`. Set the asset base URL once:
+`VqTextEditor` ships from the optional `/integrations` entry and requires `@tinymce/tinymce-vue`. Set the asset base URL once (the editor loads `{baseUrl}/{filesPath}`, with `filesPath` defaulting to `static/tinymce/tinymce.min.js`):
 
 ```ts
 import { setConfig } from '@qnx/vuetify/integrations'
@@ -217,7 +217,7 @@ const onSuccess = (res) => console.log(res)
 
 ### Server-side data table
 
-Pagination, sorting, debounced filtering, request cancellation, and loading state — all internal:
+Pagination, sorting, filtering, request cancellation, and loading state — all internal:
 
 ```vue
 <script setup lang="ts">
@@ -250,7 +250,7 @@ const headers = collectVqHeaders([
 ```vue
 <template>
   <VqList id="posts" action="posts" :page-size="10">
-    <template #default="{ items }">
+    <template #default="{ items, loading, finished, loadMore }">
       <div v-for="post in items" :key="post.id">{{ post.title }}</div>
     </template>
     <template #load-more>
@@ -262,7 +262,7 @@ const headers = collectVqHeaders([
 
 ### Filter + table pattern
 
-A `VqTableFilter` and `VqDataTable` (or `VqList`) share an `id`; changing a filter reloads the data automatically:
+A `VqTableFilter` and `VqDataTable` (or `VqList`) share an `id`; changing a filter reloads the data automatically. Each change sends a request and cancels the previous one — set `filter-debounce` (ms) on the table or list to wait for typing to pause:
 
 ```vue
 <template>
@@ -270,7 +270,34 @@ A `VqTableFilter` and `VqDataTable` (or `VqList`) share an `id`; changing a filt
     <VqTextField name="search" label="Search" />
   </VqTableFilter>
 
-  <VqDataTable id="users" action="users" :headers="headers" />
+  <VqDataTable id="users" action="users" :headers="headers" :filter-debounce="300" />
+</template>
+```
+
+### Reloading after a change
+
+`useFormFilterRepository` refreshes a table or list from anywhere, with or without a `VqTableFilter`. Its key is the list's `id` plus `_filter`. `reload()` keeps a table on its current page; `reset()` returns to the first page. Lists restart from the first page for both.
+
+```ts
+import { useFormFilterRepository } from '@qnx/vuetify'
+
+const { reload, reset } = useFormFilterRepository('users_filter')
+```
+
+### Snackbar messages
+
+Mount `VqMessageQueue` once near your app root to show messages from `useMessageInstance()` and from `VqDatatableItemAction`:
+
+```vue
+<script setup>
+import { useMessageInstance } from '@qnx/vuetify'
+
+const message = useMessageInstance()
+message.success('Saved')
+</script>
+
+<template>
+  <VqMessageQueue />
 </template>
 ```
 
@@ -295,6 +322,16 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 | `VqFileUpload`   | File upload with upload handling                    |
 | `VqSubmitBtn`    | Submit button reflecting form busy state            |
 
+Fields validate on submit. Once a field shows an error, it re-validates as its value changes, so the message clears when corrected.
+
+`VqDatePicker`, `VqTimePicker`, and `VqColorPicker` render a read-only text field that opens the picker. `id` and `placeholder` go to the text field, and other attributes go to the picker; use `field-props` for anything else on the text field, e.g. `:field-props="{ variant: 'outlined' }"`. Set `type` to open the picker in a dialog instead of a menu. Space or ArrowDown opens the picker from the keyboard; Enter still submits the form.
+
+> **`VqDatePicker` values.** Picking a date stores a `Date` at local midnight, which JSON serializes to the previous day anywhere east of Greenwich. Add `date-only` to store a `YYYY-MM-DD` string instead.
+
+> **`VqFileInput` validation.** By default the value is stored under the literal key `name[file]`, so a schema must use that exact key: `object({ 'avatar[file]': mixed().required() })`. A schema on `avatar` or `avatar.file` never sees the value, so the form can't submit. For a schema on `avatar`, add `raw-name`, which stores the value at `avatar` and changes the submitted key from `avatar[file]` to `avatar`.
+
+> **Event names.** `submited-*` is the established spelling, so it's the one to listen for.
+
 <details>
 <summary><b><code>VqForm</code> props &amp; events</b></summary>
 
@@ -306,7 +343,7 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 | `action`                 | `string`   | —           | API endpoint for submission *(required)*         |
 | `method`                 | `string`   | `"POST"`    | HTTP method                                      |
 | `initialValues`          | `object`   | `undefined` | Initial values — form resets when this changes   |
-| `validationSchema`       | `object`   | `undefined` | Yup validation schema                            |
+| `validationSchema`       | `object`   | `undefined` | Yup validation schema. It can be swapped later, but vee-validate ignores one first set after the form is created; change the form's `key` to recreate it |
 | `valuesSchema`           | `object`   | `undefined` | Maps nested response fields to flat form fields  |
 | `formData`               | `boolean`  | `false`     | Submit as `multipart/form-data`                  |
 | `successResponseHandler` | `function` | —           | Custom success handler                           |
@@ -318,7 +355,8 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 | ------------------------ | ------------- | ---------------------------------- |
 | `submited-success`       | `ApiResponse` | Server responds successfully       |
 | `submited-error`         | `ApiResponse` | Server returns a validation error  |
-| `submited-client-error`  | —             | Client-side validation fails       |
+| `submited-client-error`  | vee-validate invalid-submit context | Client-side validation fails |
+| `submited-request-error` | `AxiosError`  | Request fails with any other error (500s, network failures) |
 
 </details>
 
@@ -333,6 +371,8 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 <details>
 <summary><b><code>VqDataTable</code> &amp; <code>VqDatatableItemAction</code> props</b></summary>
 
+`VqDatatableItemAction` is a named export and is not registered by the plugin, so an app's own global component of that name keeps working: `import { VqDatatableItemAction } from '@qnx/vuetify'`.
+
 **`VqDataTable`**
 
 | Prop           | Type            | Default                           | Description                       |
@@ -342,19 +382,25 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 | `method`       | `string`        | `"GET"`                           | HTTP method                       |
 | `page`         | `number`        | `1`                               | Initial page                      |
 | `itemsPerPage` | `number`        | `10`                              | Rows per page                     |
-| `sortBy`       | `SortByValue[]` | `[{ key: "name", order: "asc" }]` | Default sort                      |
+| `sortBy`       | `SortByValue[]` | `[{ key: "name", order: "asc" }]` | Default sort. The default is sent even if there's no `name` column; pass `[]` to send no sort |
+| `filterDebounce` | `number`      | `0`                               | Delay (ms) before a filter change refetches |
+
+Changing `page`, `itemsPerPage`, `sortBy`, or `action` after mount refetches. Emits `error` when a fetch fails.
+
+Requests send `page`, `itemsPerPage`, and `sortBy`. `VqList` sends `page` and `page_size` instead, so a shared endpoint has to accept both.
 
 **`VqDatatableItemAction`**
 
 | Prop          | Type     | Default                           | Description                               |
 | ------------- | -------- | --------------------------------- | ----------------------------------------- |
 | `id`          | `string` | —                                 | Table ID — reloads after action *(req.)*  |
-| `itemId`      | `string` | `"0"`                             | Row ID, appended to `action` as a path    |
+| `itemId`      | `string \| number` | `"0"`                  | Row ID, appended to `action` as a path    |
 | `action`      | `string` | `"user/change-status"`            | API endpoint                              |
 | `method`      | `string` | `"PUT"`                           | HTTP method                               |
 | `title`       | `string` | `locale.confirmTitle`             | Dialog title                              |
 | `description` | `string` | `locale.confirmDeleteDescription` | Dialog message                            |
-| `icon`        | `string` | `mdiDelete`                       | MDI icon path                             |
+| `icon`        | `string` | Delete icon                       | Icon name or SVG path                     |
+| `tooltip`     | `string` | `locale.changeStatusTooltip`      | Tooltip and accessible label              |
 
 </details>
 
@@ -375,7 +421,11 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 | ---------- | -------- | ------- | ------------------------------------ |
 | `id`       | `string` | —       | Identifier *(required)*              |
 | `action`   | `string` | —       | Fetch endpoint *(required)*          |
+| `method`   | `string` | `"GET"` | HTTP method                          |
 | `pageSize` | `number` | `10`    | Items per page                       |
+| `filterDebounce` | `number` | `0` | Delay (ms) before a filter change refetches |
+
+**Slots:** `default` and `load-more` both receive `{ items, loading, finished, loadMore }`; other `VList` slots are forwarded. Without a `default` or `load-more` slot, `VList` renders `items` itself. Emits `error` when a fetch fails.
 
 **`VqTableFilter`**
 
@@ -389,10 +439,12 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 
 | Composable             | Returns                                                            |
 | ---------------------- | ----------------------------------------------------------------- |
-| `useVqForm(options)`   | A form `wrapper` plus state helpers (`resetForm`, errors, values) |
+| `useVqForm(options)`   | A form `wrapper` plus `resetForm`, `values`, `errors`, `meta`, `setFieldValue`, `setValues`, `setErrors`, `validate` |
 | `useVqDataTable<T>()`  | A typed `VqDataTable` with inference for item slots               |
 | `useVqList<T>()`       | A typed `VqList` with inference for the default slot's `items`    |
 | `collectVqHeaders(h)`  | Prepends a `#` serial-number column to a headers array            |
+| `useFormFilterRepository(key)` | `reload()` / `reset()` for the table or list with that key (`<id>_filter`) |
+| `useMessageInstance()` | `success()` / `warning()` / `error()` snackbar helpers            |
 
 ```ts
 import { useVqForm } from '@qnx/vuetify'
@@ -418,7 +470,10 @@ setVqLocale({
   confirmTitle: 'Confirmación',
   confirmDeleteDescription: '¿Eliminar este registro?',
   confirm: 'Confirmar',
-  cancel: 'Cancelar'
+  cancel: 'Cancelar',
+  selectTime: 'Seleccionar hora',
+  close: 'Cerrar',
+  next: 'Siguiente'
 })
 ```
 

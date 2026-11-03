@@ -50,7 +50,7 @@ export const useListRepository = (key: string) => {
      * @returns
      */
     const getItemIndex = (itemId: string | number) => {
-        return allList[key]?.items.findIndex((item: any) => item?.id === itemId);
+        return allList[key]?.items.findIndex((item: any) => item?.id === itemId) ?? -1;
     };
 
     /**
@@ -59,9 +59,9 @@ export const useListRepository = (key: string) => {
      * @param value
      * @param itemKey
      */
-    const updateListItemValue = (itemId: string, value: unknown, itemKey?: string) => {
+    const updateListItemValue = (itemId: string | number, value: unknown, itemKey?: string) => {
         const itemIndex = getItemIndex(itemId);
-        if (typeof itemIndex === "number") {
+        if (itemIndex >= 0) {
             if (typeof itemKey === "string") allList[key].items[itemIndex][itemKey] = value;
             else allList[key].items[itemIndex] = value;
         } else console.error("Item id not exist");
@@ -71,10 +71,10 @@ export const useListRepository = (key: string) => {
      * Using for dalete an value of a single list
      * @param itemId
      */
-    const deleteListItemValue = (itemId: string) => {
+    const deleteListItemValue = (itemId: string | number) => {
         const itemIndex = getItemIndex(itemId);
 
-        if (typeof itemIndex === "number") {
+        if (itemIndex >= 0) {
             allList[key]?.items.splice(itemIndex, 1);
             allList[key].totalItems = (allList[key]?.totalItems ?? 0) - 1;
         } else console.error("Item id not exist");
@@ -90,7 +90,7 @@ export const useListRepository = (key: string) => {
 
 export const updateItemKeyValue = (
     filterListId: string,
-    itemId: string,
+    itemId: string | number,
     key: string,
     value: any
 ) => {
@@ -98,12 +98,12 @@ export const updateItemKeyValue = (
     updateListItemValue(itemId, value, key);
 };
 
-export const updateItemValue = (filterListId: string, itemId: string, value: any) => {
+export const updateItemValue = (filterListId: string, itemId: string | number, value: any) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value);
 };
 
-export const deleteItemValue = (filterListId: string, itemId: string) => {
+export const deleteItemValue = (filterListId: string, itemId: string | number) => {
     const { deleteListItemValue } = useListRepository(filterListId + "_filter");
     deleteListItemValue(itemId);
 };

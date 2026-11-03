@@ -1,4 +1,3 @@
-import path from 'path'
 import fs from 'fs/promises'
 //import { readFileSync } from "fs";
 
@@ -87,7 +86,7 @@ async function getShims() {
         .join('\n')
 
     return (
-        await fs.readFile(path.resolve('../vq-vuetify/src/shims.d.ts'), {
+        await fs.readFile(new URL('../src/shims.d.ts', import.meta.url), {
             encoding: 'utf8'
         })
     )

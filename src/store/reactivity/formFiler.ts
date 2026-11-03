@@ -2,7 +2,8 @@ import { defineStore } from "pinia";
 type DataObject = Record<string, any>;
 
 export type FormFilterData = {
-    values: DataObject;
+    /** Undefined until a VqTableFilter registers its values. */
+    values?: DataObject;
     resetRequired: boolean;
     reloadRequired: boolean;
 };
@@ -18,6 +19,9 @@ export const useFormFilterStore = defineStore("form_filter_values_lib", {
                 reloadRequired: false
             };
             this.forms[key] = newForm;
+        },
+        ensureForm(key: string) {
+            this.forms[key] ??= { resetRequired: false, reloadRequired: false };
         },
         removeForm(key: string) {
             delete this.forms[key];

@@ -1,3 +1,16 @@
+## 0.8.6 (2026-11-03)
+
+Bug Fixes
+
+- Make the `VqList`/`VqDataTable` dataset and snackbar message state SSR-safe by moving them from module scope into Pinia
+- `VqList`/`VqDataTable`: stop swallowing fetch failures; real errors are logged and emitted through a new `error` event, while aborted requests stay silent
+- `VqForm`: set the busy state synchronously so a stale timer can't re-enable the submit button mid-request and allow a double submit
+
+Chores
+
+- Bump `vite` to `^8.0.16` to patch a security advisory
+- Refresh locked dependencies within their existing ranges to clear high-severity audit findings; tested against `vuetify` 4.3.1
+
 ## 0.8.5 (2026-06-07)
 
 Bug Fixes

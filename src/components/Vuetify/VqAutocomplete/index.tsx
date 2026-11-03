@@ -4,7 +4,7 @@ import { VAutocomplete } from "vuetify/components";
 import { useVqField } from "../../../composables/field";
 
 export const VqAutocomplete = defineComponent({
-    name: "VqAutocomplete",
+    name: "VqAutoComplete",
     props: {
         name: {
             type: String,

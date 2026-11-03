@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VColorPicker, VDialog, VMenu, VTextField } from "vuetify/components";
-import { useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, useVqField } from "../../../composables/field";
 
 type Value = string | Record<string, unknown> | null | undefined;
 
@@ -29,6 +29,7 @@ export const VqColorPicker = defineComponent({
         const { value, errorMessage } = useVqField<Value>(toRef(props, "name"));
 
         const modal = ref(false);
+        const onKeydown = openPickerOnKeydown(() => (modal.value = true));
 
         // Non-string values ({ r, g, b }) would otherwise show as [object Object].
         const displayValue = computed(() =>
@@ -50,6 +51,7 @@ export const VqColorPicker = defineComponent({
                         focused={modal.value}
                         label={props.label}
                         readonly
+                        {...{ onKeydown }}
                         {...props.fieldProps}
                     >
                         <ViewComponent

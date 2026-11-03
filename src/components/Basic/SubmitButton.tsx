@@ -4,7 +4,7 @@ import { useVqLocale } from "../../config/locale";
 import { VBtn } from "vuetify/components";
 
 export const VqSubmitBtn = defineComponent({
-    name: "VqSubmitBtn",
+    name: "VqSubmitButton",
     props: {
         form: {
             type: String,

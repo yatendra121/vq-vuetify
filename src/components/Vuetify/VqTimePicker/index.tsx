@@ -1,6 +1,6 @@
 import { defineComponent, PropType, ref, toRef } from "vue";
 import { VTextField, VDialog, VMenu, VTimePicker } from "vuetify/components";
-import { useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, useVqField } from "../../../composables/field";
 import { useVqLocale } from "../../../config/locale";
 
 export const VqTimePicker = defineComponent({
@@ -29,6 +29,7 @@ export const VqTimePicker = defineComponent({
         const locale = useVqLocale();
 
         const modal = ref(false);
+        const onKeydown = openPickerOnKeydown(() => (modal.value = true));
 
         return () => {
             const ViewComponent = props.type ? VDialog : VMenu;
@@ -43,6 +44,7 @@ export const VqTimePicker = defineComponent({
                         focused={modal.value}
                         label={props.label}
                         readonly
+                        {...{ onKeydown }}
                         {...props.fieldProps}
                     >
                         <ViewComponent

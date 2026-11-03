@@ -54,6 +54,13 @@ describe("VqTextEditor", () => {
         );
     });
 
+    it("keeps filesPath relative when baseUrl is empty", () => {
+        const wrapper = mountEditor({ baseUrl: "", filesPath: "static/tinymce.min.js" });
+        expect(wrapper.find("textarea").attributes("tinymce-script-src")).toBe(
+            "static/tinymce.min.js"
+        );
+    });
+
     it("renders the label prop", () => {
         expect(mountEditor({ label: "Body" }).find("label").text()).toBe("Body");
         expect(mountEditor().find("label").exists()).toBe(false);

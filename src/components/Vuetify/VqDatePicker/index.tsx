@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VDatePicker, VDialog, VMenu, VTextField } from "vuetify/components";
-import { useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, useVqField } from "../../../composables/field";
 
 type DateValue = string | Date;
 type Value = DateValue | DateValue[] | undefined;
@@ -44,6 +44,14 @@ export const VqDatePicker = defineComponent({
             type: Boolean,
             default: false
         },
+        /**
+         * Store `YYYY-MM-DD` strings instead of Date objects. A Date is local midnight,
+         * so JSON turns it into the previous day anywhere east of Greenwich.
+         */
+        dateOnly: {
+            type: Boolean,
+            default: false
+        },
         /** Props for the text field; other attrs go to the VDatePicker. */
         fieldProps: {
             type: Object as PropType<Record<string, unknown>>,
@@ -64,9 +72,14 @@ export const VqDatePicker = defineComponent({
         const displayValue = computed(() => dates.value.map(formatDate).join(", ") || undefined);
 
         const modal = ref(false);
+        const onKeydown = openPickerOnKeydown(() => (modal.value = true));
+
+        const toStoredDate = (val: DateValue) =>
+            props.dateOnly && val instanceof Date ? formatDate(val) : val;
 
         const updateValue = (val: Value) => {
-            value.value = val;
+            if (val === undefined) value.value = val;
+            else value.value = Array.isArray(val) ? val.map(toStoredDate) : toStoredDate(val);
             if (!props.multiple) modal.value = false;
         };
 
@@ -83,6 +96,7 @@ export const VqDatePicker = defineComponent({
                         focused={modal.value}
                         label={props.label}
                         readonly
+                        {...{ onKeydown }}
                         {...props.fieldProps}
                     >
                         <ViewComponent

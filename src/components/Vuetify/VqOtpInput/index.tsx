@@ -28,11 +28,9 @@ export const VqOtpInput = defineComponent({
                     {...attrs}
                 ></VOtpInput>
                 {/* VOtpInput has no error-messages prop of its own. */}
-                <VMessages
-                    active={!!errorMessage.value}
-                    color="error"
-                    messages={errorMessage.value}
-                ></VMessages>
+                {errorMessage.value && (
+                    <VMessages active color="error" messages={errorMessage.value}></VMessages>
+                )}
             </>
         );
     }

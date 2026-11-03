@@ -324,7 +324,13 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 
 Fields validate on submit. Once a field shows an error, it re-validates as its value changes, so the message clears when corrected.
 
-`VqDatePicker`, `VqTimePicker`, and `VqColorPicker` render a read-only text field that opens the picker. Extra attributes go to the picker; use `field-props` for the text field, e.g. `:field-props="{ variant: 'outlined' }"`. Set `type` to open the picker in a dialog instead of a menu.
+`VqDatePicker`, `VqTimePicker`, and `VqColorPicker` render a read-only text field that opens the picker. Extra attributes go to the picker; use `field-props` for the text field, e.g. `:field-props="{ variant: 'outlined' }"`. Set `type` to open the picker in a dialog instead of a menu. Space or ArrowDown opens the picker from the keyboard; Enter still submits the form.
+
+> **`VqDatePicker` values.** Picking a date stores a `Date` at local midnight, which JSON serializes to the previous day anywhere east of Greenwich. Add `date-only` to store a `YYYY-MM-DD` string instead.
+
+> **`VqFileInput` validation.** By default the value is stored under the literal key `name[file]`, so a schema must use that exact key: `object({ 'avatar[file]': mixed().required() })`. A schema on `avatar` or `avatar.file` never sees the value, so the form can't submit. For a schema on `avatar`, add `raw-name`, which stores the value at `avatar` and changes the submitted key from `avatar[file]` to `avatar`.
+
+> **Event names.** `submited-*` is the established spelling, so it's the one to listen for.
 
 <details>
 <summary><b><code>VqForm</code> props &amp; events</b></summary>
@@ -337,7 +343,7 @@ Fields validate on submit. Once a field shows an error, it re-validates as its v
 | `action`                 | `string`   | —           | API endpoint for submission *(required)*         |
 | `method`                 | `string`   | `"POST"`    | HTTP method                                      |
 | `initialValues`          | `object`   | `undefined` | Initial values — form resets when this changes   |
-| `validationSchema`       | `object`   | `undefined` | Yup validation schema — can be swapped later, but must be set when the form is created |
+| `validationSchema`       | `object`   | `undefined` | Yup validation schema. It can be swapped later, but vee-validate ignores one first set after the form is created; change the form's `key` to recreate it |
 | `valuesSchema`           | `object`   | `undefined` | Maps nested response fields to flat form fields  |
 | `formData`               | `boolean`  | `false`     | Submit as `multipart/form-data`                  |
 | `successResponseHandler` | `function` | —           | Custom success handler                           |
@@ -365,6 +371,8 @@ Fields validate on submit. Once a field shows an error, it re-validates as its v
 <details>
 <summary><b><code>VqDataTable</code> &amp; <code>VqDatatableItemAction</code> props</b></summary>
 
+`VqDatatableItemAction` is a named export and is not registered by the plugin, so an app's own global component of that name keeps working: `import { VqDatatableItemAction } from '@qnx/vuetify'`.
+
 **`VqDataTable`**
 
 | Prop           | Type            | Default                           | Description                       |
@@ -374,10 +382,12 @@ Fields validate on submit. Once a field shows an error, it re-validates as its v
 | `method`       | `string`        | `"GET"`                           | HTTP method                       |
 | `page`         | `number`        | `1`                               | Initial page                      |
 | `itemsPerPage` | `number`        | `10`                              | Rows per page                     |
-| `sortBy`       | `SortByValue[]` | `[{ key: "name", order: "asc" }]` | Default sort                      |
+| `sortBy`       | `SortByValue[]` | `[{ key: "name", order: "asc" }]` | Default sort. The default is sent even if there's no `name` column; pass `[]` to send no sort |
 | `filterDebounce` | `number`      | `0`                               | Delay (ms) before a filter change refetches |
 
 Changing `page`, `itemsPerPage`, `sortBy`, or `action` after mount refetches. Emits `error` when a fetch fails.
+
+Requests send `page`, `itemsPerPage`, and `sortBy`. `VqList` sends `page` and `page_size` instead, so a shared endpoint has to accept both.
 
 **`VqDatatableItemAction`**
 

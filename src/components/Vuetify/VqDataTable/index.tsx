@@ -86,9 +86,13 @@ export const VqDataTable = defineComponent({
             () => props.itemsPerPage,
             (val) => (defaultOptions.itemsPerPage = val)
         );
+        // An inline `:sort-by="[...]"` is a new array on every parent render; only a
+        // real change may replace the sort the user picked in the table header.
         watch(
             () => props.sortBy,
-            (val) => (defaultOptions.sortBy = val)
+            (val, oldVal) => {
+                if (JSON.stringify(val) !== JSON.stringify(oldVal)) defaultOptions.sortBy = val;
+            }
         );
         watch(
             () => props.action,

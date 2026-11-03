@@ -21,12 +21,16 @@ Bug Fixes
 - `VqList`: `loadMore` no longer aborts an in-flight page or requests past the end; `pageSize` and `action` changes now apply
 - `VqTextEditor`: `label` and `placeholder` now work, `baseUrl` no longer needs a trailing slash, attrs reach the editor, and no empty error paragraph is rendered
 - `VqColorPicker`: object values no longer show as `[object Object]`
+- `VqFileInput`: errors reported on `name` or `name.file`, including Laravel-style `name.file` server errors, are now displayed instead of blocking submit with no message
 - `VqDatatableItemAction`: double-clicking confirm no longer repeats the request, and empty success messages are not shown
-- Pickers: the `type` prop now applies after mount
+- Pickers: the `type` prop now applies after mount, and Space or ArrowDown now opens them; they could only be opened by mouse before
+- `VqListLoadMoreBtn`: no longer logs a Vue warning when given attrs on a finished list
 
 Features
 
-- Export `VqDatatableItemAction`, `VqMessageQueue`, and `useMessageInstance`, which the README documents but consumers could not import
+- Export `VqDatatableItemAction` (named export only, so the plugin can't replace an app's own global component), `VqMessageQueue`, and `useMessageInstance`
+- `VqDatePicker`: add `dateOnly` to store `YYYY-MM-DD` strings; the default stays a `Date`
+- `VqFileInput`: add `rawName` to store the value at `name`, so a schema on `name` can pass; the default key stays `name[file]`
 - `VqDataTable` / `VqList`: add `filterDebounce`
 - `VqList`: add `method`
 - `VqAutocomplete`: emit `error` when fetching options fails
@@ -43,7 +47,7 @@ Chores
 
 - Fix `pnpm lint` with an ESLint flat config (the old `.eslintrc.cjs` is ignored by ESLint 10)
 - Fix `pnpm build` on pnpm 11 by allowing the `@parcel/watcher` build script
-- `build:types` no longer depends on the checkout folder being named `vq-vuetify`, and `GlobalComponents` now covers every component
+- `build:types` no longer depends on the checkout folder being named `vq-vuetify`
 - Move `vue` from `dependencies` to `devDependencies` (it stays a peer) so consumers can't end up with two copies
 - Drop `@mdi/js` (peer and dev) and `@rushstack/eslint-patch`, which nothing uses any more
 - Share the duplicated field, form-submit, and list-filter logic; remove dead code (`VqTest`, `collectValidationListeners`, `useFormRepository`, unused type and style files)

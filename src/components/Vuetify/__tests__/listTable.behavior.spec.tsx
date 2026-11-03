@@ -2,7 +2,8 @@ import { mount, flushPromises } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createVuetify } from "vuetify";
 import { createPinia, setActivePinia, type Pinia } from "pinia";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { VDataTableServer } from "vuetify/components";
 
 vi.mock("@qnx/composables/axios", () => ({
     useAsyncAxios: vi.fn()
@@ -169,6 +170,55 @@ describe("list & table behaviour", () => {
             expect(urls().at(-1)).toContain("page=4");
         });
 
+        it("keeps the user's sort when an inline sortBy is re-created by a parent render", async () => {
+            const tick = ref(0);
+            const Host = defineComponent({
+                setup() {
+                    return () => (
+                        <div>
+                            <i>{tick.value}</i>
+                            <VqDataTable
+                                id="t"
+                                action="users"
+                                sortBy={[{ key: "a", order: "asc" }]}
+                            />
+                        </div>
+                    );
+                }
+            });
+            const wrapper = mount(Host, plugins());
+            await flushPromises();
+
+            const inner = wrapper.findComponent(VDataTableServer);
+            inner.vm.$emit("update:sortBy", [{ key: "b", order: "desc" }]);
+            await flushPromises();
+            const before = urls().length;
+
+            tick.value++;
+            await flushPromises();
+
+            expect(inner.props("sortBy")).toEqual([{ key: "b", order: "desc" }]);
+            expect(urls().length).toBe(before);
+        });
+
+        it("applies a sortBy prop whose contents really changed", async () => {
+            const wrapper = mountTable({ sortBy: [{ key: "a", order: "asc" }] });
+            await flushPromises();
+
+            await wrapper.setProps({ sortBy: [{ key: "b", order: "desc" }] });
+            await flushPromises();
+
+            expect(wrapper.findComponent(VDataTableServer).props("sortBy")).toEqual([
+                { key: "b", order: "desc" }
+            ]);
+        });
+
+        it("sends no sort at all for an empty sortBy", async () => {
+            mountTable({ sortBy: [] });
+            await flushPromises();
+            expect(urls()[0]).not.toContain("sortBy");
+        });
+
         it("refetches when action changes", async () => {
             const wrapper = mountTable();
             await flushPromises();
@@ -295,6 +345,22 @@ describe("list & table behaviour", () => {
 
             expect(submit).not.toHaveBeenCalled();
             submit.mockRestore();
+        });
+
+        it("calls a consumer's @submit handler once", async () => {
+            const onSubmit = vi.fn();
+            const wrapper = mount(VqTableFilter, {
+                props: { id: "l" },
+                attrs: { onSubmit },
+                slots: { default: () => <VqTextField name="search" /> },
+                ...plugins()
+            });
+
+            await wrapper.find("form").trigger("submit");
+            await new Promise((r) => setTimeout(r, 20));
+            await flushPromises();
+
+            expect(onSubmit).toHaveBeenCalledTimes(1);
         });
 
         it("sends a 0 filter value to the server", async () => {

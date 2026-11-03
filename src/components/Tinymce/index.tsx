@@ -49,8 +49,10 @@ export const VqTextEditor = defineComponent({
             value.value = val;
         };
 
-        const scriptSrc = computed(
-            () => `${props.baseUrl.replace(/\/+$/, "")}/${props.filesPath.replace(/^\/+/, "")}`
+        const scriptSrc = computed(() =>
+            props.baseUrl
+                ? `${props.baseUrl.replace(/\/+$/, "")}/${props.filesPath.replace(/^\/+/, "")}`
+                : props.filesPath
         );
 
         return () => (

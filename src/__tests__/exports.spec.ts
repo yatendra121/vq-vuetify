@@ -29,9 +29,22 @@ describe("public entry", () => {
         app.use(VqVuetify);
 
         const registered = component.mock.calls.map(([name]) => name);
-        expect(registered).toContain("VqDatatableItemAction");
+        expect(registered).toContain("VqForm");
         expect(registered).toContain("VqMessageQueue");
         expect(registered).not.toContain("useVqForm");
         expect(registered).not.toContain("collectVqHeaders");
+    });
+
+    it("leaves an app's own global VqDatatableItemAction in place, in either order", () => {
+        const own = { render: () => null };
+
+        const before = createApp({});
+        before.component("VqDatatableItemAction", own);
+        before.use(VqVuetify);
+        expect(before.component("VqDatatableItemAction")).toBe(own);
+
+        const after = createApp({});
+        after.use(VqVuetify);
+        expect(after.component("VqDatatableItemAction")).toBeUndefined();
     });
 });

@@ -9,6 +9,8 @@ interface VqListInjection {
 }
 export const VqListLoadMoreBtn = defineComponent({
     name: "VqListLoadMoreBtn",
+    // Attrs go to the button, which isn't rendered once the list is finished.
+    inheritAttrs: false,
     setup(_props, { attrs, slots }) {
         const vqList = inject<VqListInjection | undefined>("vqList", undefined);
 

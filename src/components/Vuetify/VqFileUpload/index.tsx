@@ -1,5 +1,5 @@
 import { defineComponent, toRef } from "vue";
-import { useField } from "vee-validate";
+import { useVqField } from "../../../composables/field";
 import { VFileUpload } from "vuetify/components";
 
 export const VqFileUpload = defineComponent({
@@ -11,17 +11,13 @@ export const VqFileUpload = defineComponent({
         }
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField(toRef(props, "name"), undefined, {
-            validateOnValueUpdate: false
-        });
+        const { value, errorMessage } = useVqField(toRef(props, "name"));
 
         return () => (
             <>
                 <VFileUpload
-                    // error={!!errorMessage.value}
                     v-model={value.value}
                     error-messages={errorMessage.value}
-                    // messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
                 ></VFileUpload>
@@ -30,5 +26,5 @@ export const VqFileUpload = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqFileUpload = typeof VFileUpload & typeof VqFileUpload;

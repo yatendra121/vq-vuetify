@@ -7,14 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
-      vue:
-        specifier: ^3.5.34
-        version: 3.5.44(typescript@6.0.3)
     devDependencies:
-      '@mdi/js':
-        specifier: ^7.4.47
-        version: 7.4.47
       '@qnx/client':
         specifier: ^0.8.7
         version: 0.8.10
@@ -24,9 +17,6 @@ importers:
       '@rollup/plugin-alias':
         specifier: ^6.0.0
         version: 6.0.1(rollup@4.67.4)
-      '@rushstack/eslint-patch':
-        specifier: ^1.16.1
-        version: 1.16.1
       '@tinymce/tinymce-vue':
         specifier: ^6.3.0
         version: 6.3.0(vue@3.5.44(typescript@6.0.3))
@@ -105,6 +95,9 @@ importers:
       vitest:
         specifier: ^4.1.7
         version: 4.1.12(@types/node@25.9.9)(jsdom@29.1.1)(vite@8.3.5(@types/node@25.9.9)(sass@1.107.1))
+      vue:
+        specifier: ^3.5.34
+        version: 3.5.44(typescript@6.0.3)
       vue-router:
         specifier: ^5.0.7
         version: 5.4.0(@vue/compiler-sfc@3.5.44)(pinia@3.0.4(typescript@6.0.3)(vue@3.5.44(typescript@6.0.3)))(rolldown@1.2.16)(rollup@4.67.4)(vite@8.3.5(@types/node@25.9.9)(sass@1.107.1))(vue@3.5.44(typescript@6.0.3))
@@ -412,9 +405,6 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
-
-  '@mdi/js@7.4.47':
-    resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
@@ -804,9 +794,6 @@ packages:
     resolution: {integrity: sha512-RJZnrwTWj7Iq2ooBwoGbDdC65tDwYawneGcAfFMJqVUrRZMcskka6nTkBpXR/47G7kzn3EW2qupExnaBy11vwg==}
     cpu: [x64]
     os: [win32]
-
-  '@rushstack/eslint-patch@1.16.1':
-    resolution: {integrity: sha512-TvZbIpeKqGQQ7X0zSCvPH9riMSFQFSggnfBjFZ1mEoILW+UuXCKwOoPcgjMwiUtRqFZ8jWhPJc4um14vC6I4ag==}
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -2833,8 +2820,6 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@mdi/js@7.4.47': {}
-
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
@@ -3059,8 +3044,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.67.4':
     optional: true
-
-  '@rushstack/eslint-patch@1.16.1': {}
 
   '@standard-schema/spec@1.1.0': {}
 

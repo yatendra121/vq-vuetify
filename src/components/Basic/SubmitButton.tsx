@@ -4,7 +4,7 @@ import { useVqLocale } from "../../config/locale";
 import { VBtn } from "vuetify/components";
 
 export const VqSubmitBtn = defineComponent({
-    name: "VqSubmitButton",
+    name: "VqSubmitBtn",
     props: {
         form: {
             type: String,
@@ -19,11 +19,16 @@ export const VqSubmitBtn = defineComponent({
         const formStore = useFormStore();
         const locale = useVqLocale();
 
-        const formId = inject<Readonly<Ref<string | undefined>>>("formId");
-
-        const loading = computed(
-            () => (formId?.value && formStore.forms[formId.value]?.busy) ?? false
+        const injectedFormId = inject<Readonly<Ref<string | undefined>> | undefined>(
+            "formId",
+            undefined
         );
+
+        // `form` targets a form from outside it, where nothing is injected.
+        const loading = computed(() => {
+            const formId = props.form ?? injectedFormId?.value;
+            return !!(formId && formStore.forms[formId]?.busy);
+        });
 
         return () => (
             <>
@@ -33,14 +38,16 @@ export const VqSubmitBtn = defineComponent({
                     type="submit"
                     form={props.form}
                     color="primary"
+                    v-slots={{
+                        ...slots,
+                        default: () => (slots.default ? slots.default() : (props.text ?? locale.submit))
+                    }}
                     {...attrs}
-                >
-                    {slots.default ? slots.default() : (props.text ?? locale.submit)}
-                </VBtn>
+                ></VBtn>
             </>
         );
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn;

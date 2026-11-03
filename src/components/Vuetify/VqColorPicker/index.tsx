@@ -1,6 +1,6 @@
-import { defineComponent, ref, toRef } from "vue";
-import { useField } from "vee-validate";
+import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VColorPicker, VDialog, VMenu, VTextField } from "vuetify/components";
+import { useVqField } from "../../../composables/field";
 
 type Value = string | Record<string, unknown> | null | undefined;
 
@@ -18,46 +18,58 @@ export const VqColorPicker = defineComponent({
         type: {
             type: Boolean,
             default: false
+        },
+        /** Props for the text field; other attrs go to the VColorPicker. */
+        fieldProps: {
+            type: Object as PropType<Record<string, unknown>>,
+            default: undefined
         }
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField<Value>(toRef(props, "name"), undefined, {
-            validateOnValueUpdate: false
-        });
+        const { value, errorMessage } = useVqField<Value>(toRef(props, "name"));
 
         const modal = ref(false);
 
-        const ViewComponent = props.type ? VDialog : VMenu;
-
-        return () => (
-            <>
-                <VTextField
-                    modelValue={value.value}
-                    error={!!errorMessage.value}
-                    error-messages={errorMessage.value}
-                    messages={errorMessage.value}
-                    active={modal.value}
-                    focused={modal.value}
-                    label={props.label}
-                    readonly
-                >
-                    <ViewComponent
-                        close-on-content-click={false}
-                        v-model={modal.value}
-                        activator="parent"
-                        width="auto"
-                    >
-                        <VColorPicker
-                            v-model={value.value}
-                            v-slots={slots}
-                            {...attrs}
-                        ></VColorPicker>
-                    </ViewComponent>
-                </VTextField>
-            </>
+        // Non-string values ({ r, g, b }) would otherwise show as [object Object].
+        const displayValue = computed(() =>
+            value.value && typeof value.value === "object"
+                ? JSON.stringify(value.value)
+                : value.value
         );
+
+        return () => {
+            const ViewComponent = props.type ? VDialog : VMenu;
+            return (
+                <>
+                    <VTextField
+                        modelValue={displayValue.value}
+                        error={!!errorMessage.value}
+                        error-messages={errorMessage.value}
+                        messages={errorMessage.value}
+                        active={modal.value}
+                        focused={modal.value}
+                        label={props.label}
+                        readonly
+                        {...props.fieldProps}
+                    >
+                        <ViewComponent
+                            close-on-content-click={false}
+                            v-model={modal.value}
+                            activator="parent"
+                            width="auto"
+                        >
+                            <VColorPicker
+                                v-model={value.value}
+                                v-slots={slots}
+                                {...attrs}
+                            ></VColorPicker>
+                        </ViewComponent>
+                    </VTextField>
+                </>
+            );
+        };
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqColorPicker = typeof VColorPicker & typeof VqColorPicker;

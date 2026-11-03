@@ -1,10 +1,10 @@
-import { defineComponent, onBeforeUnmount, ref, toRef } from "vue";
-import { useField } from "vee-validate";
+import { computed, defineComponent, onBeforeUnmount, onMounted, ref, toRef, watch } from "vue";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { VAutocomplete } from "vuetify/components";
+import { useVqField } from "../../../composables/field";
 
 export const VqAutocomplete = defineComponent({
-    name: "VqAutoComplete",
+    name: "VqAutocomplete",
     props: {
         name: {
             type: String,
@@ -18,33 +18,41 @@ export const VqAutocomplete = defineComponent({
             default: () => []
         }
     },
-    setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField(toRef(props, "name"), [], {
-            validateOnValueUpdate: false
-        });
+    emits: ["error"],
+    setup(props, { attrs, slots, emit }) {
+        const { value, errorMessage } = useVqField(toRef(props, "name"));
 
         const updateModelValue = (val: any) => {
             value.value = val;
         };
-        const items = ref(props.items);
+        const fetchedItems = ref<unknown[]>();
+        const items = computed(() => (props.action && fetchedItems.value) || props.items);
         const loading = ref(false);
 
         let abortController: AbortController | undefined;
-        if (props.action) {
-            abortController = new AbortController();
+        const fetchItems = () => {
+            abortController?.abort();
+            if (!props.action) return;
+
+            const controller = new AbortController();
+            abortController = controller;
             loading.value = true;
-            useAsyncAxios(props.action, { signal: abortController.signal })
+            useAsyncAxios(props.action, { signal: controller.signal })
                 .then((res) => {
-                    items.value = res.data.data;
+                    fetchedItems.value = res.data.data;
                 })
                 .catch((err) => {
-                    if (err?.name !== "CanceledError") console.error(err.message);
+                    if (err?.name === "CanceledError") return;
+                    console.error(err.message);
+                    emit("error", err);
                 })
                 .finally(() => {
-                    loading.value = false;
+                    if (abortController === controller) loading.value = false;
                 });
-        }
+        };
 
+        onMounted(fetchItems);
+        watch(() => props.action, fetchItems);
         onBeforeUnmount(() => abortController?.abort());
 
         return () => (
@@ -65,5 +73,5 @@ export const VqAutocomplete = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqAutocomplete = typeof VAutocomplete & typeof VqAutocomplete;

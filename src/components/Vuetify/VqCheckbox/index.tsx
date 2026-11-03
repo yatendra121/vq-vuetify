@@ -1,5 +1,5 @@
 import { defineComponent, toRef } from "vue";
-import { useField } from "vee-validate";
+import { useVqField } from "../../../composables/field";
 import { VCheckbox } from "vuetify/components";
 
 export const VqCheckbox = defineComponent({
@@ -11,9 +11,7 @@ export const VqCheckbox = defineComponent({
         }
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage } = useField(toRef(props, "name"), undefined, {
-            validateOnValueUpdate: false
-        });
+        const { value, errorMessage } = useVqField(toRef(props, "name"));
 
         return () => (
             <>
@@ -30,5 +28,5 @@ export const VqCheckbox = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;

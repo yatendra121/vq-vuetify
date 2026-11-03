@@ -1,6 +1,6 @@
 import { defineComponent, toRef } from "vue";
-import { useField } from "vee-validate";
-import { VOtpInput } from "vuetify/components";
+import { VMessages, VOtpInput } from "vuetify/components";
+import { useVqField } from "../../../composables/field";
 
 export const VqOtpInput = defineComponent({
     name: "VqOtpInput",
@@ -11,11 +11,12 @@ export const VqOtpInput = defineComponent({
         }
     },
     setup(props, { attrs, slots }) {
-        const { value, resetField, errorMessage } = useField(toRef(props, "name"), undefined, {
-            validateOnValueUpdate: false
-        });
+        const { value, resetField, errorMessage } = useVqField<string | undefined>(
+            toRef(props, "name")
+        );
 
-        resetField({ value: "" });
+        // Default to empty without discarding a value from the form's initialValues.
+        if (value.value === undefined) resetField({ value: "" });
 
         return () => (
             <>
@@ -23,14 +24,19 @@ export const VqOtpInput = defineComponent({
                     baseColor="primary"
                     error={!!errorMessage.value}
                     v-model={value.value}
-                    error-messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
                 ></VOtpInput>
+                {/* VOtpInput has no error-messages prop of its own. */}
+                <VMessages
+                    active={!!errorMessage.value}
+                    color="error"
+                    messages={errorMessage.value}
+                ></VMessages>
             </>
         );
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqOtpInput = typeof VOtpInput & typeof VqOtpInput;

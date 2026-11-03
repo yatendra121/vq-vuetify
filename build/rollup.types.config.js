@@ -1,4 +1,3 @@
-import path from 'path'
 import fs from 'fs/promises'
 //import { readFileSync } from "fs";
 
@@ -7,30 +6,27 @@ import dts from 'rollup-plugin-dts'
 import fg from 'fast-glob'
 import mm from 'micromatch'
 
-const importMap = {
-    components: {
-        VqTextField: {
-            from: 'components/VqTextField.tsx',
-            styles: []
-        },
-        VqAutocomplete: {
-            from: 'components/VqAutocomplete.tsx',
-            styles: []
-        },
-        VqTextarea: {
-            from: 'components/VqTextarea.tsx',
-            styles: []
-        },
-        VqCheckbox: {
-            from: 'components/VqCheckbox.tsx',
-            styles: []
-        },
-        VqForm: {
-            from: 'components/VqForm.tsx',
-            styles: []
-        }
-    }
-}
+const globalComponents = [
+    'VqTextField',
+    'VqTextarea',
+    'VqAutocomplete',
+    'VqFileInput',
+    'VqList',
+    'VqTableFilter',
+    'VqListLoadMoreBtn',
+    'VqForm',
+    'VqCheckbox',
+    'VqSubmitBtn',
+    'VqMessageQueue',
+    'VqDataTable',
+    'VqSerialNo',
+    'VqDatatableItemAction',
+    'VqDatePicker',
+    'VqColorPicker',
+    'VqTimePicker',
+    'VqOtpInput',
+    'VqFileUpload'
+]
 
 const externalsPlugin = () => ({
     resolveId(source, importer) {
@@ -49,7 +45,6 @@ function createTypesConfig(input, output, renderChunk, filter) {
     let files = fg.sync(input)
 
     if (filter) files = filter(files)
-    console.log({ files, input, output, renderChunk, filter })
 
     return files.map((file) => {
         const outputFile = output.replace('*', mm.capture(input, file)[0])
@@ -82,12 +77,10 @@ function createTypesConfig(input, output, renderChunk, filter) {
 }
 
 async function getShims() {
-    const components = Object.keys(importMap.components)
-        .map((name) => `    ${name}:  ${name}`)
-        .join('\n')
+    const components = globalComponents.map((name) => `        ${name}: typeof ${name}`).join('\n')
 
     return (
-        await fs.readFile(path.resolve('../vq-vuetify/src/shims.d.ts'), {
+        await fs.readFile(new URL('../src/shims.d.ts', import.meta.url), {
             encoding: 'utf8'
         })
     )

@@ -31,5 +31,5 @@ export const VqTableFilterHandler = defineComponent({
     }
 })
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqTableFilterHandler = typeof VqTableFilterHandler

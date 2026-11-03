@@ -1,5 +1,5 @@
 import { computed, defineComponent } from "vue";
-import { useField } from "vee-validate";
+import { useVqField } from "../../../composables/field";
 import { VFileInput } from "vuetify/components";
 
 export const VqFileInput = defineComponent({
@@ -12,9 +12,7 @@ export const VqFileInput = defineComponent({
     },
     setup(props, { attrs, slots }) {
         const name = computed(() => `${props.name}[file]`);
-        const { value, errorMessage } = useField(name, undefined, {
-            validateOnValueUpdate: false
-        });
+        const { value, errorMessage } = useVqField(name);
 
         return () => (
             <>
@@ -32,5 +30,5 @@ export const VqFileInput = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqFileInput = typeof VFileInput & typeof VqFileInput;

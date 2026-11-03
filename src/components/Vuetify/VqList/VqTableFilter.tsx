@@ -6,10 +6,7 @@ import { VqTableFilterHandler } from "./VqTableFilterHandler";
 import type { Form as VFormType } from "vee-validate";
 
 export const VqTableFilter = defineComponent({
-    components: {
-        VForm,
-        VqTableFilterHandler
-    },
+    name: "VqTableFilter",
     props: {
         id: {
             type: String as PropType<string>,
@@ -21,18 +18,20 @@ export const VqTableFilter = defineComponent({
             return `${props.id}_filter`;
         });
 
+        // Without an onSubmit, vee-validate falls back to a native form.submit(),
+        // so pressing Enter in a filter field would reload the page.
+        const noopSubmit = () => {};
+
         return () => (
             <>
                 {/* @ts-ignore vee-validate VForm types omit id */}
-                <VForm id={filterId.value} {...attrs}>
-                    <VqTableFilterHandler id={filterId.value} v-slots={slots}>
-                        <>{slots.default?.()}</>
-                    </VqTableFilterHandler>
+                <VForm id={filterId.value} {...attrs} onSubmit={attrs.onSubmit ?? noopSubmit}>
+                    <VqTableFilterHandler id={filterId.value} v-slots={slots} />
                 </VForm>
             </>
         );
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqTableFilter = typeof VFormType & typeof VqTableFilter;

@@ -17,6 +17,5 @@ const useFormFilterRepository = (formKey: string) => {
         reset
     }
 }
-const useFormRepository = () => {}
 
-export { useFormRepository, useFormFilterRepository }
+export { useFormFilterRepository }

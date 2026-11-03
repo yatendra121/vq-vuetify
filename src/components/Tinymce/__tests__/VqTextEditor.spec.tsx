@@ -41,4 +41,33 @@ describe("VqTextEditor", () => {
         // value.value flows back down as model-value -> the stub's textarea value
         expect(wrapper.find("textarea").element.value).toBe("<p>hello</p>");
     });
+
+    it("joins baseUrl and filesPath with exactly one slash", () => {
+        const script = (props: Record<string, unknown>) =>
+            mountEditor(props).find("textarea").attributes("tinymce-script-src");
+
+        expect(script({ baseUrl: "/tinymce", filesPath: "tinymce.min.js" })).toBe(
+            "/tinymce/tinymce.min.js"
+        );
+        expect(script({ baseUrl: "/tinymce/", filesPath: "/tinymce.min.js" })).toBe(
+            "/tinymce/tinymce.min.js"
+        );
+    });
+
+    it("renders the label prop", () => {
+        expect(mountEditor({ label: "Body" }).find("label").text()).toBe("Body");
+        expect(mountEditor().find("label").exists()).toBe(false);
+    });
+
+    it("does not render an empty error paragraph", () => {
+        expect(mountEditor().find("p").exists()).toBe(false);
+    });
+
+    it("forwards extra attrs to the editor", () => {
+        const wrapper = mount(VqTextEditor, {
+            props: { name: "body" },
+            attrs: { "data-testid": "editor" }
+        });
+        expect(wrapper.find("textarea").attributes("data-testid")).toBe("editor");
+    });
 });

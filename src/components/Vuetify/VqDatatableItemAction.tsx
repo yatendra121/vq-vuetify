@@ -1,5 +1,4 @@
 import { computed, defineComponent, onBeforeUnmount, PropType, ref } from "vue";
-import { mdiDelete } from "@mdi/js";
 import {
     VBtn,
     VCard,
@@ -16,6 +15,10 @@ import type { ApiResponseValue } from "@qnx/composables";
 import { useMessageInstance } from "../../composables/message";
 import { useFormFilterRepository } from "../../composables/form";
 import { useVqLocale } from "../../config/locale";
+
+// The mdiDelete path, inlined so the component doesn't need @mdi/js installed.
+const DELETE_ICON =
+    "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
 
 export const VqDatatableItemAction = defineComponent({
     name: "VqDatatableItemAction",
@@ -38,18 +41,22 @@ export const VqDatatableItemAction = defineComponent({
         },
         icon: {
             type: String as PropType<string>,
-            default: () => mdiDelete
+            default: () => DELETE_ICON
         },
         itemId: {
-            type: String as PropType<string>,
+            type: [String, Number] as PropType<string | number>,
             default: () => "0"
+        },
+        tooltip: {
+            type: String as PropType<string | undefined>,
+            default: () => undefined
         },
         id: {
             type: String as PropType<string>,
             required: true
         }
     },
-    setup(props) {
+    setup(props, { attrs }) {
         const { reload } = useFormFilterRepository(`${props.id}_filter`);
         const useMessage = useMessageInstance();
         const locale = useVqLocale();
@@ -63,10 +70,12 @@ export const VqDatatableItemAction = defineComponent({
         const dialogDescription = computed(
             () => props.description ?? locale.confirmDeleteDescription
         );
+        const tooltipText = computed(() => props.tooltip ?? locale.changeStatusTooltip);
 
         const onConfirm = () => {
+            // VBtn's loading state doesn't block clicks; don't repeat the request.
+            if (loading.value) return;
             loading.value = true;
-            abortController?.abort();
             abortController = new AbortController();
             useAsyncAxios<ApiResponseValue>(`${props.action}/${props.itemId}`, {
                 method: props.method,
@@ -74,7 +83,8 @@ export const VqDatatableItemAction = defineComponent({
             })
                 .then((res) => {
                     const apiRes = new ApiResponse(res);
-                    useMessage.success(apiRes.getMessage() ?? "");
+                    const message = apiRes.getMessage();
+                    if (message) useMessage.success(message);
                     dialog.value = false;
                     reload();
                 })
@@ -88,7 +98,7 @@ export const VqDatatableItemAction = defineComponent({
 
         return () => (
             <>
-                <VTooltip text={locale.changeStatusTooltip}>
+                <VTooltip text={tooltipText.value}>
                     {{
                         activator: ({ props: tooltipProps }: any) => (
                             <VBtn
@@ -96,7 +106,9 @@ export const VqDatatableItemAction = defineComponent({
                                 variant="text"
                                 color="primary"
                                 icon={props.icon}
+                                aria-label={tooltipText.value}
                                 onClick={() => (dialog.value = true)}
+                                {...attrs}
                             />
                         )
                     }}
@@ -131,5 +143,5 @@ export const VqDatatableItemAction = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
+ 
 export type VqDatatableItemAction = typeof VqDatatableItemAction;

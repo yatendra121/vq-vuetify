@@ -7,10 +7,10 @@ import { createPinia, setActivePinia, type Pinia } from "pinia";
 // These SFCs use a plain (untyped) <script>, so vue-tsc types the default
 // export as implicit `any`; there's no `*.vue` shim in this project (it is
 // intentionally commented out in env.d.ts). Suppress the import-level TS7016.
-// @ts-ignore -- untyped .vue SFC default import
-import VSnackbarQueue from "../VSnackbarQueue.vue";
-// @ts-ignore -- untyped .vue SFC default import
-import MessageQueue from "../MessageQueue.vue";
+
+import { VSnackbarQueue } from "../VSnackbarQueue";
+
+import { VqMessageQueue as MessageQueue } from "../MessageQueue";
 import { useMessageStore } from "../../../store/reactivity/message";
 
 // VSnackbarQueue renders one VSnackbar per queued message, showing only the
@@ -28,7 +28,7 @@ describe("VSnackbarQueue + MessageQueue", () => {
     });
 
     describe("VSnackbarQueue", () => {
-        const mountQueue = (items: unknown[]) =>
+        const mountQueue = (items: any[]) =>
             mount(VSnackbarQueue, {
                 props: { items },
                 global: { plugins: [vuetify] }

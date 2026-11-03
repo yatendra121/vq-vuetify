@@ -1,3 +1,55 @@
+## Unreleased
+
+Bug Fixes
+
+- `VqDataTable` / `VqList`: `reload()` and `reset()` now work. The table ignored them entirely, and both were silently dropped when no `VqTableFilter` was mounted, so `VqDatatableItemAction` never refreshed its table
+- `VqTableFilter`: pressing Enter no longer natively submits the form and reloads the page
+- `deleteItemValue` / `updateItemValue`: an unknown id no longer deletes the last row or throws
+- `VqForm`: `submitedClientError` is now emitted; it was documented but never fired
+- `VqForm`: 500s and network failures no longer end in an unhandled rejection with no event; they emit the new `submitedRequestError`
+- `VqForm`: pressing Enter during a request no longer submits twice
+- `VqForm`: an error thrown by `successResponseHandler` is no longer reported as a failed request
+- `VqForm`: `valuesSchema` no longer sets a field to the schema object when a path is missing, reverses wildcard arrays, or throws on a missing array
+- `useVqForm`: `initialValues` are now applied, plain objects and omitted values no longer trigger a Vue warning, the form renders its `id`, and `submited*` events are declared
+- `VqDatePicker`: date-only values no longer show the previous day west of Greenwich, `multiple` now reaches the picker, invalid values show as empty, and formatting no longer depends on the browser locale
+- `VqOtpInput`: validation messages are now displayed, and values from `initialValues` are no longer wiped
+- `VqAutocomplete`: later changes to `items` and `action` now apply
+- `VqSubmitBtn`: shows loading for the form named by the `form` prop, forwards named slots, and no longer warns outside a form
+- `VqDataTable`: later changes to `page`, `itemsPerPage`, `sortBy`, and `action` now apply
+- `VqList` / `VqDataTable`: filter values of `0` and `false` are no longer sent blank
+- `VqList`: the documented `load-more` slot now renders, other `VList` slots are forwarded, and `VList` can render `items` when no slot is given
+- `VqList`: `loadMore` no longer aborts an in-flight page or requests past the end; `pageSize` and `action` changes now apply
+- `VqTextEditor`: `label` and `placeholder` now work, `baseUrl` no longer needs a trailing slash, attrs reach the editor, and no empty error paragraph is rendered
+- `VqColorPicker`: object values no longer show as `[object Object]`
+- `VqDatatableItemAction`: double-clicking confirm no longer repeats the request, and empty success messages are not shown
+- Pickers: the `type` prop now applies after mount
+
+Features
+
+- Export `VqDatatableItemAction`, `VqMessageQueue`, and `useMessageInstance`, which the README documents but consumers could not import
+- `VqDataTable` / `VqList`: add `filterDebounce`
+- `VqList`: add `method`
+- `VqAutocomplete`: emit `error` when fetching options fails
+- `VqDatePicker` / `VqTimePicker` / `VqColorPicker`: add `fieldProps` for the text field
+- `VqDatePicker`: close after picking a single date
+- `VqDatatableItemAction`: add `tooltip`, an accessible label, numeric `itemId`, and attrs forwarding
+- `VqTextEditor`: add `init` for extra TinyMCE options
+- `useVqForm`: also return `values`, `errors`, `meta`, `setFieldValue`, `setValues`, `setErrors`, and `validate`
+- Fields: re-validate on change once they show an error, so the message clears when corrected
+- Locale: add `selectTime`, `close`, and `next`
+- Types: slot types for `useVqList` now include `loadMore`, `finished`, and `loading`; the never-emitted `changed` event is removed
+
+Chores
+
+- Fix `pnpm lint` with an ESLint flat config (the old `.eslintrc.cjs` is ignored by ESLint 10)
+- Fix `pnpm build` on pnpm 11 by allowing the `@parcel/watcher` build script
+- `build:types` no longer depends on the checkout folder being named `vq-vuetify`, and `GlobalComponents` now covers every component
+- Move `vue` from `dependencies` to `devDependencies` (it stays a peer) so consumers can't end up with two copies
+- Drop `@mdi/js` (peer and dev) and `@rushstack/eslint-patch`, which nothing uses any more
+- Share the duplicated field, form-submit, and list-filter logic; remove dead code (`VqTest`, `collectValidationListeners`, `useFormRepository`, unused type and style files)
+- Fix the `.gitignore` entry that ran `temp-types` and `pnpm-lock.yaml` together
+- Add regression tests for all of the above
+
 ## 0.8.6 (2026-11-03)
 
 Bug Fixes

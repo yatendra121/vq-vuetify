@@ -79,6 +79,26 @@ describe("useListRepository", () => {
         expect(errorSpy).toHaveBeenCalledWith("Item id not exist");
     });
 
+    it("does not delete the last item when the id is unknown", () => {
+        const { repo, list } = seed("g", [{ id: "1" }, { id: "2" }], 2);
+        repo.deleteListItemValue("nope");
+        expect(list.items).toEqual([{ id: "1" }, { id: "2" }]);
+        expect(list.totalItems).toBe(2);
+        expect(errorSpy).toHaveBeenCalledWith("Item id not exist");
+    });
+
+    it("does not throw when updating an unknown id on an existing list", () => {
+        const { repo, list } = seed("h", [{ id: "1", name: "ann" }]);
+        expect(() => repo.updateListItemValue("nope", "bob", "name")).not.toThrow();
+        expect(list.items).toEqual([{ id: "1", name: "ann" }]);
+    });
+
+    it("matches numeric ids", () => {
+        const { repo, list } = seed("i", [{ id: 1 }, { id: 2 }], 2);
+        repo.deleteListItemValue(1);
+        expect(list.items).toEqual([{ id: 2 }]);
+    });
+
     describe("global filter-scoped helpers (append `_filter` to the id)", () => {
         it("updateItemKeyValue updates a single field on the *_filter list", () => {
             const { list } = seed("users_filter", [{ id: "1", status: "off" }]);

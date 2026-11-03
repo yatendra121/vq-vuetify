@@ -21,6 +21,12 @@ export interface VqLocale {
     changeStatusTooltip: string;
     /** Snackbar message shown when the row action request fails. */
     submitErrorMessage: string;
+    /** Title of the `<VqTimePicker>` picker. */
+    selectTime: string;
+    /** Action on the last snackbar in `<VqMessageQueue>`. */
+    close: string;
+    /** Action on a snackbar with more queued behind it; rendered as `Next(2)`. */
+    next: string;
 }
 
 const defaults: VqLocale = {
@@ -31,7 +37,10 @@ const defaults: VqLocale = {
     confirm: "Confirm",
     cancel: "Cancel",
     changeStatusTooltip: "Change Status",
-    submitErrorMessage: "Please check input values."
+    submitErrorMessage: "Please check input values.",
+    selectTime: "Select Time",
+    close: "Close",
+    next: "Next"
 };
 
 const locale = reactive<VqLocale>({ ...defaults });

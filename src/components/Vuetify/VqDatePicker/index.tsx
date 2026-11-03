@@ -1,6 +1,6 @@
 import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VDatePicker, VDialog, VMenu, VTextField } from "vuetify/components";
-import { openPickerOnKeydown, useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../composables/field";
 
 type DateValue = string | Date;
 type Value = DateValue | DateValue[] | undefined;
@@ -27,6 +27,8 @@ const formatDate = (date: Date) => {
 
 export const VqDatePicker = defineComponent({
     name: "VqDatePicker",
+    // Attrs are placed by hand; the picker's aren't read until its menu first opens.
+    inheritAttrs: false,
     props: {
         name: {
             type: String,
@@ -85,6 +87,7 @@ export const VqDatePicker = defineComponent({
 
         return () => {
             const ViewComponent = props.type ? VDialog : VMenu;
+            const { fieldAttrs, pickerAttrs } = splitPickerAttrs(attrs);
             return (
                 <>
                     <VTextField
@@ -97,6 +100,7 @@ export const VqDatePicker = defineComponent({
                         label={props.label}
                         readonly
                         {...{ onKeydown }}
+                        {...fieldAttrs}
                         {...props.fieldProps}
                     >
                         <ViewComponent
@@ -110,7 +114,7 @@ export const VqDatePicker = defineComponent({
                                 modelValue={pickerValue.value}
                                 onUpdate:modelValue={updateValue}
                                 v-slots={slots}
-                                {...attrs}
+                                {...pickerAttrs}
                             ></VDatePicker>
                         </ViewComponent>
                     </VTextField>

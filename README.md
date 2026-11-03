@@ -324,7 +324,7 @@ Use inside a `VqForm` / `useVqForm` wrapper — they bind to form state and disp
 
 Fields validate on submit. Once a field shows an error, it re-validates as its value changes, so the message clears when corrected.
 
-`VqDatePicker`, `VqTimePicker`, and `VqColorPicker` render a read-only text field that opens the picker. Extra attributes go to the picker; use `field-props` for the text field, e.g. `:field-props="{ variant: 'outlined' }"`. Set `type` to open the picker in a dialog instead of a menu. Space or ArrowDown opens the picker from the keyboard; Enter still submits the form.
+`VqDatePicker`, `VqTimePicker`, and `VqColorPicker` render a read-only text field that opens the picker. `id` and `placeholder` go to the text field, and other attributes go to the picker; use `field-props` for anything else on the text field, e.g. `:field-props="{ variant: 'outlined' }"`. Set `type` to open the picker in a dialog instead of a menu. Space or ArrowDown opens the picker from the keyboard; Enter still submits the form.
 
 > **`VqDatePicker` values.** Picking a date stores a `Date` at local midnight, which JSON serializes to the previous day anywhere east of Greenwich. Add `date-only` to store a `YYYY-MM-DD` string instead.
 

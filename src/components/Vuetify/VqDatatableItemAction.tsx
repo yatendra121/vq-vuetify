@@ -22,6 +22,8 @@ const DELETE_ICON =
 
 export const VqDatatableItemAction = defineComponent({
     name: "VqDatatableItemAction",
+    // Attrs go to the trigger button, which renders inside the tooltip's slot.
+    inheritAttrs: false,
     props: {
         title: {
             type: String as PropType<string | undefined>,

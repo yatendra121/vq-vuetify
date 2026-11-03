@@ -1,11 +1,13 @@
 import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VColorPicker, VDialog, VMenu, VTextField } from "vuetify/components";
-import { openPickerOnKeydown, useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../composables/field";
 
 type Value = string | Record<string, unknown> | null | undefined;
 
 export const VqColorPicker = defineComponent({
     name: "VqColorPicker",
+    // Attrs are placed by hand; the picker's aren't read until its menu first opens.
+    inheritAttrs: false,
     props: {
         name: {
             type: String,
@@ -40,6 +42,7 @@ export const VqColorPicker = defineComponent({
 
         return () => {
             const ViewComponent = props.type ? VDialog : VMenu;
+            const { fieldAttrs, pickerAttrs } = splitPickerAttrs(attrs);
             return (
                 <>
                     <VTextField
@@ -52,6 +55,7 @@ export const VqColorPicker = defineComponent({
                         label={props.label}
                         readonly
                         {...{ onKeydown }}
+                        {...fieldAttrs}
                         {...props.fieldProps}
                     >
                         <ViewComponent
@@ -63,7 +67,7 @@ export const VqColorPicker = defineComponent({
                             <VColorPicker
                                 v-model={value.value}
                                 v-slots={slots}
-                                {...attrs}
+                                {...pickerAttrs}
                             ></VColorPicker>
                         </ViewComponent>
                     </VTextField>

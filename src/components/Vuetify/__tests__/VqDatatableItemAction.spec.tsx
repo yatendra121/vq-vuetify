@@ -47,6 +47,20 @@ describe("VqDatatableItemAction", () => {
         wrapper.unmount();
     });
 
+    it("puts attrs on the trigger button without a Vue warning", () => {
+        const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const wrapper = mount(VqDatatableItemAction, {
+            props: { id: "users", action: "users/delete", itemId: "7" },
+            attrs: { class: "my-action" },
+            global: { plugins: [vuetify, pinia] }
+        });
+
+        expect(wrapper.find(".v-btn").classes()).toContain("my-action");
+        expect(warn.mock.calls.flat().join(" ")).not.toContain("Extraneous");
+        warn.mockRestore();
+        wrapper.unmount();
+    });
+
     it("opens the confirmation dialog when the trigger is clicked", async () => {
         const wrapper = mountAction();
         await wrapper.find(".v-btn").trigger("click");

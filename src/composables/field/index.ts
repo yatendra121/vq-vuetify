@@ -13,6 +13,18 @@ export const openPickerOnKeydown = (open: () => void) => (event: KeyboardEvent) 
 };
 
 /**
+ * Internal — splits a picker's attrs. `id` and `placeholder` describe the text field
+ * the user sees; everything else configures the picker in the menu.
+ */
+export const splitPickerAttrs = (attrs: Record<string, unknown>) => {
+    const { id, placeholder, ...pickerAttrs } = attrs;
+    const fieldAttrs: Record<string, unknown> = {};
+    if (id !== undefined) fieldAttrs.id = id;
+    if (placeholder !== undefined) fieldAttrs.placeholder = placeholder;
+    return { fieldAttrs, pickerAttrs };
+};
+
+/**
  * Internal — shared `useField` setup for every Vq* field wrapper.
  *
  * Validation stays lazy (nothing runs while the user first types), but once a

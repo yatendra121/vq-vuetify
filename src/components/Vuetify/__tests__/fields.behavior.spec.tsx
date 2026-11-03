@@ -3,11 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createVuetify } from "vuetify";
 import {
     VAutocomplete,
+    VColorPicker,
     VDatePicker,
     VFileInput,
     VMenu,
     VMessages,
-    VTextField
+    VTextField,
+    VTimePicker
 } from "vuetify/components";
 import { createPinia, setActivePinia, type Pinia } from "pinia";
 import { mixed, object, string } from "yup";
@@ -28,6 +30,12 @@ import { VqColorPicker } from "../VqColorPicker";
 import { VqTimePicker } from "../VqTimePicker";
 import { VqSubmitBtn } from "../../Basic/SubmitButton";
 import { useFormStore } from "../../../store/reactivity/form";
+
+const pickers: Record<string, any> = {
+    VqDatePicker: VDatePicker,
+    VqTimePicker: VTimePicker,
+    VqColorPicker: VColorPicker
+};
 
 // vee-validate debounces schema validation by 5ms, past what flushPromises waits.
 const settle = async () => {
@@ -141,7 +149,7 @@ describe("field wrappers behaviour", () => {
         ["VqDatePicker", VqDatePicker],
         ["VqTimePicker", VqTimePicker],
         ["VqColorPicker", VqColorPicker]
-    ])("%s keyboard", (_name, Picker: any) => {
+    ])("%s keyboard", (name, Picker: any) => {
         it.each([" ", "ArrowDown"])("opens on %j", async (key) => {
             const wrapper = inForm(() => <Picker name="p" />);
             await wrapper.find("input").trigger("keydown", { key });
@@ -155,6 +163,45 @@ describe("field wrappers behaviour", () => {
             await wrapper.find("input").trigger("keydown", { key: "a" });
             await flushPromises();
             expect(wrapper.findComponent(VMenu).props("modelValue")).toBe(false);
+        });
+
+        it("puts id and placeholder on the text field, without a Vue warning", () => {
+            const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+            const wrapper = inForm(() => <Picker id="dob" name="p" placeholder="Pick one" />);
+
+            expect(wrapper.find("input").attributes("id")).toBe("dob");
+            expect(wrapper.find("input").attributes("placeholder")).toBe("Pick one");
+            expect(warn.mock.calls.flat().join(" ")).not.toContain("Extraneous");
+            warn.mockRestore();
+        });
+
+        it("does not warn about attrs that go to the unopened picker", () => {
+            const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+            inForm(() => <Picker name="p" {...{ elevation: 4 }} />);
+            expect(warn.mock.calls.flat().join(" ")).not.toContain("Extraneous");
+            warn.mockRestore();
+        });
+
+        it("still sends other attrs to the picker, and not to the text field", async () => {
+            const wrapper = inForm(() => (
+                <Picker id="dob" name="p" {...{ "data-test": "x", elevation: 4 }} />
+            ));
+            expect(wrapper.find("input").attributes("data-test")).toBeUndefined();
+
+            wrapper.findComponent(VMenu).vm.$emit("update:modelValue", true);
+            await flushPromises();
+
+            const picker = wrapper.findComponent(pickers[name]);
+            expect(picker.props("elevation")).toBe(4);
+            expect(picker.attributes("data-test")).toBe("x");
+            expect(picker.attributes("id")).toBeUndefined();
+        });
+
+        it("lets fieldProps override id and placeholder", () => {
+            const wrapper = inForm(() => (
+                <Picker id="a" name="p" fieldProps={{ id: "b" }} />
+            ));
+            expect(wrapper.find("input").attributes("id")).toBe("b");
         });
 
         it("still runs a consumer's onKeydown from fieldProps", async () => {

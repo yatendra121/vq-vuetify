@@ -25,6 +25,8 @@ Bug Fixes
 - `VqDatatableItemAction`: double-clicking confirm no longer repeats the request, and empty success messages are not shown
 - Pickers: the `type` prop now applies after mount, and Space or ArrowDown now opens them; they could only be opened by mouse before
 - `VqListLoadMoreBtn`: no longer logs a Vue warning when given attrs on a finished list
+- Pickers: `id` and `placeholder` now reach the text field instead of being lost, and attrs no longer trigger the "Extraneous non-props attributes" Vue warning
+- `VqDatatableItemAction`: attrs no longer trigger the same Vue warning
 
 Features
 

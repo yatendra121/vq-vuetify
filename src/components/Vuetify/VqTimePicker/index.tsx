@@ -1,10 +1,12 @@
 import { defineComponent, PropType, ref, toRef } from "vue";
 import { VTextField, VDialog, VMenu, VTimePicker } from "vuetify/components";
-import { openPickerOnKeydown, useVqField } from "../../../composables/field";
+import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../composables/field";
 import { useVqLocale } from "../../../config/locale";
 
 export const VqTimePicker = defineComponent({
     name: "VqTimePicker",
+    // Attrs are placed by hand; the picker's aren't read until its menu first opens.
+    inheritAttrs: false,
     props: {
         name: {
             type: String,
@@ -33,6 +35,7 @@ export const VqTimePicker = defineComponent({
 
         return () => {
             const ViewComponent = props.type ? VDialog : VMenu;
+            const { fieldAttrs, pickerAttrs } = splitPickerAttrs(attrs);
             return (
                 <>
                     <VTextField
@@ -45,6 +48,7 @@ export const VqTimePicker = defineComponent({
                         label={props.label}
                         readonly
                         {...{ onKeydown }}
+                        {...fieldAttrs}
                         {...props.fieldProps}
                     >
                         <ViewComponent
@@ -58,7 +62,7 @@ export const VqTimePicker = defineComponent({
                                 format="24hr"
                                 v-model={value.value}
                                 v-slots={slots}
-                                {...attrs}
+                                {...pickerAttrs}
                             ></VTimePicker>
                         </ViewComponent>
                     </VTextField>

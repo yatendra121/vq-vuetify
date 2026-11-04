@@ -16,9 +16,9 @@ import {
 
 import { VDataTableServer } from "vuetify/components";
 import { useAsyncAxios } from "@qnx/composables/axios";
-import { objectToQueryString } from "@qnx/composables";
 import { useListRepository } from "../../../composables/list";
-import { useFormFilterStore } from "../../../store/reactivity/formFiler";
+import { useListFilter } from "../../../composables/list/filter";
+import { buildListQuery } from "../../../composables/list/query";
 
 type TValue = unknown;
 interface SortByValue {
@@ -52,6 +52,11 @@ export const VqDataTable = defineComponent({
         sortBy: {
             type: Array as PropType<SortByValue[]>,
             default: () => [{ key: "name", order: "asc" }]
+        },
+        /** Delay in ms before a filter change refetches. */
+        filterDebounce: {
+            type: Number as PropType<number>,
+            default: () => 0
         }
     },
     emits: ["error"],
@@ -63,7 +68,7 @@ export const VqDataTable = defineComponent({
         const defaultOptions = reactive({
             page: props.page,
             itemsPerPage: props.itemsPerPage,
-            sortBy: reactive(props.sortBy)
+            sortBy: props.sortBy
         });
 
         provide("tableListId", readonly(toRef(props, "id")));
@@ -73,10 +78,36 @@ export const VqDataTable = defineComponent({
         const { items, loading, totalItems } = toRefs(collectListValues<TValue>());
         //const totalItems = ref(0);
 
-        const formFilterStore = useFormFilterStore();
+        watch(
+            () => props.page,
+            (val) => (defaultOptions.page = val)
+        );
+        watch(
+            () => props.itemsPerPage,
+            (val) => (defaultOptions.itemsPerPage = val)
+        );
+        // An inline `:sort-by="[...]"` is a new array on every parent render; only a
+        // real change may replace the sort the user picked in the table header.
+        watch(
+            () => props.sortBy,
+            (val, oldVal) => {
+                if (JSON.stringify(val) !== JSON.stringify(oldVal)) defaultOptions.sortBy = val;
+            }
+        );
 
-        const formFilterData = computed<Object>(() => {
-            return formFilterStore.forms[filterId.value]?.values;
+        const reloadFromFirstPage = () => {
+            defaultOptions.page = 1;
+            loadItems(defaultOptions);
+        };
+
+        // A different endpoint has different rows, so the current page may not exist.
+        watch(() => props.action, reloadFromFirstPage);
+
+        const { values: formFilterData } = useListFilter(filterId.value, {
+            onChange: reloadFromFirstPage,
+            onReload: () => loadItems(defaultOptions),
+            onReset: reloadFromFirstPage,
+            debounce: () => props.filterDebounce
         });
 
         // Aborting a request rejects its promise with a CanceledError; that is
@@ -101,16 +132,6 @@ export const VqDataTable = defineComponent({
                 });
         };
 
-        watch(
-            () => formFilterData.value,
-            (_newVal, oldVal) => {
-                if (oldVal === undefined) return;
-                defaultOptions.page = 1;
-                loadItems(defaultOptions);
-            },
-            { deep: true }
-        );
-
         let abortController: AbortController | undefined;
         const fetchItems = async ({
             page,
@@ -130,17 +151,14 @@ export const VqDataTable = defineComponent({
                 const response = await useAsyncAxios<{
                     data: { data: unknown[]; total: number };
                 }>(
-                    `${props.action}?${objectToQueryString(
-                        {
-                            ...toRaw(formFilterData.value ?? {}),
-                            page: page,
-                            itemsPerPage: itemsPerPage,
-                            sortBy: sortBy.map((item: SortByValue) => ({
-                                [item.key]: item.order
-                            }))
-                        },
-                        ""
-                    )}`,
+                    `${props.action}?${buildListQuery({
+                        ...toRaw(formFilterData.value ?? {}),
+                        page: page,
+                        itemsPerPage: itemsPerPage,
+                        sortBy: sortBy.map((item: SortByValue) => ({
+                            [item.key]: item.order
+                        }))
+                    })}`,
                     {
                         method: props.method,
                         signal: controller.signal
@@ -188,7 +206,6 @@ export const VqDataTable = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
 export type VqDataTable = typeof VDataTableServer & typeof VqDataTable;
 
 /**
@@ -222,7 +239,6 @@ export function useVqDataTable<TValue = unknown>() {
         new (): {
             // Same trick as `$slots`, we override the emit information for that component
             $emit: {
-                (e: "changed", value: TValue): void;
                 (e: "error", error: unknown): void;
             };
             $slots: {
@@ -233,9 +249,7 @@ export function useVqDataTable<TValue = unknown>() {
 }
 
 /**
- * this function is
- * @param headers
- * @returns
+ * Prepends the `#` column that `VqSerialNo` renders.
  */
 export function collectVqHeaders<T extends unknown[]>(headers: T) {
     return [
@@ -264,5 +278,4 @@ export const VqSerialNo = defineComponent({
     }
 });
 
-// eslint-disable-next-line no-redeclare
 export type VqSerialNo = typeof VqSerialNo;

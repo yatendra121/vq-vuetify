@@ -82,4 +82,15 @@ describe("useFormFilterStore", () => {
         store.setResetValue("missing", true);
         expect(store.forms["missing"]).toBeUndefined();
     });
+
+    it("ensureForm creates a value-less entry but never replaces an existing one", () => {
+        const store = useFormFilterStore();
+
+        store.ensureForm("users");
+        expect(store.forms["users"].values).toBeUndefined();
+
+        store.addForm("posts", { search: "x" });
+        store.ensureForm("posts");
+        expect(store.forms["posts"].values).toEqual({ search: "x" });
+    });
 });

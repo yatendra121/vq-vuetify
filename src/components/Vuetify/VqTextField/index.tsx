@@ -1,7 +1,6 @@
-import { defineComponent, h, PropType, toRef, VNode, defineProps } from "vue";
+import { defineComponent, toRef } from "vue";
 import { VTextField } from "vuetify/components";
-import { useField } from "vee-validate";
-import { collectValidationListeners } from "../config";
+import { useVqField } from "../../../composables/field";
 
 export const VqTextField = defineComponent({
     name: "VqTextField",
@@ -12,14 +11,7 @@ export const VqTextField = defineComponent({
         }
     },
     setup(props, { attrs, slots }) {
-        const { value, errorMessage, handleChange } = useField(toRef(props, "name"), undefined, {
-            validateOnValueUpdate: false
-        });
-
-        const validationListeners = collectValidationListeners({
-            handleChange,
-            errorMessage
-        });
+        const { value, errorMessage } = useVqField(toRef(props, "name"));
 
         return () => (
             <>
@@ -30,9 +22,6 @@ export const VqTextField = defineComponent({
                     messages={errorMessage.value}
                     v-slots={slots}
                     {...attrs}
-                    // onChange={handleChange}
-                    // onInput={validationListeners.value.input}
-                    // onBlur={handleChange}
                 ></VTextField>
             </>
         );

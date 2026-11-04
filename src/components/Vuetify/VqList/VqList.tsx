@@ -16,10 +16,10 @@ import {
 } from "vue";
 
 import { VList } from "vuetify/components";
-import { objectToQueryString } from "@qnx/composables";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
-import { useFormFilterStore } from "../../../store/reactivity/formFiler";
+import { useListFilter } from "../../../composables/list/filter";
+import { buildListQuery } from "../../../composables/list/query";
 
 type TValue = unknown;
 export const VqList = defineComponent({
@@ -33,9 +33,18 @@ export const VqList = defineComponent({
             type: String as PropType<string>,
             required: true
         },
+        method: {
+            type: String as PropType<string>,
+            default: () => "GET"
+        },
         pageSize: {
             type: Number as PropType<number>,
             default: () => 10
+        },
+        /** Delay in ms before a filter change refetches. */
+        filterDebounce: {
+            type: Number as PropType<number>,
+            default: () => 0
         }
     },
     emits: ["error"],
@@ -59,53 +68,33 @@ export const VqList = defineComponent({
             page_size: props.pageSize
         });
 
-        const formFilterStore = useFormFilterStore();
-        const { setReloadValue, setResetValue } = formFilterStore;
+        const reloadFromFirstPage = () => {
+            listOptions.page = 1;
+            fetchPage();
+        };
 
-        const formFilterData = computed<Object>(() => {
-            return formFilterStore.forms[filterId.value]?.values;
-        });
-
-        const reloadRequired = computed<boolean>(() => {
-            return formFilterStore.forms[filterId.value]?.reloadRequired ?? false;
-        });
-
-        const resetRequired = computed<boolean>(() => {
-            return formFilterStore.forms[filterId.value]?.resetRequired ?? false;
-        });
-
-        watch(reloadRequired, (newVal) => {
-            if (newVal) {
-                listOptions.page = 1;
-                setReloadValue(filterId.value, false);
-                loadMore();
-            }
-        });
-
-        watch(resetRequired, (newVal) => {
-            if (newVal) {
-                setResetValue(filterId.value, false);
-                listOptions.page = 1;
-                loadMore();
-            }
+        const { values: formFilterData } = useListFilter(filterId.value, {
+            onChange: reloadFromFirstPage,
+            onReload: reloadFromFirstPage,
+            onReset: reloadFromFirstPage,
+            debounce: () => props.filterDebounce
         });
 
         watch(
-            () => formFilterData.value,
-            (_newVal, oldVal) => {
-                if (oldVal === undefined) return;
-                listOptions.page = 1;
-                loadMore();
-            },
-            { deep: true }
+            () => props.pageSize,
+            (val) => {
+                listOptions.page_size = val;
+                reloadFromFirstPage();
+            }
         );
+        watch(() => props.action, reloadFromFirstPage);
 
         // Aborting a request rejects its promise with a CanceledError; that is
         // expected (a newer request superseded it) and must not surface as an
         // error. Anything else is a real failure consumers should see.
         const isAbortError = (e: unknown) => (e as { name?: string })?.name === "CanceledError";
 
-        const loadMore = () => {
+        const fetchPage = () => {
             fetchItems()
                 .then((res) => {
                     items.value = listOptions.page === 1 ? res.data : [...items.value, ...res.data];
@@ -120,6 +109,13 @@ export const VqList = defineComponent({
                 });
         };
 
+        // Public: a repeat call (scroll handlers fire often) must not abort the
+        // in-flight page or request past the end.
+        const loadMore = () => {
+            if (loading.value || finished.value) return;
+            fetchPage();
+        };
+
         let abortController: AbortController | undefined;
         const fetchItems = async () => {
             abortController?.abort();
@@ -131,12 +127,12 @@ export const VqList = defineComponent({
                 const response = await useAsyncAxios<{
                     data: { data: any; total: number };
                 }>(
-                    `${props.action}?${objectToQueryString(
-                        { ...toRaw(listOptions), ...toRaw(formFilterData.value ?? {}) },
-                        ""
-                    )}`,
+                    `${props.action}?${buildListQuery({
+                        ...toRaw(formFilterData.value ?? {}),
+                        ...toRaw(listOptions)
+                    })}`,
                     {
-                        method: "GET",
+                        method: props.method,
                         signal: controller.signal
                     }
                 );
@@ -148,9 +144,7 @@ export const VqList = defineComponent({
             }
         };
 
-        onMounted(() => {
-            loadMore();
-        });
+        onMounted(fetchPage);
 
         provide("vqList", {
             loading,
@@ -159,30 +153,36 @@ export const VqList = defineComponent({
             loadMore
         });
 
-        return () => (
-            <>
-                <VList items={items.value} {...attrs}>
-                    <>
-                        {slots.default?.({
-                            items: items.value,
-                            loadMore,
-                            finished: finished.value,
-                            loading: loading.value
-                        })}
-                    </>
-                    {/* {items.value.map((item, i) => (
-            <v-list-item key={i} value={item}>
-              <v-list-item-title v-text={item.name}></v-list-item-title>
-              <v-list-item-subtitle v-text={item.email}></v-list-item-subtitle>
-            </v-list-item>
-          ))} */}
-                </VList>
-            </>
-        );
+        return () => {
+            const { default: defaultSlot, "load-more": loadMoreSlot, ...listSlots } = slots;
+            const slotProps = {
+                items: items.value,
+                loadMore,
+                finished: finished.value,
+                loading: loading.value
+            };
+            // Only take over VList's default slot when given content, so it can
+            // still render `items` itself (item-title / item-value attrs).
+            const content =
+                defaultSlot || loadMoreSlot
+                    ? {
+                          default: () => [defaultSlot?.(slotProps), loadMoreSlot?.(slotProps)]
+                      }
+                    : {};
+
+            return (
+                <>
+                    <VList
+                        items={items.value}
+                        v-slots={{ ...listSlots, ...content }}
+                        {...attrs}
+                    ></VList>
+                </>
+            );
+        };
     }
 });
 
-// eslint-disable-next-line no-redeclare
 export type VqList = typeof VList & typeof VqList;
 
 /**
@@ -198,6 +198,9 @@ type GenericProps = ExtractComponentProps<typeof VqList>;
 
 interface GenericSlotsProps<TValue> {
     items: TValue[];
+    loadMore: () => void;
+    finished: boolean;
+    loading: boolean;
 }
 
 /**
@@ -215,11 +218,11 @@ export function useVqList<TValue = unknown>() {
         new (): {
             // Same trick as `$slots`, we override the emit information for that component
             $emit: {
-                (e: "changed", value: TValue): void;
                 (e: "error", error: unknown): void;
             };
             $slots: {
                 default: (arg: GenericSlotsProps<TValue>) => VNode[];
+                "load-more": (arg: GenericSlotsProps<TValue>) => VNode[];
             };
         };
     };

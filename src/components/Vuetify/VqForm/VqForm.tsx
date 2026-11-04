@@ -1,7 +1,8 @@
 import {
-    computed,
     defineComponent,
     h,
+    isReactive,
+    isRef,
     onBeforeUnmount,
     onMounted,
     PropType,
@@ -18,7 +19,12 @@ import { ApiResponse, objectToFormData } from "@qnx/composables";
 import { useFormStore } from "../../../store/reactivity/form";
 
 //types
-import type { FormOptions, SubmissionContext, Form as VFormType } from "vee-validate";
+import type {
+    FormContext,
+    FormOptions,
+    SubmissionContext,
+    Form as VFormType
+} from "vee-validate";
 import type { AxiosError, Method } from "axios";
 import type { ApiResponseValue } from "@qnx/composables";
 import type { InitialValues } from "../../../types";
@@ -26,20 +32,132 @@ import type { InitialValues } from "../../../types";
 export type GenericFormValues = {
     [key: string]: unknown;
 };
+
+const submitProps = {
+    action: {
+        type: String as PropType<string>,
+        required: true as const
+    },
+    method: {
+        type: String as PropType<Method>,
+        default: () => "POST"
+    },
+    formData: {
+        type: Boolean,
+        default: () => false
+    },
+    successResponseHandler: {
+        type: Function as PropType<
+            (response: ApiResponseValue, actions: SubmissionContext) => void
+        >
+    },
+    errorResponseHandler: {
+        type: Function as PropType<
+            (response: AxiosError<ApiResponseValue>, actions: SubmissionContext) => void
+        >
+    }
+};
+
+interface SubmitProps {
+    action: string;
+    method: Method;
+    formData: boolean;
+    successResponseHandler?: (response: ApiResponseValue, actions: SubmissionContext) => void;
+    errorResponseHandler?: (
+        response: AxiosError<ApiResponseValue>,
+        actions: SubmissionContext
+    ) => void;
+}
+
+type SubmitEvent =
+    | "submitedSuccess"
+    | "submitedError"
+    | "submitedClientError"
+    | "submitedRequestError";
+
+/**
+ * Shared submit pipeline of VqForm and useVqForm: validation, the request, busy
+ * state and routing the outcome to handlers / events.
+ */
+const createSubmitHandler = (
+    getFormId: () => string,
+    props: SubmitProps,
+    emit: (event: SubmitEvent, payload: unknown) => void,
+    handleSubmit: FormContext<any>["handleSubmit"]
+) => {
+    const formStore = useFormStore();
+
+    const onFailure = async (
+        response: AxiosError<ApiResponseValue>,
+        actions: SubmissionContext
+    ) => {
+        if (props.errorResponseHandler) {
+            props.errorResponseHandler(response, actions);
+            return;
+        }
+
+        // getErrorResponse only resolves for 400/401/422 and throws for anything
+        // else (500s, network failures).
+        let errorValue: ApiResponseValue | undefined;
+        try {
+            const { getErrorResponse } = useErrorResponse();
+            const { eResponse } = await getErrorResponse(response);
+            errorValue = eResponse.value;
+        } catch {
+            console.error(response);
+            emit("submitedRequestError", response);
+            return;
+        }
+
+        if (errorValue) {
+            const apiResponse = new ApiResponse(errorValue);
+            const errors = apiResponse.getErrors();
+            if (errors) actions.setErrors(errors);
+            emit("submitedError", apiResponse);
+        }
+    };
+
+    const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
+        const formId = getFormId();
+
+        // Pressing Enter in a field submits implicitly, even while the submit
+        // button shows its loading state.
+        if (formStore.forms[formId]?.busy) return;
+
+        const postData = props.formData ? objectToFormData(values) : values;
+
+        formStore.changeBusy(formId, true);
+
+        return useAsyncAxios<ApiResponseValue>(props.action, {
+            method: props.method,
+            data: postData
+        })
+            .then(
+                (response) => {
+                    if (props.successResponseHandler) {
+                        props.successResponseHandler(response, actions);
+                        return;
+                    }
+                    emit("submitedSuccess", new ApiResponse(response));
+                },
+                (response: AxiosError<ApiResponseValue>) => onFailure(response, actions)
+            )
+            .finally(() => {
+                formStore.changeBusy(formId, false);
+            });
+    };
+
+    return handleSubmit(onSubmit, (context) => emit("submitedClientError", context));
+};
+
 export const VqForm = defineComponent({
+    name: "VqForm",
     props: {
         id: {
             type: String as PropType<string>,
             required: true
         },
-        action: {
-            type: String as PropType<string>,
-            required: true
-        },
-        method: {
-            type: String as PropType<Method>,
-            default: () => "POST"
-        },
+        ...submitProps,
         initialValues: {
             type: Object as PropType<InitialValues | undefined>,
             default: () => undefined
@@ -48,26 +166,12 @@ export const VqForm = defineComponent({
             type: Object,
             default: () => undefined
         },
-        formData: {
-            type: Boolean,
-            default: () => false
-        },
-        successResponseHandler: {
-            type: Function as PropType<
-                (response: ApiResponseValue, actions: SubmissionContext) => void
-            >
-        },
-        errorResponseHandler: {
-            type: Function as PropType<
-                (response: AxiosError<ApiResponseValue>, actions: SubmissionContext) => void
-            >
-        },
         validationSchema: {
             type: Object,
             default: undefined
         }
     },
-    emits: ["submitedSuccess", "submitedError", "submitedClientError"],
+    emits: ["submitedSuccess", "submitedError", "submitedClientError", "submitedRequestError"],
     setup(props, { attrs, emit, slots }) {
         provide("formId", readonly(toRef(props, "id")));
 
@@ -75,46 +179,20 @@ export const VqForm = defineComponent({
         onMounted(() => {
             formStore.addForm(props.id);
         });
+        watch(
+            () => props.id,
+            (newId, oldId) => {
+                formStore.removeForm(oldId);
+                formStore.addForm(newId);
+            }
+        );
         onBeforeUnmount(() => formStore.removeForm(props.id));
 
-        const onSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
-            const postData = props.formData ? objectToFormData(values) : values;
-
-            formStore.changeBusy(props.id, true);
-
-            useAsyncAxios<ApiResponseValue>(props.action, {
-                method: props.method,
-                data: postData
-            })
-                .then((response) => {
-                    if (props.successResponseHandler) {
-                        props.successResponseHandler(response, actions);
-                        return;
-                    }
-                    const apiResponse = new ApiResponse(response);
-                    emit("submitedSuccess", apiResponse);
-                })
-                .catch(async (response: AxiosError<ApiResponseValue>) => {
-                    if (props.errorResponseHandler) {
-                        props.errorResponseHandler(response, actions);
-                        return;
-                    }
-                    const { getErrorResponse } = useErrorResponse();
-                    const { eResponse } = await getErrorResponse(response);
-                    if (eResponse.value) {
-                        const apiResponse = new ApiResponse(eResponse.value);
-                        const errors = apiResponse.getErrors();
-                        if (errors) actions.setErrors(errors);
-                        emit("submitedError", apiResponse);
-                    }
-                })
-                .finally(() => {
-                    formStore.changeBusy(props.id, false);
-                });
-        };
-
+        // Same guard as vee-validate's own <Form>: useForm only enables schema
+        // validation for a schema present at creation, but then follows the ref.
+        const validationSchema = toRef(props, "validationSchema");
         const { handleSubmit, resetForm } = useForm({
-            validationSchema: props.validationSchema,
+            validationSchema: validationSchema.value ? validationSchema : undefined,
             initialValues: transformObjValues(props.initialValues, props.valuesSchema)
         });
 
@@ -125,7 +203,7 @@ export const VqForm = defineComponent({
             });
         });
 
-        const onFinalSubmit = handleSubmit(onSubmit);
+        const onFinalSubmit = createSubmitHandler(() => props.id, props, emit, handleSubmit);
 
         return () => (
             <>
@@ -144,41 +222,27 @@ export interface VqFormOption extends FormOptions<any> {
 }
 
 export const useVqForm = (opts: VqFormOption) => {
-    const { resetForm, handleSubmit } = useForm({ validationSchema: opts.validationSchema });
+    const { formId, valuesSchema, ...formOptions } = opts;
 
-    watch(opts.initialValues, () => {
-        resetForm({
-            values: transformObjValues(toValue(opts.initialValues), opts.valuesSchema)
-        });
+    const form = useForm({
+        ...formOptions,
+        initialValues: transformObjValues(toValue(opts.initialValues), valuesSchema)
     });
+    const { resetForm, handleSubmit } = form;
 
-    const { formId } = opts;
+    // Plain objects are valid `initialValues` too; only reactive sources can change.
+    const source = opts.initialValues as unknown;
+    if (isRef(source) || isReactive(source) || typeof source === "function") {
+        watch(source as () => unknown, () => {
+            resetForm({
+                values: transformObjValues(toValue(opts.initialValues), valuesSchema)
+            });
+        });
+    }
 
     const VqForm = defineComponent({
-        props: {
-            action: {
-                type: String as PropType<string>,
-                required: true
-            },
-            method: {
-                type: String as PropType<Method>,
-                default: () => "POST"
-            },
-            formData: {
-                type: Boolean,
-                default: () => false
-            },
-            successResponseHandler: {
-                type: Function as PropType<
-                    (response: ApiResponseValue, actions: SubmissionContext) => void
-                >
-            },
-            errorResponseHandler: {
-                type: Function as PropType<
-                    (response: AxiosError<ApiResponseValue>, actions: SubmissionContext) => void
-                >
-            }
-        },
+        props: submitProps,
+        emits: ["submitedSuccess", "submitedError", "submitedClientError", "submitedRequestError"],
         setup(props, { attrs, emit, slots }) {
             provide("formId", readonly(ref(formId)));
 
@@ -188,47 +252,11 @@ export const useVqForm = (opts: VqFormOption) => {
             });
             onBeforeUnmount(() => formStore.removeForm(formId));
 
-            const defaultOnSubmit: SubmissionHandler<GenericFormValues> = (values, actions) => {
-                const postData = props.formData ? objectToFormData(values) : values;
-
-                formStore.changeBusy(formId, true);
-
-                useAsyncAxios<ApiResponseValue>(props.action, {
-                    method: props.method,
-                    data: postData
-                })
-                    .then((response) => {
-                        if (props.successResponseHandler) {
-                            props.successResponseHandler(response, actions);
-                            return;
-                        }
-                        const apiResponse = new ApiResponse(response);
-                        emit("submitedSuccess", apiResponse);
-                    })
-                    .catch(async (response: AxiosError<ApiResponseValue>) => {
-                        if (props.errorResponseHandler) {
-                            props.errorResponseHandler(response, actions);
-                            return;
-                        }
-                        const { getErrorResponse } = useErrorResponse();
-                        const { eResponse } = await getErrorResponse(response);
-                        if (eResponse.value) {
-                            const apiResponse = new ApiResponse(eResponse.value);
-                            const errors = apiResponse.getErrors();
-                            if (errors) actions.setErrors(errors);
-                            emit("submitedError", apiResponse);
-                        }
-                    })
-                    .finally(() => {
-                        formStore.changeBusy(formId, false);
-                    });
-            };
-
-            const onSubmit = handleSubmit(defaultOnSubmit);
+            const onSubmit = createSubmitHandler(() => formId, props, emit, handleSubmit);
 
             return () => (
                 <>
-                    <form novalidate onSubmit={onSubmit} {...attrs}>
+                    <form novalidate id={formId} onSubmit={onSubmit} {...attrs}>
                         {slots.default?.()}
                     </form>
                 </>
@@ -244,44 +272,39 @@ export const useVqForm = (opts: VqFormOption) => {
         };
     });
 
-    return { wrapper, resetForm };
+    return {
+        wrapper,
+        resetForm,
+        values: form.values,
+        errors: form.errors,
+        meta: form.meta,
+        setFieldValue: form.setFieldValue,
+        setValues: form.setValues,
+        setErrors: form.setErrors,
+        validate: form.validate
+    };
 };
 
-const transformObjValues = (item: unknown, object: { [key: string]: string } | undefined) => {
-    if (!item || !object) return item;
-    return { ...item, ...collectFormObjValues(item, object) };
-};
-
-const collectFormObjValues = (item: any, object: { [key: string]: string }) => {
-    const finalVal: any = [];
-    for (const key in object) {
-        if (Object.hasOwnProperty.call(object, key)) {
-            const element = object[key];
-            const arrKeys = element.split(".");
-            let lastItemValue = item;
-            for (const [arrKeyIndex, arrKey] of arrKeys.entries()) {
-                if (arrKey === "*") {
-                    let newArray: any = [];
-                    let index = 0;
-                    for (const _ of lastItemValue) {
-                        newArray = [
-                            collectFormObjValues(lastItemValue[index++], {
-                                key: arrKeys.slice(arrKeyIndex + 1).join(".")
-                            }).key,
-                            ...newArray
-                        ];
-                    }
-                    lastItemValue = newArray;
-                    break;
-                } else if (typeof arrKey === "string") {
-                    lastItemValue = lastItemValue?.[arrKey];
-                }
-            }
-            finalVal[key] = lastItemValue ?? object;
+const resolveSchemaPath = (item: any, segments: string[]): unknown => {
+    let current = item;
+    for (const [index, segment] of segments.entries()) {
+        if (segment === "*") {
+            if (!Array.isArray(current)) return undefined;
+            const rest = segments.slice(index + 1);
+            return current.map((element) => resolveSchemaPath(element, rest));
         }
+        current = current?.[segment];
     }
-    return finalVal;
+    return current;
 };
 
-// eslint-disable-next-line no-redeclare
+const transformObjValues = (item: any, schema: { [key: string]: string } | undefined) => {
+    if (!item || !schema) return item;
+    const mapped: Record<string, unknown> = {};
+    for (const [key, path] of Object.entries(schema)) {
+        mapped[key] = resolveSchemaPath(item, path.split("."));
+    }
+    return { ...item, ...mapped };
+};
+
 export type VqForm = typeof VFormType & typeof VqForm;

@@ -6,6 +6,9 @@ export * from "./components";
 
 //Export utilities & composables
 export * from "./composables";
+// Named export only, not in the barrel the plugin registers: apps register their
+// own global VqDatatableItemAction, which auto-registering could replace.
+export { VqDatatableItemAction } from "./components/Vuetify/VqDatatableItemAction";
 export { useVqList } from "./components/Vuetify/VqList/VqList";
 export { useVqDataTable } from "./components/Vuetify/VqDataTable";
 export { useVqForm } from "./components/Vuetify/VqForm/VqForm";

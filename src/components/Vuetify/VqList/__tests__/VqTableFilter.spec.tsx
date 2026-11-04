@@ -43,7 +43,7 @@ describe("VqTableFilter + VqTableFilterHandler", () => {
         await flushPromises();
 
         const store = useFormFilterStore();
-        expect(store.forms["users_filter"].values.search).toBe("ann");
+        expect(store.forms["users_filter"].values?.search).toBe("ann");
     });
 
     it("removes the filter entry when unmounted", async () => {

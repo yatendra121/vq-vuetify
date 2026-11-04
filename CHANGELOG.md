@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.10 (2026-11-04)
 
 Bug Fixes
 

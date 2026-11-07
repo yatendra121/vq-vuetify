@@ -249,6 +249,50 @@ describe("list & table behaviour", () => {
 
             expect(urls().at(-1)).toContain("page=3");
         });
+
+        describe("going back to page 1 sends one request", () => {
+            const FilteredTable = defineComponent({
+                props: { page: { type: Number, default: 1 } },
+                setup(props) {
+                    return () => (
+                        <div>
+                            <VqTableFilter id="t">
+                                <VqTextField name="search" />
+                            </VqTableFilter>
+                            <VqDataTable id="t" action="users" page={props.page} />
+                        </div>
+                    );
+                }
+            });
+
+            const mountFiltered = async (startPage: number) => {
+                vi.mocked(useAsyncAxios).mockResolvedValue(page([{ id: 1 }], 50) as never);
+                const wrapper = mount(FilteredTable, { props: { page: startPage }, ...plugins() });
+                await flushPromises();
+                vi.mocked(useAsyncAxios).mockClear();
+                return wrapper;
+            };
+
+            it.each([3, 1])("on a filter change from page %i", async (startPage) => {
+                const wrapper = await mountFiltered(startPage);
+
+                await wrapper.find("input").setValue("a");
+                await flushPromises();
+
+                expect(urls()).toHaveLength(1);
+                expect(urls()[0]).toContain("search=a&page=1");
+            });
+
+            it.each([3, 1])("on reset() from page %i", async (startPage) => {
+                await mountFiltered(startPage);
+
+                useFormFilterRepository("t_filter").reset();
+                await flushPromises();
+
+                expect(urls()).toHaveLength(1);
+                expect(urls()[0]).toContain("page=1");
+            });
+        });
     });
 
     describe("VqList", () => {

@@ -94,14 +94,17 @@ export const VqDataTable = defineComponent({
                 if (JSON.stringify(val) !== JSON.stringify(oldVal)) defaultOptions.sortBy = val;
             }
         );
+        watch(
+            () => props.action,
+            () => loadItems(defaultOptions)
+        );
 
         const reloadFromFirstPage = () => {
-            defaultOptions.page = 1;
-            loadItems(defaultOptions);
+            // Moving the table to page 1 makes it emit update:options, which loads
+            // that page; loading here as well would send the same request twice.
+            if (defaultOptions.page !== 1) defaultOptions.page = 1;
+            else loadItems(defaultOptions);
         };
-
-        // A different endpoint has different rows, so the current page may not exist.
-        watch(() => props.action, reloadFromFirstPage);
 
         const { values: formFilterData } = useListFilter(filterId.value, {
             onChange: reloadFromFirstPage,
@@ -206,6 +209,7 @@ export const VqDataTable = defineComponent({
     }
 });
 
+ 
 export type VqDataTable = typeof VDataTableServer & typeof VqDataTable;
 
 /**
@@ -278,4 +282,5 @@ export const VqSerialNo = defineComponent({
     }
 });
 
+ 
 export type VqSerialNo = typeof VqSerialNo;

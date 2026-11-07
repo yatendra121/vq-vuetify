@@ -20,9 +20,10 @@ import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useListFilter } from "../../../composables/list/filter";
 import { buildListQuery } from "../../../composables/list/query";
+import type { ComponentInstance, TemplateComponent } from "../../../types/component";
 
 type TValue = unknown;
-export const VqList = defineComponent({
+const VqListImpl = defineComponent({
     name: "VqList",
     props: {
         id: {
@@ -184,7 +185,29 @@ export const VqList = defineComponent({
 });
 
  
-export type VqList = typeof VList & typeof VqList;
+type VListInstance = ComponentInstance<typeof VList>;
+
+interface VqListSlotProps {
+    items: unknown[];
+    loadMore: () => void;
+    finished: boolean;
+    loading: boolean;
+}
+
+/**
+ * Typed with VList's props, events and slots, which it passes through, minus
+ * `items` (VqList fetches and supplies it) and with VqList's own `default` and
+ * `load-more` slot props.
+ */
+export const VqList = VqListImpl as typeof VqListImpl &
+    TemplateComponent<
+        Omit<VListInstance["$props"], "items"> & ComponentInstance<typeof VqListImpl>["$props"],
+        Omit<VListInstance["$slots"], "default"> & {
+            default?: (props: VqListSlotProps) => VNode[];
+            "load-more"?: (props: VqListSlotProps) => VNode[];
+        }
+    >;
+export type VqList = typeof VList & typeof VqListImpl;
 
 /**
  * Creating composable function types to create strong typed component
@@ -195,7 +218,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-type GenericProps = ExtractComponentProps<typeof VqList>;
+type GenericProps = ExtractComponentProps<typeof VqListImpl>;
 
 interface GenericSlotsProps<TValue> {
     items: TValue[];
@@ -212,7 +235,7 @@ export function useVqList<TValue = unknown>() {
         // Returning functions in `setup` means this is the render function
         return () => {
             // Event handlers will also be passed in the `props` object
-            return h(VqList, props, slots);
+            return h(VqListImpl, props, slots);
         };
     });
     return wrapper as typeof wrapper & {

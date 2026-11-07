@@ -124,5 +124,4 @@ export const VqDatePicker = defineComponent({
     }
 });
 
- 
 export type VqDatePicker = typeof VDatePicker & typeof VqDatePicker;

@@ -15,6 +15,17 @@ describe("buildListQuery", () => {
         expect(query).toContain("range[min]=0");
     });
 
+    it("sends Date filters as ISO strings instead of dropping them", () => {
+        const date = new Date("2024-01-15T10:00:00.000Z");
+        const query = decodeURIComponent(buildListQuery({ from: date, range: { to: date } }));
+        expect(query).toContain("from=2024-01-15T10:00:00.000Z");
+        expect(query).toContain("range[to]=2024-01-15T10:00:00.000Z");
+    });
+
+    it("sends an invalid Date as blank instead of throwing", () => {
+        expect(buildListQuery({ from: new Date("nope") })).toBe("from=");
+    });
+
     it("still sends empty and missing values as blank", () => {
         expect(buildListQuery({ search: undefined, name: "" })).toBe("search=&name=");
     });

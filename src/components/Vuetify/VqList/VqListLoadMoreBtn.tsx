@@ -36,5 +36,4 @@ export const VqListLoadMoreBtn = defineComponent({
     }
 });
 
- 
 export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtn;

@@ -253,9 +253,7 @@ export function useVqDataTable<TValue = unknown>() {
 }
 
 /**
- * this function is
- * @param headers
- * @returns
+ * Prepends the `#` column that `VqSerialNo` renders.
  */
 export function collectVqHeaders<T extends unknown[]>(headers: T) {
     return [

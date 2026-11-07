@@ -49,5 +49,4 @@ export const VqSubmitBtn = defineComponent({
     }
 });
 
- 
 export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn;

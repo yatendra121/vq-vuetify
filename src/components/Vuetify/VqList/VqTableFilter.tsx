@@ -33,5 +33,4 @@ export const VqTableFilter = defineComponent({
     }
 });
 
- 
 export type VqTableFilter = typeof VFormType & typeof VqTableFilter;

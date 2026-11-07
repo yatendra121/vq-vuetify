@@ -26,5 +26,4 @@ export const VqFileUpload = defineComponent({
     }
 });
 
- 
 export type VqFileUpload = typeof VFileUpload & typeof VqFileUpload;

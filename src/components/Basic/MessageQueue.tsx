@@ -21,5 +21,4 @@ export const VqMessageQueue = defineComponent({
     }
 });
 
- 
 export type VqMessageQueue = typeof VqMessageQueue;

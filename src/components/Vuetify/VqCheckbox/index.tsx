@@ -28,5 +28,4 @@ export const VqCheckbox = defineComponent({
     }
 });
 
- 
 export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;

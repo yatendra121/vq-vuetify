@@ -28,5 +28,4 @@ export const VqTextarea = defineComponent({
     }
 });
 
- 
 export type VqTextarea = typeof VTextarea & typeof VqTextarea;

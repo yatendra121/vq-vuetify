@@ -72,5 +72,4 @@ export const VqTimePicker = defineComponent({
     }
 });
 
- 
 export type VqTimePicker = typeof VTimePicker & typeof VqTimePicker;

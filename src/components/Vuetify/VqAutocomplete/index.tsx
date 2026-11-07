@@ -73,5 +73,4 @@ export const VqAutocomplete = defineComponent({
     }
 });
 
- 
 export type VqAutocomplete = typeof VAutocomplete & typeof VqAutocomplete;

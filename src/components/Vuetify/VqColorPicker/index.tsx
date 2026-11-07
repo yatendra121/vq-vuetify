@@ -77,5 +77,4 @@ export const VqColorPicker = defineComponent({
     }
 });
 
- 
 export type VqColorPicker = typeof VColorPicker & typeof VqColorPicker;

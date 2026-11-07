@@ -36,5 +36,4 @@ export const VqOtpInput = defineComponent({
     }
 });
 
- 
 export type VqOtpInput = typeof VOtpInput & typeof VqOtpInput;

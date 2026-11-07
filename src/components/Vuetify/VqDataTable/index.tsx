@@ -100,8 +100,10 @@ export const VqDataTable = defineComponent({
         );
 
         const reloadFromFirstPage = () => {
-            defaultOptions.page = 1;
-            loadItems(defaultOptions);
+            // Moving the table to page 1 makes it emit update:options, which loads
+            // that page; loading here as well would send the same request twice.
+            if (defaultOptions.page !== 1) defaultOptions.page = 1;
+            else loadItems(defaultOptions);
         };
 
         const { values: formFilterData } = useListFilter(filterId.value, {

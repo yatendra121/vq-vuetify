@@ -6,30 +6,23 @@ import dts from 'rollup-plugin-dts'
 import fg from 'fast-glob'
 import mm from 'micromatch'
 
-const importMap = {
-    components: {
-        VqTextField: {
-            from: 'components/VqTextField.tsx',
-            styles: []
-        },
-        VqAutocomplete: {
-            from: 'components/VqAutocomplete.tsx',
-            styles: []
-        },
-        VqTextarea: {
-            from: 'components/VqTextarea.tsx',
-            styles: []
-        },
-        VqCheckbox: {
-            from: 'components/VqCheckbox.tsx',
-            styles: []
-        },
-        VqForm: {
-            from: 'components/VqForm.tsx',
-            styles: []
+// Every Vq* component a plugin's install() registers, read from the barrel it
+// registers from, so the global component types can't fall behind it.
+async function registeredComponents(barrel) {
+    const source = await fs.readFile(new URL(barrel, import.meta.url), { encoding: 'utf8' })
+    const names = []
+    for (const [, list] of source.matchAll(/^export\s*\{([^}]*)\}\s*from/gm)) {
+        for (const name of list.split(',').map((part) => part.trim())) {
+            if (name.startsWith('Vq')) names.push(name)
         }
     }
+    return names
 }
+
+// Typed by the exported value, not the same-named type alias: some aliases are
+// instance types (VqTextField), which templates can't check against.
+const globalComponentEntries = (names) =>
+    names.map((name) => `        ${name}: typeof ${name}`).join('\n')
 
 const externalsPlugin = () => ({
     resolveId(source, importer) {
@@ -77,9 +70,9 @@ function createTypesConfig(input, output, renderChunk, filter) {
 }
 
 async function getShims() {
-    const components = Object.keys(importMap.components)
-        .map((name) => `    ${name}:  ${name}`)
-        .join('\n')
+    const components = globalComponentEntries(
+        await registeredComponents('../src/components/index.ts')
+    )
 
     return (
         await fs.readFile(new URL('../src/shims.d.ts', import.meta.url), {
@@ -97,7 +90,12 @@ export default [
     createTypesConfig('index.d.ts', 'dist/index.d.ts', async (code) => {
         return code + '\n\n' + (await getShims())
     }),
-    createTypesConfig('integrations.d.ts', 'dist/integrations.d.ts')
+    createTypesConfig('integrations.d.ts', 'dist/integrations.d.ts', async (code) => {
+        const components = globalComponentEntries(
+            await registeredComponents('../src/components/integrations.ts')
+        )
+        return `${code}\n\ndeclare module 'vue' {\n    export interface GlobalComponents {\n${components}\n    }\n}\n`
+    })
     // createTypesConfig("main.d.ts", "dist/index.d.ts", async (code) => {
     //   console.log("importMap.components");
 

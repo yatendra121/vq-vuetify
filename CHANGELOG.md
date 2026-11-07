@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.10 (2026-11-04)
 
 Bug Fixes
 
@@ -16,7 +16,8 @@ Bug Fixes
 - `VqAutocomplete`: later changes to `items` and `action` now apply
 - `VqSubmitBtn`: shows loading for the form named by the `form` prop, forwards named slots, and no longer warns outside a form
 - `VqDataTable`: later changes to `page`, `itemsPerPage`, `sortBy`, and `action` now apply
-- `VqList` / `VqDataTable`: filter values of `0` and `false` are no longer sent blank
+- `VqList` / `VqDataTable`: filter values of `0` and `false` are no longer sent blank, and `Date` values, the default for a `VqDatePicker` filter, are sent as ISO strings instead of being dropped
+- `VqDataTable`: changing `action` now returns to the first page, as `VqList` does
 - `VqList`: the documented `load-more` slot now renders, other `VList` slots are forwarded, and `VList` can render `items` when no slot is given
 - `VqList`: `loadMore` no longer aborts an in-flight page or requests past the end; `pageSize` and `action` changes now apply
 - `VqTextEditor`: `label` and `placeholder` now work, `baseUrl` no longer needs a trailing slash, attrs reach the editor, and no empty error paragraph is rendered

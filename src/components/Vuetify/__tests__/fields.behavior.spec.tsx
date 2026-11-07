@@ -1,4 +1,4 @@
-import { mount, flushPromises } from "@vue/test-utils";
+import { mount, flushPromises, type VueWrapper } from "@vue/test-utils";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createVuetify } from "vuetify";
 import {
@@ -191,7 +191,7 @@ describe("field wrappers behaviour", () => {
             wrapper.findComponent(VMenu).vm.$emit("update:modelValue", true);
             await flushPromises();
 
-            const picker = wrapper.findComponent(pickers[name]);
+            const picker = wrapper.findComponent(pickers[name]) as unknown as VueWrapper<any>;
             expect(picker.props("elevation")).toBe(4);
             expect(picker.attributes("data-test")).toBe("x");
             expect(picker.attributes("id")).toBeUndefined();

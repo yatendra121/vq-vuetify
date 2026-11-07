@@ -143,5 +143,4 @@ export const VqDatatableItemAction = defineComponent({
     }
 });
 
- 
 export type VqDatatableItemAction = typeof VqDatatableItemAction;

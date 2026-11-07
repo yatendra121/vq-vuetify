@@ -31,5 +31,4 @@ export const VqTableFilterHandler = defineComponent({
     }
 })
 
- 
 export type VqTableFilterHandler = typeof VqTableFilterHandler

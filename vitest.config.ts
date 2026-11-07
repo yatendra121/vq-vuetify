@@ -15,9 +15,7 @@ export default defineConfig({
         },
         globals: true,
         environment: 'jsdom',
-        setupFiles: ['./vitest.setup.ts'],
-        transformMode: {
-            web: [/.[tj]sx$/]
-        }
+        exclude: ['**/node_modules/**', '**/dist/**', '.claude/**'],
+        setupFiles: ['./vitest.setup.ts']
     }
 })

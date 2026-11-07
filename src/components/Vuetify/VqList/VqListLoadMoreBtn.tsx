@@ -7,7 +7,7 @@ interface VqListInjection {
     tableListId: string;
     loadMore: () => void;
 }
-export const VqListLoadMoreBtn = defineComponent({
+const VqListLoadMoreBtnImpl = defineComponent({
     name: "VqListLoadMoreBtn",
     // Attrs go to the button, which isn't rendered once the list is finished.
     inheritAttrs: false,
@@ -36,4 +36,6 @@ export const VqListLoadMoreBtn = defineComponent({
 });
 
  
-export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtn;
+/** Typed with VBtn's props, events and slots, which it passes through. */
+export const VqListLoadMoreBtn = VqListLoadMoreBtnImpl as typeof VqListLoadMoreBtnImpl & typeof VBtn;
+export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtnImpl;

@@ -5,6 +5,7 @@ import { VCheckbox } from "vuetify/components";
 const VqCheckboxImpl = defineComponent({
     name: "VqCheckbox",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `email` or `address.city`. */
         name: {
             type: String,
             required: true
@@ -29,6 +30,9 @@ const VqCheckboxImpl = defineComponent({
 });
 
  
-/** Typed with VCheckbox's props, events and slots, which it passes through. */
+/**
+ * A `v-checkbox` bound to the form field `name`: it shows the field's value and its
+ * validation error. Takes every VCheckbox prop, event and slot.
+ */
 export const VqCheckbox = VqCheckboxImpl as typeof VqCheckboxImpl & typeof VCheckbox;
 export type VqCheckbox = typeof VCheckbox & typeof VqCheckboxImpl;

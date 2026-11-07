@@ -1,5 +1,4 @@
 import {
-    VNode,
     computed,
     defineComponent,
     readonly,
@@ -15,11 +14,12 @@ import {
 } from "vue";
 
 import { VDataTableServer } from "vuetify/components";
+import type { DataTableHeader } from "vuetify";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useListFilter } from "../../../composables/list/filter";
 import { buildListQuery } from "../../../composables/list/query";
-import type { ComponentInstance, TemplateComponent } from "../../../types/component";
+import type { ComponentInstance, HttpMethod, TemplateComponent } from "../../../types/component";
 
 type TValue = unknown;
 interface SortByValue {
@@ -30,26 +30,38 @@ interface SortByValue {
 const VqDataTableImpl = defineComponent({
     name: "VqDataTable",
     props: {
+        /**
+         * Identifies the table. A `VqTableFilter` with the same `id` filters it, and
+         * the row helpers (`updateItemValue`, `deleteItemValue`) take it as their first argument.
+         */
         id: {
             type: String as PropType<string>,
             required: true
         },
+        /**
+         * URL the rows are fetched from. The query string carries the filter values,
+         * `page`, `itemsPerPage` and `sortBy`; the response must be `{ data: { data: Row[], total: number } }`.
+         */
         action: {
             type: String as PropType<string>,
             required: true
         },
+        /** HTTP method of the request. */
         method: {
-            type: String as PropType<string>,
+            type: String as PropType<HttpMethod>,
             default: () => "GET"
         },
+        /** Page shown first; later changes move the table to that page. */
         page: {
             type: Number as PropType<number>,
             default: () => 1
         },
+        /** Rows per page. */
         itemsPerPage: {
             type: Number as PropType<number>,
             default: () => 10
         },
+        /** Initial sort; the user can change it from the column headers. */
         sortBy: {
             type: Array as PropType<SortByValue[]>,
             default: () => [{ key: "name", order: "asc" }]
@@ -60,7 +72,10 @@ const VqDataTableImpl = defineComponent({
             default: () => 0
         }
     },
-    emits: ["error"],
+    emits: {
+        /** A request failed. Superseded (aborted) requests don't emit. */
+        error: (_error: unknown) => true
+    },
     setup(props, { attrs, slots, emit }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;
@@ -209,19 +224,27 @@ const VqDataTableImpl = defineComponent({
     }
 });
 
- 
-type VDataTableServerInstance = ComponentInstance<typeof VDataTableServer>;
+
+type VDataTableServerInstance<TItem = any> = ComponentInstance<
+    typeof VDataTableServer<readonly TItem[], unknown>
+>;
+
+/** VqDataTable's template type, with rows of type `TItem` in VDataTableServer's slots. */
+export type VqDataTableComponent<TItem = any> = typeof VqDataTableImpl &
+    TemplateComponent<
+        Omit<VDataTableServerInstance<TItem>["$props"], "items" | "itemsLength"> &
+            ComponentInstance<typeof VqDataTableImpl>["$props"],
+        VDataTableServerInstance<TItem>["$slots"]
+    >;
 
 /**
- * Typed with VDataTableServer's props, events and slots, which it passes through,
- * minus `items` and `itemsLength`: VqDataTable fetches and supplies those itself.
+ * A server-side `v-data-table` that fetches its own rows from `action`, refetching on
+ * paging, sorting and changes to its `VqTableFilter`. Takes every VDataTableServer prop,
+ * event and slot except `items` and `itemsLength`, which it supplies itself.
+ *
+ * For typed rows in slots, use `useVqDataTable<Row>()`.
  */
-export const VqDataTable = VqDataTableImpl as typeof VqDataTableImpl &
-    TemplateComponent<
-        Omit<VDataTableServerInstance["$props"], "items" | "itemsLength"> &
-            ComponentInstance<typeof VqDataTableImpl>["$props"],
-        VDataTableServerInstance["$slots"]
-    >;
+export const VqDataTable = VqDataTableImpl as VqDataTableComponent;
 export type VqDataTable = typeof VDataTableServer & typeof VqDataTableImpl;
 
 /**
@@ -235,15 +258,17 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
 
 type GenericProps = ExtractComponentProps<typeof VqDataTableImpl>;
 
-interface GenericSlotsProps<TValue> {
-    item: TValue;
-    index: number;
-}
-
 /**
- * Creating composable function to create strong typed component with VqList
+ * Returns `VqDataTable` typed for rows of `TItem`, so slot props such as `item` in
+ * `#item.name="{ item }"` are `TItem` instead of `any`.
+ *
+ * @example
+ * const UserTable = useVqDataTable<User>();
+ * // <UserTable id="users" action="users" :headers="headers">
+ * //     <template #item.name="{ item }">{{ item.name }}</template>
+ * // </UserTable>
  */
-export function useVqDataTable<TValue = unknown>() {
+export function useVqDataTable<TItem = unknown>() {
     const wrapper = defineComponent((props: GenericProps, { slots }) => {
         // Returning functions in `setup` means this is the render function
         return () => {
@@ -251,23 +276,20 @@ export function useVqDataTable<TValue = unknown>() {
             return h(VqDataTableImpl, props, slots);
         };
     });
-    return wrapper as typeof wrapper & {
-        new (): {
-            // Same trick as `$slots`, we override the emit information for that component
-            $emit: {
-                (e: "error", error: unknown): void;
-            };
-            $slots: {
-                item: (arg: GenericSlotsProps<TValue>) => VNode[];
-            };
-        };
-    };
+    return wrapper as unknown as VqDataTableComponent<TItem>;
 }
 
 /**
- * Prepends the `#` column that `VqSerialNo` renders.
+ * Prepends the `#` column that `VqSerialNo` renders. Each header is a Vuetify
+ * `DataTableHeader`, so its options (`title`, `key`, `align`, `sortable`, ...) are
+ * suggested and checked.
+ *
+ * @example
+ * const headers = collectVqHeaders([{ title: "Name", key: "name", align: "start" }]);
  */
-export function collectVqHeaders<T extends unknown[]>(headers: T) {
+// A constraint rather than a parameter type: it suggests and checks the header
+// options, but still lets headers carry extra keys of the app's own.
+export function collectVqHeaders<T extends DataTableHeader[]>(headers: T) {
     return [
         {
             title: "#",
@@ -277,9 +299,11 @@ export function collectVqHeaders<T extends unknown[]>(headers: T) {
     ];
 }
 
+/** A `<td>` with the row's serial number, for the column `collectVqHeaders` adds. */
 export const VqSerialNo = defineComponent({
     name: "VqSerialNo",
     props: {
+        /** The number to show. */
         index: {
             type: Number as PropType<number>,
             required: true

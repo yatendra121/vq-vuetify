@@ -88,21 +88,48 @@ export const useListRepository = (key: string) => {
     };
 };
 
-export const updateItemKeyValue = (
+// A union of [key, value] pairs, so the value is checked against its own key's type.
+type KeyValueArgs<TItem> = {
+    [K in keyof TItem & string]: [key: K, value: TItem[K]];
+}[keyof TItem & string];
+
+/**
+ * Sets one key of a loaded row in the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ *
+ * Pass the row type to have `key` suggested and `value` checked against it.
+ *
+ * @example
+ * updateItemKeyValue<User>("users", user.id, "status", "active");
+ */
+export const updateItemKeyValue = <TItem = any>(
     filterListId: string,
     itemId: string | number,
-    key: string,
-    value: unknown
+    ...[key, value]: KeyValueArgs<TItem>
 ) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value, key);
 };
 
-export const updateItemValue = (filterListId: string, itemId: string | number, value: unknown) => {
+/**
+ * Replaces a loaded row in the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ *
+ * Pass the row type to have `value` checked against it: `updateItemValue<User>(...)`.
+ */
+export const updateItemValue = <TItem = any>(
+    filterListId: string,
+    itemId: string | number,
+    value: TItem
+) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value);
 };
 
+/**
+ * Removes a loaded row from the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ */
 export const deleteItemValue = (filterListId: string, itemId: string | number) => {
     const { deleteListItemValue } = useListRepository(filterListId + "_filter");
     deleteListItemValue(itemId);

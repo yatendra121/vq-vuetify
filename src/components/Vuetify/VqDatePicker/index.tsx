@@ -1,5 +1,6 @@
 import { computed, defineComponent, PropType, ref, toRef } from "vue";
 import { VDatePicker, VDialog, VMenu, VTextField } from "vuetify/components";
+import type { ComponentInstance } from "../../../types/component";
 import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../composables/field";
 
 type DateValue = string | Date;
@@ -30,18 +31,22 @@ const VqDatePickerImpl = defineComponent({
     // Attrs are placed by hand; the picker's aren't read until its menu first opens.
     inheritAttrs: false,
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `email` or `address.city`. */
         name: {
             type: String,
             required: true
         },
+        /** Pick several dates (`true`), a range (`"range"`), or up to that many dates (a number). */
         multiple: {
             type: [Boolean, String, Number] as PropType<boolean | "range" | number | string>,
             default: false
         },
+        /** Label of the text field. */
         label: {
             type: String,
             default: ""
         },
+        /** Open the picker in a dialog instead of a menu. */
         type: {
             type: Boolean,
             default: false
@@ -56,7 +61,7 @@ const VqDatePickerImpl = defineComponent({
         },
         /** Props for the text field; other attrs go to the VDatePicker. */
         fieldProps: {
-            type: Object as PropType<Record<string, unknown>>,
+            type: Object as PropType<ComponentInstance<typeof VTextField>["$props"]>,
             default: undefined
         }
     },
@@ -125,6 +130,10 @@ const VqDatePickerImpl = defineComponent({
 });
 
  
-/** Typed with VDatePicker's props, events and slots, which it passes through. */
+/**
+ * A read-only text field that opens a `VDatePicker` in a menu (or a dialog with `type`) and
+ * binds the picked date to the form field `name`, showing its validation error.
+ * Other attrs, events and slots go to the VDatePicker; `fieldProps` goes to the text field.
+ */
 export const VqDatePicker = VqDatePickerImpl as typeof VqDatePickerImpl & typeof VDatePicker;
 export type VqDatePicker = typeof VDatePicker & typeof VqDatePickerImpl;

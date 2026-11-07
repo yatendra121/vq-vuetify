@@ -6,6 +6,7 @@ import { useVqField } from "../../../composables/field";
 const VqFileInputImpl = defineComponent({
     name: "VqFileInput",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `photo`. */
         name: {
             type: String,
             required: true
@@ -61,6 +62,11 @@ const VqFileInputImpl = defineComponent({
     }
 });
 
-/** Typed with VFileInput's props, events and slots, which it passes through. */
+/**
+ * A `v-file-input` bound to the form field `name`: it shows the field's value and its
+ * validation error. Takes every VFileInput prop, event and slot.
+ *
+ * The value is stored at `name[file]` unless `raw-name` is set.
+ */
 export const VqFileInput = VqFileInputImpl as typeof VqFileInputImpl & typeof VFileInput;
 export type VqFileInput = typeof VFileInput & typeof VqFileInputImpl;

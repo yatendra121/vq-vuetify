@@ -50,6 +50,7 @@ describe("VqForm behaviour", () => {
 
         expect(useAsyncAxios).not.toHaveBeenCalled();
         expect(wrapper.emitted("submitedClientError")).toHaveLength(1);
+        expect(wrapper.emitted("submittedClientError")).toHaveLength(1);
         expect(wrapper.text()).toContain("Email is required");
     });
 
@@ -66,8 +67,32 @@ describe("VqForm behaviour", () => {
         await flushPromises();
 
         expect(wrapper.emitted("submitedRequestError")?.[0]).toEqual([failure]);
+        expect(wrapper.emitted("submittedRequestError")?.[0]).toEqual([failure]);
         expect(useFormStore().forms["f"].busy).toBe(false);
         errorSpy.mockRestore();
+    });
+
+    it("emits success and server errors under both spellings", async () => {
+        vi.mocked(useAsyncAxios).mockResolvedValueOnce({ data: { message: "ok" } } as never);
+        const wrapper = mountForm();
+        await wrapper.find("form").trigger("submit");
+        await flushPromises();
+
+        const [success] = wrapper.emitted("submittedSuccess")?.[0] ?? [];
+        expect(success).toBeDefined();
+        expect(wrapper.emitted("submitedSuccess")?.[0]).toEqual([success]);
+
+        vi.mocked(useAsyncAxios).mockRejectedValueOnce(new Error("422") as never);
+        vi.mocked(useErrorResponse).mockReturnValue({
+            getErrorResponse: vi.fn().mockResolvedValue({
+                eResponse: { value: { message: "Invalid", errors: { email: ["Taken"] } } }
+            })
+        } as never);
+        await wrapper.find("form").trigger("submit");
+        await flushPromises();
+
+        expect(wrapper.emitted("submittedError")).toHaveLength(1);
+        expect(wrapper.emitted("submitedError")).toHaveLength(1);
     });
 
     it("ignores a second submit while the first request is running", async () => {

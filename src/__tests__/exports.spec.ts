@@ -15,6 +15,7 @@ describe("public entry", () => {
             "useVqList",
             "useMessageInstance",
             "useFormFilterRepository",
+            "useVqListControls",
             "collectVqHeaders",
             "setVqLocale"
         ]) {

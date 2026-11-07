@@ -5,6 +5,7 @@ import { VTextarea } from "vuetify/components";
 const VqTextareaImpl = defineComponent({
     name: "VqTextarea",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `email` or `address.city`. */
         name: {
             type: String,
             required: true
@@ -29,6 +30,9 @@ const VqTextareaImpl = defineComponent({
 });
 
  
-/** Typed with VTextarea's props, events and slots, which it passes through. */
+/**
+ * A `v-textarea` bound to the form field `name`: it shows the field's value and its
+ * validation error. Takes every VTextarea prop, event and slot.
+ */
 export const VqTextarea = VqTextareaImpl as typeof VqTextareaImpl & typeof VTextarea;
 export type VqTextarea = typeof VTextarea & typeof VqTextareaImpl;

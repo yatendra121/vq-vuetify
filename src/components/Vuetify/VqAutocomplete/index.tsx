@@ -3,7 +3,7 @@ import { useAsyncAxios } from "@qnx/composables/axios";
 import { VAutocomplete } from "vuetify/components";
 import { useVqField } from "../../../composables/field";
 
-export const VqAutocomplete = defineComponent({
+const VqAutocompleteImpl = defineComponent({
     name: "VqAutoComplete",
     props: {
         name: {
@@ -74,4 +74,6 @@ export const VqAutocomplete = defineComponent({
 });
 
  
-export type VqAutocomplete = typeof VAutocomplete & typeof VqAutocomplete;
+/** Typed with VAutocomplete's props, events and slots, which it passes through. */
+export const VqAutocomplete = VqAutocompleteImpl as typeof VqAutocompleteImpl & typeof VAutocomplete;
+export type VqAutocomplete = typeof VAutocomplete & typeof VqAutocompleteImpl;

@@ -3,7 +3,7 @@ import { FormContextKey } from "vee-validate";
 import { VFileInput } from "vuetify/components";
 import { useVqField } from "../../../composables/field";
 
-export const VqFileInput = defineComponent({
+const VqFileInputImpl = defineComponent({
     name: "VqFileInput",
     props: {
         name: {
@@ -61,4 +61,6 @@ export const VqFileInput = defineComponent({
     }
 });
 
-export type VqFileInput = typeof VFileInput & typeof VqFileInput;
+/** Typed with VFileInput's props, events and slots, which it passes through. */
+export const VqFileInput = VqFileInputImpl as typeof VqFileInputImpl & typeof VFileInput;
+export type VqFileInput = typeof VFileInput & typeof VqFileInputImpl;

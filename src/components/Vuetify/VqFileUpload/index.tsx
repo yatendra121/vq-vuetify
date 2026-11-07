@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { useVqField } from "../../../composables/field";
 import { VFileUpload } from "vuetify/components";
 
-export const VqFileUpload = defineComponent({
+const VqFileUploadImpl = defineComponent({
     name: "VqFileUpload",
     props: {
         name: {
@@ -27,4 +27,6 @@ export const VqFileUpload = defineComponent({
 });
 
  
-export type VqFileUpload = typeof VFileUpload & typeof VqFileUpload;
+/** Typed with VFileUpload's props, events and slots, which it passes through. */
+export const VqFileUpload = VqFileUploadImpl as typeof VqFileUploadImpl & typeof VFileUpload;
+export type VqFileUpload = typeof VFileUpload & typeof VqFileUploadImpl;

@@ -14,6 +14,7 @@ import {
 } from "vue";
 
 import { VDataTableServer } from "vuetify/components";
+import type { DataTableHeader } from "vuetify";
 import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useListFilter } from "../../../composables/list/filter";
@@ -279,12 +280,16 @@ export function useVqDataTable<TItem = unknown>() {
 }
 
 /**
- * Prepends the `#` column that `VqSerialNo` renders.
+ * Prepends the `#` column that `VqSerialNo` renders. Each header is a Vuetify
+ * `DataTableHeader`, so its options (`title`, `key`, `align`, `sortable`, ...) are
+ * suggested and checked.
  *
  * @example
- * const headers = collectVqHeaders([{ title: "Name", key: "name" }]);
+ * const headers = collectVqHeaders([{ title: "Name", key: "name", align: "start" }]);
  */
-export function collectVqHeaders<T extends unknown[]>(headers: T) {
+// A constraint rather than a parameter type: it suggests and checks the header
+// options, but still lets headers carry extra keys of the app's own.
+export function collectVqHeaders<T extends DataTableHeader[]>(headers: T) {
     return [
         {
             title: "#",

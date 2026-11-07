@@ -6,6 +6,32 @@ import { config } from "./config";
 import { useVqField } from "../../composables/field";
 
 /**
+ * TinyMCE options for `VqTextEditor`'s `init`. The common ones are typed; any other
+ * TinyMCE option is accepted too.
+ */
+export interface VqTextEditorInit {
+    /** Show the menu bar (`true`), hide it, or list its menus: `"file edit view"`. */
+    menubar?: boolean | string;
+    /** Toolbar buttons, e.g. `"undo redo | bold italic"`; `false` hides the toolbar. */
+    toolbar?: boolean | string | string[];
+    /** Plugins to load, e.g. `"lists link image"`. */
+    plugins?: string | string[];
+    /** Height of the editor; overrides the `height` prop. */
+    height?: number | string;
+    /** CSS applied inside the editable area. */
+    content_style?: string;
+    /** Stylesheet(s) for the editable area; overrides the dark/light default. */
+    content_css?: boolean | string | string[];
+    /** Show the status bar at the bottom. */
+    statusbar?: boolean;
+    /** Show the "Powered by TinyMCE" link. */
+    branding?: boolean;
+    /** Runs before the editor renders, with the TinyMCE editor instance. */
+    setup?: (editor: any) => void;
+    [option: string]: unknown;
+}
+
+/**
  * A TinyMCE rich-text editor bound to the form field `name`, showing its validation
  * error. Needs the TinyMCE script served at `baseUrl` + `filesPath`.
  */
@@ -49,7 +75,7 @@ export const VqTextEditor = defineComponent({
         },
         /** Extra TinyMCE options, merged over the defaults. */
         init: {
-            type: Object as PropType<Record<string, unknown>>,
+            type: Object as PropType<VqTextEditorInit>,
             default: undefined
         }
     },

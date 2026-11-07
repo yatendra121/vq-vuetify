@@ -15,17 +15,13 @@ import type { ApiResponseValue } from "@qnx/composables";
 import { useMessageInstance } from "../../composables/message";
 import { useFormFilterRepository } from "../../composables/form";
 import { useVqLocale } from "../../config/locale";
-import type { HttpMethod } from "../../types/component";
+import type { ComponentInstance, HttpMethod, TemplateComponent } from "../../types/component";
 
 // The mdiDelete path, inlined so the component doesn't need @mdi/js installed.
 const DELETE_ICON =
     "M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z";
 
-/**
- * An icon button for a table row that asks for confirmation, then sends a request for
- * the row (`{action}/{itemId}`), shows the response message and reloads the table `id`.
- */
-export const VqDatatableItemAction = defineComponent({
+const VqDatatableItemActionImpl = defineComponent({
     name: "VqDatatableItemAction",
     // Attrs go to the trigger button, which renders inside the tooltip's slot.
     inheritAttrs: false,
@@ -156,4 +152,18 @@ export const VqDatatableItemAction = defineComponent({
     }
 });
 
-export type VqDatatableItemAction = typeof VqDatatableItemAction;
+type VBtnProps = ComponentInstance<typeof VBtn>["$props"];
+
+/**
+ * An icon button for a table row that asks for confirmation, then sends a request for
+ * the row (`{action}/{itemId}`), shows the response message and reloads the table `id`.
+ * Other attrs go to the button, so VBtn's props (`color`, `size`, `variant`, ...) are
+ * suggested; it has no slots.
+ */
+export const VqDatatableItemAction = VqDatatableItemActionImpl as typeof VqDatatableItemActionImpl &
+    TemplateComponent<
+        Omit<VBtnProps, "icon"> & ComponentInstance<typeof VqDatatableItemActionImpl>["$props"],
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        {}
+    >;
+export type VqDatatableItemAction = typeof VqDatatableItemActionImpl;

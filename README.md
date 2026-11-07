@@ -206,7 +206,7 @@ const onSuccess = (res) => console.log(res)
     action="user/create"
     method="POST"
     :validation-schema="schema"
-    @submited-success="onSuccess"
+    @submitted-success="onSuccess"
   >
     <VqTextField name="name" label="Name" />
     <VqTextField name="email" label="Email" />
@@ -276,12 +276,22 @@ A `VqTableFilter` and `VqDataTable` (or `VqList`) share an `id`; changing a filt
 
 ### Reloading after a change
 
-`useFormFilterRepository` refreshes a table or list from anywhere, with or without a `VqTableFilter`. Its key is the list's `id` plus `_filter`. `reload()` keeps a table on its current page; `reset()` returns to the first page. Lists restart from the first page for both.
+`useVqListControls` refreshes a table or list from anywhere, with or without a `VqTableFilter`. It takes the table's or list's `id`. `reload()` keeps a table on its current page; `reset()` returns to the first page. Lists restart from the first page for both.
 
 ```ts
-import { useFormFilterRepository } from '@qnx/vuetify'
+import { useVqListControls } from '@qnx/vuetify'
 
-const { reload, reset } = useFormFilterRepository('users_filter')
+const { reload, reset } = useVqListControls('users')
+```
+
+`useFormFilterRepository('users_filter')` does the same with the `id` plus `_filter`.
+
+To change a loaded row without refetching, use `updateItemKeyValue`, `updateItemValue` or `deleteItemValue`. Pass the row type to have keys suggested and values checked:
+
+```ts
+import { updateItemKeyValue } from '@qnx/vuetify'
+
+updateItemKeyValue<User>('users', user.id, 'status', 'active')
 ```
 
 ### Snackbar messages
@@ -330,7 +340,7 @@ Fields validate on submit. Once a field shows an error, it re-validates as its v
 
 > **`VqFileInput` validation.** By default the value is stored under the literal key `name[file]`, so a schema must use that exact key: `object({ 'avatar[file]': mixed().required() })`. A schema on `avatar` or `avatar.file` never sees the value, so the form can't submit. For a schema on `avatar`, add `raw-name`, which stores the value at `avatar` and changes the submitted key from `avatar[file]` to `avatar`.
 
-> **Event names.** `submited-*` is the established spelling, so it's the one to listen for.
+> **Event names.** Listen for `submitted-*`. The original misspelled `submited-*` names are still emitted with the same payloads, so existing listeners keep working; they are deprecated.
 
 <details>
 <summary><b><code>VqForm</code> props &amp; events</b></summary>
@@ -353,10 +363,10 @@ Fields validate on submit. Once a field shows an error, it re-validates as its v
 
 | Event                    | Payload       | Emitted when                       |
 | ------------------------ | ------------- | ---------------------------------- |
-| `submited-success`       | `ApiResponse` | Server responds successfully       |
-| `submited-error`         | `ApiResponse` | Server returns a validation error  |
-| `submited-client-error`  | vee-validate invalid-submit context | Client-side validation fails |
-| `submited-request-error` | `AxiosError`  | Request fails with any other error (500s, network failures) |
+| `submitted-success`       | `ApiResponse` | Server responds successfully       |
+| `submitted-error`         | `ApiResponse` | Server returns a validation error  |
+| `submitted-client-error`  | vee-validate invalid-submit context | Client-side validation fails |
+| `submitted-request-error` | `AxiosError`  | Request fails with any other error (500s, network failures) |
 
 </details>
 
@@ -443,7 +453,8 @@ Requests send `page`, `itemsPerPage`, and `sortBy`. `VqList` sends `page` and `p
 | `useVqDataTable<T>()`  | A typed `VqDataTable` with inference for item slots               |
 | `useVqList<T>()`       | A typed `VqList` with inference for the default slot's `items`    |
 | `collectVqHeaders(h)`  | Prepends a `#` serial-number column to a headers array            |
-| `useFormFilterRepository(key)` | `reload()` / `reset()` for the table or list with that key (`<id>_filter`) |
+| `useVqListControls(id)` | `reload()` / `reset()` for the table or list with that `id` |
+| `useFormFilterRepository(key)` | The same, keyed by `<id>_filter` |
 | `useMessageInstance()` | `success()` / `warning()` / `error()` snackbar helpers            |
 
 ```ts

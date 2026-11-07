@@ -1,3 +1,13 @@
+## Unreleased
+
+Features
+
+- `VqForm` / `useVqForm`: the events are now also emitted as `submittedSuccess`, `submittedError`, `submittedClientError` and `submittedRequestError`. The misspelled `submited*` names are still emitted and are deprecated
+- `useVqListControls(id)`: `reload()` / `reset()` for a table or list by its `id`, without the `_filter` suffix `useFormFilterRepository` needs
+- Editor IntelliSense: hover docs for every Vq prop, component and helper; `useVqDataTable<T>()` / `useVqList<T>()` type every slot by row; `useVqForm().wrapper` has typed props and events; typed `error` events; `method` suggests HTTP methods
+- Typed `collectVqHeaders` headers, `VqDatatableItemAction` button props, `VqTextEditor` `init`, picker `fieldProps`, and `updateItemKeyValue<Row>` / `updateItemValue<Row>`
+- New exported types: `HttpMethod`, `VqDataTableComponent`, `VqListComponent`, `VqListSlotProps`, `VqFormWrapper`, `VqFormOption`, `UseVqFormReturn`, `VqTextEditorInit`
+
 ## 0.8.10 (2026-11-04)
 
 Bug Fixes

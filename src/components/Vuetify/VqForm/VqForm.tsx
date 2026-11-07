@@ -52,7 +52,7 @@ const submitProps = {
         type: Boolean,
         default: () => false
     },
-    /** Handles a successful response instead of emitting `submitedSuccess`. */
+    /** Handles a successful response instead of emitting `submittedSuccess`. */
     successResponseHandler: {
         type: Function as PropType<
             (response: ApiResponseValue, actions: SubmissionContext) => void
@@ -60,7 +60,7 @@ const submitProps = {
     },
     /**
      * Handles a failed request instead of the default: showing 422 field errors and
-     * emitting `submitedError` or `submitedRequestError`.
+     * emitting `submittedError` or `submittedRequestError`.
      */
     errorResponseHandler: {
         type: Function as PropType<
@@ -82,18 +82,32 @@ interface SubmitProps {
 
 // Success and error carry an ApiResponse. The other two keep untyped payloads:
 // typing them `unknown` would break handlers such as `(e) => e.message`.
+// Each event is emitted under its correct spelling and, for existing listeners,
+// under the original misspelled `submited*` name.
 const submitEmits = {
     /** The request succeeded (and no `successResponseHandler` is set). */
-    submitedSuccess: (_response: ApiResponse) => true,
+    submittedSuccess: (_response: ApiResponse) => true,
     /** The server rejected the values (400, 401 or 422); field errors are already shown. */
-    submitedError: (_response: ApiResponse) => true,
+    submittedError: (_response: ApiResponse) => true,
     /** Client-side validation failed, so nothing was sent. Gets vee-validate's invalid-submission context. */
-    submitedClientError: null,
+    submittedClientError: null,
     /** The request failed without a usable error response (5xx, network error). Gets the AxiosError. */
+    submittedRequestError: null,
+    /** @deprecated Use `submittedSuccess` (`@submitted-success`); this name is still emitted. */
+    submitedSuccess: (_response: ApiResponse) => true,
+    /** @deprecated Use `submittedError` (`@submitted-error`); this name is still emitted. */
+    submitedError: (_response: ApiResponse) => true,
+    /** @deprecated Use `submittedClientError` (`@submitted-client-error`); this name is still emitted. */
+    submitedClientError: null,
+    /** @deprecated Use `submittedRequestError` (`@submitted-request-error`); this name is still emitted. */
     submitedRequestError: null
 };
 
 interface SubmitEmit {
+    (event: "submittedSuccess", response: ApiResponse): void;
+    (event: "submittedError", response: ApiResponse): void;
+    (event: "submittedClientError", payload: unknown): void;
+    (event: "submittedRequestError", payload: unknown): void;
     (event: "submitedSuccess", response: ApiResponse): void;
     (event: "submitedError", response: ApiResponse): void;
     (event: "submitedClientError", payload: unknown): void;
@@ -130,6 +144,7 @@ const createSubmitHandler = (
             errorValue = eResponse.value;
         } catch {
             console.error(response);
+            emit("submittedRequestError", response);
             emit("submitedRequestError", response);
             return;
         }
@@ -138,6 +153,7 @@ const createSubmitHandler = (
             const apiResponse = new ApiResponse(errorValue);
             const errors = apiResponse.getErrors();
             if (errors) actions.setErrors(errors);
+            emit("submittedError", apiResponse);
             emit("submitedError", apiResponse);
         }
     };
@@ -163,7 +179,9 @@ const createSubmitHandler = (
                         props.successResponseHandler(response, actions);
                         return;
                     }
-                    emit("submitedSuccess", new ApiResponse(response));
+                    const apiResponse = new ApiResponse(response);
+                    emit("submittedSuccess", apiResponse);
+                    emit("submitedSuccess", apiResponse);
                 },
                 (response: AxiosError<ApiResponseValue>) => onFailure(response, actions)
             )
@@ -172,7 +190,10 @@ const createSubmitHandler = (
             });
     };
 
-    return handleSubmit(onSubmit, (context) => emit("submitedClientError", context));
+    return handleSubmit(onSubmit, (context) => {
+        emit("submittedClientError", context);
+        emit("submitedClientError", context);
+    });
 };
 
 /**
@@ -317,7 +338,7 @@ export interface UseVqFormReturn<TValues extends GenericObject = any> {
  *
  * @example
  * const { wrapper: Form, values } = useVqForm<{ email: string }>({ formId: "login" });
- * // <Form action="login" @submited-success="onLogin"><VqTextField name="email" /></Form>
+ * // <Form action="login" @submitted-success="onLogin"><VqTextField name="email" /></Form>
  */
 export const useVqForm = <TValues extends GenericObject = any>(
     opts: VqFormOption<NoInfer<TValues>>

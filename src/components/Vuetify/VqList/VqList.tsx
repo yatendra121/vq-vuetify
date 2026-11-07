@@ -125,7 +125,7 @@ export const VqList = defineComponent({
             loading.value = true;
             try {
                 const response = await useAsyncAxios<{
-                    data: { data: any; total: number };
+                    data: { data: unknown[]; total: number };
                 }>(
                     `${props.action}?${buildListQuery({
                         ...toRaw(formFilterData.value ?? {}),

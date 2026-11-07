@@ -1,5 +1,5 @@
 import { computed, defineComponent, PropType } from "vue";
-import { Form as VForm } from "vee-validate";
+import { Form as VForm, type SubmissionHandler } from "vee-validate";
 import { VqTableFilterHandler } from "./VqTableFilterHandler";
 
 //types
@@ -24,8 +24,11 @@ export const VqTableFilter = defineComponent({
 
         return () => (
             <>
-                {/* @ts-ignore vee-validate VForm types omit id */}
-                <VForm id={filterId.value} {...attrs} onSubmit={attrs.onSubmit ?? noopSubmit}>
+                <VForm
+                    {...{ id: filterId.value }}
+                    {...attrs}
+                    onSubmit={(attrs.onSubmit as SubmissionHandler | undefined) ?? noopSubmit}
+                >
                     <VqTableFilterHandler id={filterId.value} v-slots={slots} />
                 </VForm>
             </>

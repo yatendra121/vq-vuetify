@@ -285,7 +285,7 @@ export const useVqForm = (opts: VqFormOption) => {
     };
 };
 
-const resolveSchemaPath = (item: any, segments: string[]): unknown => {
+const resolveSchemaPath = (item: unknown, segments: string[]): unknown => {
     let current = item;
     for (const [index, segment] of segments.entries()) {
         if (segment === "*") {
@@ -293,7 +293,7 @@ const resolveSchemaPath = (item: any, segments: string[]): unknown => {
             const rest = segments.slice(index + 1);
             return current.map((element) => resolveSchemaPath(element, rest));
         }
-        current = current?.[segment];
+        current = (current as Record<string, unknown> | null | undefined)?.[segment];
     }
     return current;
 };

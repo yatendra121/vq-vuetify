@@ -23,8 +23,7 @@ export const VqListLoadMoreBtn = defineComponent({
                         loading={vqList?.loading.value}
                         disabled={vqList?.loading.value}
                         color="primary"
-                        /* @ts-ignore Vuetify VBtn types omit onClick */
-                        onClick={() => vqList?.loadMore()}
+                        {...{ onClick: () => vqList?.loadMore() }}
                         v-slots={slots}
                         {...attrs}
                     >

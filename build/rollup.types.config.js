@@ -68,11 +68,7 @@ function createTypesConfig(input, output, renderChunk, filter) {
                 // }),
                 {
                     async renderChunk(code) {
-                        if (renderChunk) code = await renderChunk(code)
-                        return code.replaceAll(
-                            /import([^;])*?from 'vue-router'/gm,
-                            '// @ts-ignore\n$&'
-                        )
+                        return renderChunk ? renderChunk(code) : code
                     }
                 }
             ]

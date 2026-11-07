@@ -200,7 +200,7 @@ export const VqDataTable = defineComponent({
                     onUpdate:options={updateOptions}
                     onUpdate:page={(val: number) => (defaultOptions.page = val)}
                     onUpdate:itemsPerPage={(val: number) => (defaultOptions.itemsPerPage = val)}
-                    onUpdate:sortBy={(val: any[]) => (defaultOptions.sortBy = val)}
+                    onUpdate:sortBy={(val: SortByValue[]) => (defaultOptions.sortBy = val)}
                     v-slots={slots}
                     {...attrs}
                 ></VDataTableServer>

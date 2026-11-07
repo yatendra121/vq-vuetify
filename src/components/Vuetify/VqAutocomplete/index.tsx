@@ -22,7 +22,7 @@ export const VqAutocomplete = defineComponent({
     setup(props, { attrs, slots, emit }) {
         const { value, errorMessage } = useVqField(toRef(props, "name"));
 
-        const updateModelValue = (val: any) => {
+        const updateModelValue = (val: unknown) => {
             value.value = val;
         };
         const fetchedItems = ref<unknown[]>();

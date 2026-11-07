@@ -25,7 +25,7 @@ const formatDate = (date: Date) => {
     return `${date.getFullYear()}-${month}-${day}`;
 };
 
-export const VqDatePicker = defineComponent({
+const VqDatePickerImpl = defineComponent({
     name: "VqDatePicker",
     // Attrs are placed by hand; the picker's aren't read until its menu first opens.
     inheritAttrs: false,
@@ -125,4 +125,6 @@ export const VqDatePicker = defineComponent({
 });
 
  
-export type VqDatePicker = typeof VDatePicker & typeof VqDatePicker;
+/** Typed with VDatePicker's props, events and slots, which it passes through. */
+export const VqDatePicker = VqDatePickerImpl as typeof VqDatePickerImpl & typeof VDatePicker;
+export type VqDatePicker = typeof VDatePicker & typeof VqDatePickerImpl;

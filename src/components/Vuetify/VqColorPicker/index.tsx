@@ -4,7 +4,7 @@ import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../comp
 
 type Value = string | Record<string, unknown> | null | undefined;
 
-export const VqColorPicker = defineComponent({
+const VqColorPickerImpl = defineComponent({
     name: "VqColorPicker",
     // Attrs are placed by hand; the picker's aren't read until its menu first opens.
     inheritAttrs: false,
@@ -78,4 +78,6 @@ export const VqColorPicker = defineComponent({
 });
 
  
-export type VqColorPicker = typeof VColorPicker & typeof VqColorPicker;
+/** Typed with VColorPicker's props, events and slots, which it passes through. */
+export const VqColorPicker = VqColorPickerImpl as typeof VqColorPickerImpl & typeof VColorPicker;
+export type VqColorPicker = typeof VColorPicker & typeof VqColorPickerImpl;

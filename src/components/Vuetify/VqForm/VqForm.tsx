@@ -1,4 +1,6 @@
 import {
+    type DefineSetupFnComponent,
+    type PublicProps,
     defineComponent,
     h,
     isReactive,
@@ -13,7 +15,7 @@ import {
     toValue,
     watch
 } from "vue";
-import { SubmissionHandler, useForm } from "vee-validate";
+import { SubmissionHandler, useForm, type GenericObject } from "vee-validate";
 import { useAsyncAxios, useErrorResponse } from "@qnx/composables/axios";
 import { ApiResponse, objectToFormData } from "@qnx/composables";
 import { useFormStore } from "../../../store/reactivity/form";
@@ -69,11 +71,21 @@ interface SubmitProps {
     ) => void;
 }
 
-type SubmitEvent =
-    | "submitedSuccess"
-    | "submitedError"
-    | "submitedClientError"
-    | "submitedRequestError";
+// Success and error carry an ApiResponse. The other two keep untyped payloads:
+// typing them `unknown` would break handlers such as `(e) => e.message`.
+const submitEmits = {
+    submitedSuccess: (_response: ApiResponse) => true,
+    submitedError: (_response: ApiResponse) => true,
+    submitedClientError: null,
+    submitedRequestError: null
+};
+
+interface SubmitEmit {
+    (event: "submitedSuccess", response: ApiResponse): void;
+    (event: "submitedError", response: ApiResponse): void;
+    (event: "submitedClientError", payload: unknown): void;
+    (event: "submitedRequestError", payload: unknown): void;
+}
 
 /**
  * Shared submit pipeline of VqForm and useVqForm: validation, the request, busy
@@ -82,7 +94,7 @@ type SubmitEvent =
 const createSubmitHandler = (
     getFormId: () => string,
     props: SubmitProps,
-    emit: (event: SubmitEvent, payload: unknown) => void,
+    emit: SubmitEmit,
     handleSubmit: FormContext<any>["handleSubmit"]
 ) => {
     const formStore = useFormStore();
@@ -171,7 +183,7 @@ export const VqForm = defineComponent({
             default: undefined
         }
     },
-    emits: ["submitedSuccess", "submitedError", "submitedClientError", "submitedRequestError"],
+    emits: submitEmits,
     setup(props, { attrs, emit, slots }) {
         provide("formId", readonly(toRef(props, "id")));
 
@@ -215,16 +227,37 @@ export const VqForm = defineComponent({
     }
 });
 
-export interface VqFormOption extends FormOptions<any> {
+/**
+ * Pass a type argument to type the form's values: `useVqForm<MyValues>({...})`.
+ * Without one, values stay untyped (`any`) as before; they are never inferred
+ * from `initialValues`, since that would reject reads of fields not listed there.
+ */
+export interface VqFormOption<TValues extends GenericObject = any> extends FormOptions<TValues> {
     formId: string;
     valuesSchema?: any;
     validationSchema?: any;
 }
 
-export const useVqForm = (opts: VqFormOption) => {
+export interface UseVqFormReturn<TValues extends GenericObject = any> {
+    // The exact type defineComponent gives the wrapper, kept as it was before.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    wrapper: DefineSetupFnComponent<any, {}, {}, any, PublicProps>;
+    resetForm: FormContext<TValues>["resetForm"];
+    values: FormContext<TValues>["values"];
+    errors: FormContext<TValues>["errors"];
+    meta: FormContext<TValues>["meta"];
+    setFieldValue: FormContext<TValues>["setFieldValue"];
+    setValues: FormContext<TValues>["setValues"];
+    setErrors: FormContext<TValues>["setErrors"];
+    validate: FormContext<TValues>["validate"];
+}
+
+export const useVqForm = <TValues extends GenericObject = any>(
+    opts: VqFormOption<NoInfer<TValues>>
+): UseVqFormReturn<TValues> => {
     const { formId, valuesSchema, ...formOptions } = opts;
 
-    const form = useForm({
+    const form = useForm<TValues>({
         ...formOptions,
         initialValues: transformObjValues(toValue(opts.initialValues), valuesSchema)
     });
@@ -242,7 +275,7 @@ export const useVqForm = (opts: VqFormOption) => {
 
     const VqForm = defineComponent({
         props: submitProps,
-        emits: ["submitedSuccess", "submitedError", "submitedClientError", "submitedRequestError"],
+        emits: submitEmits,
         setup(props, { attrs, emit, slots }) {
             provide("formId", readonly(ref(formId)));
 

@@ -232,11 +232,13 @@ describe("list & table behaviour", () => {
         it("returns to the first page when action changes", async () => {
             const wrapper = mountTable({ page: 3 });
             await flushPromises();
+            vi.mocked(useAsyncAxios).mockClear();
 
             await wrapper.setProps({ action: "admins" });
             await flushPromises();
 
-            expect(decodeURIComponent(urls().at(-1)!)).toContain("page=1&");
+            expect(urls()).toHaveLength(1);
+            expect(decodeURIComponent(urls()[0])).toContain("admins?page=1&");
         });
 
         it("steps back to the last real page when the current one is empty", async () => {

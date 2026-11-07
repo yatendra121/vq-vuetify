@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { VTextField } from "vuetify/components";
 import { useVqField } from "../../../composables/field";
 
-export const VqTextField = defineComponent({
+const VqTextFieldImpl = defineComponent({
     name: "VqTextField",
     props: {
         name: {
@@ -28,4 +28,6 @@ export const VqTextField = defineComponent({
     }
 });
 
-export type VqTextField = InstanceType<typeof VTextField & typeof VqTextField>;
+/** Typed with VTextField's props, events and slots, which it passes through. */
+export const VqTextField = VqTextFieldImpl as typeof VqTextFieldImpl & typeof VTextField;
+export type VqTextField = InstanceType<typeof VTextField & typeof VqTextFieldImpl>;

@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { useVqField } from "../../../composables/field";
 import { VTextarea } from "vuetify/components";
 
-export const VqTextarea = defineComponent({
+const VqTextareaImpl = defineComponent({
     name: "VqTextarea",
     props: {
         name: {
@@ -29,4 +29,6 @@ export const VqTextarea = defineComponent({
 });
 
  
-export type VqTextarea = typeof VTextarea & typeof VqTextarea;
+/** Typed with VTextarea's props, events and slots, which it passes through. */
+export const VqTextarea = VqTextareaImpl as typeof VqTextareaImpl & typeof VTextarea;
+export type VqTextarea = typeof VTextarea & typeof VqTextareaImpl;

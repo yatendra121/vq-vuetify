@@ -9,6 +9,7 @@ import type { Form as VFormType } from "vee-validate";
 const VqTableFilterImpl = defineComponent({
     name: "VqTableFilter",
     props: {
+        /** `id` of the `VqDataTable` or `VqList` to filter. */
         id: {
             type: String as PropType<string>,
             required: true
@@ -39,8 +40,8 @@ const VqTableFilterImpl = defineComponent({
 
  
 /**
- * Typed with vee-validate Form's props, which it passes through. Its default slot
- * gets no slot props (unlike Form's), so only the slot itself is typed.
+ * A form whose field values filter the `VqDataTable` or `VqList` with the same `id`:
+ * every change refetches from the first page. Takes vee-validate Form's props.
  */
 export const VqTableFilter = VqTableFilterImpl as typeof VqTableFilterImpl &
     TemplateComponent<

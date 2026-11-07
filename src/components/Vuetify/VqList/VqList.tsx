@@ -20,24 +20,34 @@ import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useListFilter } from "../../../composables/list/filter";
 import { buildListQuery } from "../../../composables/list/query";
-import type { ComponentInstance, TemplateComponent } from "../../../types/component";
+import type { ComponentInstance, HttpMethod, TemplateComponent } from "../../../types/component";
 
 type TValue = unknown;
 const VqListImpl = defineComponent({
     name: "VqList",
     props: {
+        /**
+         * Identifies the list. A `VqTableFilter` with the same `id` filters it, and
+         * the row helpers (`updateItemValue`, `deleteItemValue`) take it as their first argument.
+         */
         id: {
             type: String as PropType<string>,
             required: true
         },
+        /**
+         * URL the items are fetched from. The query string carries the filter values,
+         * `page` and `page_size`; the response must be `{ data: { data: Item[], total: number } }`.
+         */
         action: {
             type: String as PropType<string>,
             required: true
         },
+        /** HTTP method of the request. */
         method: {
-            type: String as PropType<string>,
+            type: String as PropType<HttpMethod>,
             default: () => "GET"
         },
+        /** Items fetched per page; changing it reloads from the first page. */
         pageSize: {
             type: Number as PropType<number>,
             default: () => 10
@@ -48,7 +58,10 @@ const VqListImpl = defineComponent({
             default: () => 0
         }
     },
-    emits: ["error"],
+    emits: {
+        /** A request failed. Superseded (aborted) requests don't emit. */
+        error: (_error: unknown) => true
+    },
     setup(props, { attrs, slots, emit }) {
         const filterId = computed(() => {
             return `${props.id}_filter`;
@@ -184,29 +197,42 @@ const VqListImpl = defineComponent({
     }
 });
 
- 
-type VListInstance = ComponentInstance<typeof VList>;
 
-interface VqListSlotProps {
-    items: unknown[];
+type VListInstance<TItem = any> = ComponentInstance<
+    typeof VList<unknown, unknown, unknown, readonly TItem[]>
+>;
+
+/** Props of VqList's `default` and `load-more` slots. */
+export interface VqListSlotProps<TItem = any> {
+    /** Every item loaded so far. */
+    items: TItem[];
+    /** Fetches the next page; ignored while loading or once finished. */
     loadMore: () => void;
+    /** All items are loaded. */
     finished: boolean;
+    /** A page is being fetched. */
     loading: boolean;
 }
 
-/**
- * Typed with VList's props, events and slots, which it passes through, minus
- * `items` (VqList fetches and supplies it) and with VqList's own `default` and
- * `load-more` slot props.
- */
-export const VqList = VqListImpl as typeof VqListImpl &
+/** VqList's template type, with items of type `TItem` in its slots. */
+export type VqListComponent<TItem = any> = typeof VqListImpl &
     TemplateComponent<
-        Omit<VListInstance["$props"], "items"> & ComponentInstance<typeof VqListImpl>["$props"],
-        Omit<VListInstance["$slots"], "default"> & {
-            default?: (props: VqListSlotProps) => VNode[];
-            "load-more"?: (props: VqListSlotProps) => VNode[];
+        Omit<VListInstance<TItem>["$props"], "items"> &
+            ComponentInstance<typeof VqListImpl>["$props"],
+        Omit<VListInstance<TItem>["$slots"], "default"> & {
+            default?: (props: VqListSlotProps<TItem>) => VNode[];
+            "load-more"?: (props: VqListSlotProps<TItem>) => VNode[];
         }
     >;
+
+/**
+ * A `v-list` that fetches its own items from `action` page by page; `loadMore` (from
+ * the slots or `VqListLoadMoreBtn`) appends the next page. Takes every VList prop,
+ * event and slot except `items`, which it supplies itself.
+ *
+ * For typed items in slots, use `useVqList<Item>()`.
+ */
+export const VqList = VqListImpl as VqListComponent;
 export type VqList = typeof VList & typeof VqListImpl;
 
 /**
@@ -220,17 +246,17 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
 
 type GenericProps = ExtractComponentProps<typeof VqListImpl>;
 
-interface GenericSlotsProps<TValue> {
-    items: TValue[];
-    loadMore: () => void;
-    finished: boolean;
-    loading: boolean;
-}
-
 /**
- * Creating composable function to create strong typed component with VqList
+ * Returns `VqList` typed for items of `TItem`, so `items` in the `default` and
+ * `load-more` slots is `TItem[]` instead of `any[]`.
+ *
+ * @example
+ * const UserList = useVqList<User>();
+ * // <UserList id="users" action="users" v-slot="{ items }">
+ * //     <v-list-item v-for="user in items" :key="user.id" :title="user.name" />
+ * // </UserList>
  */
-export function useVqList<TValue = unknown>() {
+export function useVqList<TItem = unknown>() {
     const wrapper = defineComponent((props: GenericProps, { slots }) => {
         // Returning functions in `setup` means this is the render function
         return () => {
@@ -238,16 +264,5 @@ export function useVqList<TValue = unknown>() {
             return h(VqListImpl, props, slots);
         };
     });
-    return wrapper as typeof wrapper & {
-        new (): {
-            // Same trick as `$slots`, we override the emit information for that component
-            $emit: {
-                (e: "error", error: unknown): void;
-            };
-            $slots: {
-                default: (arg: GenericSlotsProps<TValue>) => VNode[];
-                "load-more": (arg: GenericSlotsProps<TValue>) => VNode[];
-            };
-        };
-    };
+    return wrapper as unknown as VqListComponent<TItem>;
 }

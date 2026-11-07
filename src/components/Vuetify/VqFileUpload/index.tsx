@@ -5,6 +5,7 @@ import { VFileUpload } from "vuetify/components";
 const VqFileUploadImpl = defineComponent({
     name: "VqFileUpload",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `email` or `address.city`. */
         name: {
             type: String,
             required: true
@@ -27,6 +28,9 @@ const VqFileUploadImpl = defineComponent({
 });
 
  
-/** Typed with VFileUpload's props, events and slots, which it passes through. */
+/**
+ * A `v-file-upload` bound to the form field `name`: it shows the field's value and its
+ * validation error. Takes every VFileUpload prop, event and slot.
+ */
 export const VqFileUpload = VqFileUploadImpl as typeof VqFileUploadImpl & typeof VFileUpload;
 export type VqFileUpload = typeof VFileUpload & typeof VqFileUploadImpl;

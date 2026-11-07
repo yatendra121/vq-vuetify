@@ -6,10 +6,12 @@ import { VBtn } from "vuetify/components";
 const VqSubmitBtnImpl = defineComponent({
     name: "VqSubmitButton",
     props: {
+        /** `id` of the form to submit, for a button placed outside that form. */
         form: {
             type: String,
             default: undefined
         },
+        /** Button text, when there is no default slot. Defaults to the locale's `submit`. */
         text: {
             type: String as PropType<string>,
             default: undefined
@@ -48,6 +50,9 @@ const VqSubmitBtnImpl = defineComponent({
 });
 
  
-/** Typed with VBtn's props, events and slots, which it passes through. */
+/**
+ * A submit `v-btn` that shows a loading state while its form's request is running.
+ * Takes every VBtn prop, event and slot.
+ */
 export const VqSubmitBtn = VqSubmitBtnImpl as typeof VqSubmitBtnImpl & typeof VBtn;
 export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtnImpl;

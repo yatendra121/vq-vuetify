@@ -36,6 +36,9 @@ const VqListLoadMoreBtnImpl = defineComponent({
 });
 
  
-/** Typed with VBtn's props, events and slots, which it passes through. */
+/**
+ * A `v-btn` that loads the next page of the enclosing `VqList`, and hides once every
+ * item is loaded. Takes every VBtn prop, event and slot.
+ */
 export const VqListLoadMoreBtn = VqListLoadMoreBtnImpl as typeof VqListLoadMoreBtnImpl & typeof VBtn;
 export type VqListLoadMoreBtn = typeof VBtn & typeof VqListLoadMoreBtnImpl;

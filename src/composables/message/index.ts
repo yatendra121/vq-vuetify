@@ -1,7 +1,8 @@
 import { useMessageStore } from '../../store/reactivity/message'
 
 /**
- * Returns helpers for pushing snackbar messages. The Pinia store is resolved
+ * Returns `success`, `warning` and `error`, which show a snackbar message through
+ * `VqMessageQueue`. The Pinia store is resolved
  * on every call (not cached on a module-level singleton) so it always binds to
  * the active app instance — correct under SSR, tests, and multiple apps.
  *

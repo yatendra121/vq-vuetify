@@ -1,6 +1,4 @@
 import {
-    type DefineSetupFnComponent,
-    type PublicProps,
     defineComponent,
     h,
     isReactive,
@@ -31,28 +29,39 @@ import type { AxiosError, Method } from "axios";
 import type { ApiResponseValue } from "@qnx/composables";
 import type { InitialValues } from "../../../types";
 
+// axios's methods are suggested, but any string is accepted, as axios itself does.
+type SubmitMethod = Method | (string & {});
+
 export type GenericFormValues = {
     [key: string]: unknown;
 };
 
 const submitProps = {
+    /** URL the values are submitted to. */
     action: {
         type: String as PropType<string>,
         required: true as const
     },
+    /** HTTP method of the request. */
     method: {
-        type: String as PropType<Method>,
+        type: String as PropType<SubmitMethod>,
         default: () => "POST"
     },
+    /** Send the values as `multipart/form-data` (needed for files) instead of JSON. */
     formData: {
         type: Boolean,
         default: () => false
     },
+    /** Handles a successful response instead of emitting `submitedSuccess`. */
     successResponseHandler: {
         type: Function as PropType<
             (response: ApiResponseValue, actions: SubmissionContext) => void
         >
     },
+    /**
+     * Handles a failed request instead of the default: showing 422 field errors and
+     * emitting `submitedError` or `submitedRequestError`.
+     */
     errorResponseHandler: {
         type: Function as PropType<
             (response: AxiosError<ApiResponseValue>, actions: SubmissionContext) => void
@@ -62,7 +71,7 @@ const submitProps = {
 
 interface SubmitProps {
     action: string;
-    method: Method;
+    method: SubmitMethod;
     formData: boolean;
     successResponseHandler?: (response: ApiResponseValue, actions: SubmissionContext) => void;
     errorResponseHandler?: (
@@ -74,9 +83,13 @@ interface SubmitProps {
 // Success and error carry an ApiResponse. The other two keep untyped payloads:
 // typing them `unknown` would break handlers such as `(e) => e.message`.
 const submitEmits = {
+    /** The request succeeded (and no `successResponseHandler` is set). */
     submitedSuccess: (_response: ApiResponse) => true,
+    /** The server rejected the values (400, 401 or 422); field errors are already shown. */
     submitedError: (_response: ApiResponse) => true,
+    /** Client-side validation failed, so nothing was sent. Gets vee-validate's invalid-submission context. */
     submitedClientError: null,
+    /** The request failed without a usable error response (5xx, network error). Gets the AxiosError. */
     submitedRequestError: null
 };
 
@@ -162,22 +175,34 @@ const createSubmitHandler = (
     return handleSubmit(onSubmit, (context) => emit("submitedClientError", context));
 };
 
+/**
+ * A form that validates its Vq* fields with vee-validate, then submits their values to
+ * `action` and reports the outcome through its events. Server validation errors (422)
+ * are shown on the matching fields.
+ */
 export const VqForm = defineComponent({
     name: "VqForm",
     props: {
+        /** Unique id of the form; a `VqSubmitBtn` outside the form targets it with `form`. */
         id: {
             type: String as PropType<string>,
             required: true
         },
         ...submitProps,
+        /** Starting values; a new object resets the form to it. */
         initialValues: {
             type: Object as PropType<InitialValues | undefined>,
             default: () => undefined
         },
+        /**
+         * Maps form fields to paths in `initialValues`, e.g. `{ city: "address.city" }`
+         * or `{ tagIds: "tags.*.id" }`.
+         */
         valuesSchema: {
-            type: Object,
+            type: Object as PropType<Record<string, string>>,
             default: () => undefined
         },
+        /** vee-validate schema: a yup/zod typed schema or an object of rules per field. */
         validationSchema: {
             type: Object,
             default: undefined
@@ -227,53 +252,9 @@ export const VqForm = defineComponent({
     }
 });
 
-/**
- * Pass a type argument to type the form's values: `useVqForm<MyValues>({...})`.
- * Without one, values stay untyped (`any`) as before; they are never inferred
- * from `initialValues`, since that would reject reads of fields not listed there.
- */
-export interface VqFormOption<TValues extends GenericObject = any> extends FormOptions<TValues> {
-    formId: string;
-    valuesSchema?: any;
-    validationSchema?: any;
-}
-
-export interface UseVqFormReturn<TValues extends GenericObject = any> {
-    // The exact type defineComponent gives the wrapper, kept as it was before.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    wrapper: DefineSetupFnComponent<any, {}, {}, any, PublicProps>;
-    resetForm: FormContext<TValues>["resetForm"];
-    values: FormContext<TValues>["values"];
-    errors: FormContext<TValues>["errors"];
-    meta: FormContext<TValues>["meta"];
-    setFieldValue: FormContext<TValues>["setFieldValue"];
-    setValues: FormContext<TValues>["setValues"];
-    setErrors: FormContext<TValues>["setErrors"];
-    validate: FormContext<TValues>["validate"];
-}
-
-export const useVqForm = <TValues extends GenericObject = any>(
-    opts: VqFormOption<NoInfer<TValues>>
-): UseVqFormReturn<TValues> => {
-    const { formId, valuesSchema, ...formOptions } = opts;
-
-    const form = useForm<TValues>({
-        ...formOptions,
-        initialValues: transformObjValues(toValue(opts.initialValues), valuesSchema)
-    });
-    const { resetForm, handleSubmit } = form;
-
-    // Plain objects are valid `initialValues` too; only reactive sources can change.
-    const source = opts.initialValues as unknown;
-    if (isRef(source) || isReactive(source) || typeof source === "function") {
-        watch(source as () => unknown, () => {
-            resetForm({
-                values: transformObjValues(toValue(opts.initialValues), valuesSchema)
-            });
-        });
-    }
-
-    const VqForm = defineComponent({
+/** The form component `useVqForm` returns, bound to the form it created. */
+const defineFormWrapper = (formId: string, handleSubmit: FormContext<any>["handleSubmit"]) =>
+    defineComponent({
         props: submitProps,
         emits: submitEmits,
         setup(props, { attrs, emit, slots }) {
@@ -297,13 +278,77 @@ export const useVqForm = <TValues extends GenericObject = any>(
         }
     });
 
+/**
+ * The form component of `useVqForm`: a `<form>` that submits the values of the form
+ * `useVqForm` created to `action`, with VqForm's submit props and events.
+ */
+export type VqFormWrapper = ReturnType<typeof defineFormWrapper>;
+
+/**
+ * Pass a type argument to type the form's values: `useVqForm<MyValues>({...})`.
+ * Without one, values stay untyped (`any`) as before; they are never inferred
+ * from `initialValues`, since that would reject reads of fields not listed there.
+ */
+export interface VqFormOption<TValues extends GenericObject = any> extends FormOptions<TValues> {
+    /** Unique id of the form; a `VqSubmitBtn` outside the form targets it with `form`. */
+    formId: string;
+    /** Maps form fields to paths in `initialValues`, as VqForm's `values-schema` does. */
+    valuesSchema?: any;
+    /** vee-validate schema: a yup/zod typed schema or an object of rules per field. */
+    validationSchema?: any;
+}
+
+export interface UseVqFormReturn<TValues extends GenericObject = any> {
+    /** The form component to render; its fields read and write this form's values. */
+    wrapper: VqFormWrapper;
+    resetForm: FormContext<TValues>["resetForm"];
+    values: FormContext<TValues>["values"];
+    errors: FormContext<TValues>["errors"];
+    meta: FormContext<TValues>["meta"];
+    setFieldValue: FormContext<TValues>["setFieldValue"];
+    setValues: FormContext<TValues>["setValues"];
+    setErrors: FormContext<TValues>["setErrors"];
+    validate: FormContext<TValues>["validate"];
+}
+
+/**
+ * Creates a form in script, for access to its values and helpers (`setFieldValue`,
+ * `resetForm`, ...). Render the returned `wrapper` around the Vq* fields.
+ *
+ * @example
+ * const { wrapper: Form, values } = useVqForm<{ email: string }>({ formId: "login" });
+ * // <Form action="login" @submited-success="onLogin"><VqTextField name="email" /></Form>
+ */
+export const useVqForm = <TValues extends GenericObject = any>(
+    opts: VqFormOption<NoInfer<TValues>>
+): UseVqFormReturn<TValues> => {
+    const { formId, valuesSchema, ...formOptions } = opts;
+
+    const form = useForm<TValues>({
+        ...formOptions,
+        initialValues: transformObjValues(toValue(opts.initialValues), valuesSchema)
+    });
+    const { resetForm, handleSubmit } = form;
+
+    // Plain objects are valid `initialValues` too; only reactive sources can change.
+    const source = opts.initialValues as unknown;
+    if (isRef(source) || isReactive(source) || typeof source === "function") {
+        watch(source as () => unknown, () => {
+            resetForm({
+                values: transformObjValues(toValue(opts.initialValues), valuesSchema)
+            });
+        });
+    }
+
+    const VqForm = defineFormWrapper(formId, handleSubmit);
+
     const wrapper = defineComponent((props: any, { slots }) => {
         // Returning functions in `setup` means this is the render function
         return () => {
             // Event handlers will also be passed in the `props` object
             return h(VqForm, props, slots);
         };
-    });
+    }) as unknown as VqFormWrapper;
 
     return {
         wrapper,

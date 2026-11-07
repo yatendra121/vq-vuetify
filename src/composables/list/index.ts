@@ -88,6 +88,13 @@ export const useListRepository = (key: string) => {
     };
 };
 
+/**
+ * Sets one key of a loaded row in the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ *
+ * @example
+ * updateItemKeyValue("users", user.id, "status", "active");
+ */
 export const updateItemKeyValue = (
     filterListId: string,
     itemId: string | number,
@@ -98,11 +105,19 @@ export const updateItemKeyValue = (
     updateListItemValue(itemId, value, key);
 };
 
+/**
+ * Replaces a loaded row in the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ */
 export const updateItemValue = (filterListId: string, itemId: string | number, value: unknown) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value);
 };
 
+/**
+ * Removes a loaded row from the `VqDataTable` or `VqList` with `id`, without
+ * refetching. Logs an error if no row has that `id`.
+ */
 export const deleteItemValue = (filterListId: string, itemId: string | number) => {
     const { deleteListItemValue } = useListRepository(filterListId + "_filter");
     deleteListItemValue(itemId);

@@ -5,33 +5,44 @@ import toolbar from "./toolbar";
 import { config } from "./config";
 import { useVqField } from "../../composables/field";
 
+/**
+ * A TinyMCE rich-text editor bound to the form field `name`, showing its validation
+ * error. Needs the TinyMCE script served at `baseUrl` + `filesPath`.
+ */
 export const VqTextEditor = defineComponent({
     name: "VqTextEditor",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `description`. */
         name: {
             type: String,
             required: true
         },
+        /** Label shown above the editor. */
         label: {
             type: String,
             default: () => ""
         },
+        /** Placeholder shown while the editor is empty. */
         placeholder: {
             type: String,
             default: () => ""
         },
+        /** Height of the editor in pixels. */
         height: {
             type: Number,
             default: () => 250
         },
+        /** Use TinyMCE's dark skin and content styles. */
         isDark: {
             type: Boolean,
             default: () => false
         },
+        /** Base URL `filesPath` is resolved against. Defaults to the one given to `setConfig`. */
         baseUrl: {
             type: String,
             default: () => config.baseUrl
         },
+        /** Path of the TinyMCE script, relative to `baseUrl`. */
         filesPath: {
             type: String,
             default: () => "static/tinymce/tinymce.min.js"

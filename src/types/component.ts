@@ -8,3 +8,11 @@ export type ComponentInstance<C> = C extends abstract new (...args: any) => infe
  * supplies, or promises slot props the wrapper doesn't pass).
  */
 export type TemplateComponent<Props, Slots> = new () => { $props: Props; $slots: Slots };
+
+/**
+ * An HTTP method for a component's request. The common ones are suggested in the
+ * editor; any other string is still accepted.
+ */
+// `string & {}` keeps the literals from collapsing into `string`, so editors still
+// offer them as completions.
+export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | (string & {});

@@ -13,6 +13,16 @@ export { useVqList } from "./components/Vuetify/VqList/VqList";
 export { useVqDataTable } from "./components/Vuetify/VqDataTable";
 export { useVqForm } from "./components/Vuetify/VqForm/VqForm";
 
+//Types for typed usage of the components
+export type { HttpMethod } from "./types";
+export type { VqDataTableComponent } from "./components/Vuetify/VqDataTable";
+export type { VqListComponent, VqListSlotProps } from "./components/Vuetify/VqList/VqList";
+export type {
+    VqFormOption,
+    VqFormWrapper,
+    UseVqFormReturn
+} from "./components/Vuetify/VqForm/VqForm";
+
 //Locale / i18n
 export { setVqLocale, resetVqLocale } from "./config/locale";
 export type { VqLocale } from "./config/locale";

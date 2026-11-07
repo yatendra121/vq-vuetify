@@ -6,19 +6,28 @@ import { useVqField } from "../../../composables/field";
 const VqAutocompleteImpl = defineComponent({
     name: "VqAutoComplete",
     props: {
+        /** Path of the field in the enclosing form's values, e.g. `email` or `address.city`. */
         name: {
             type: String,
             required: true
         },
+        /**
+         * URL the options are fetched from (on mount and when it changes); the `data` of the
+         * response body is used as `items`. Without it, the `items` prop is used.
+         */
         action: {
             type: String
         },
+        /** Options when there is no `action`. */
         items: {
             type: Array,
             default: () => []
         }
     },
-    emits: ["error"],
+    emits: {
+        /** Fetching the options from `action` failed. */
+        error: (_error: unknown) => true
+    },
     setup(props, { attrs, slots, emit }) {
         const { value, errorMessage } = useVqField(toRef(props, "name"));
 
@@ -74,6 +83,9 @@ const VqAutocompleteImpl = defineComponent({
 });
 
  
-/** Typed with VAutocomplete's props, events and slots, which it passes through. */
+/**
+ * A `v-autocomplete` bound to the form field `name`: it shows the field's value and its
+ * validation error. Takes every VAutocomplete prop, event and slot.
+ */
 export const VqAutocomplete = VqAutocompleteImpl as typeof VqAutocompleteImpl & typeof VAutocomplete;
 export type VqAutocomplete = typeof VAutocomplete & typeof VqAutocompleteImpl;

@@ -46,8 +46,7 @@ export const VSnackbarQueue = defineComponent({
                                 <VBtn
                                     color="white"
                                     variant="text"
-                                    /* @ts-ignore Vuetify VBtn types omit onClick */
-                                    onClick={() => emit("remove", item.id)}
+                                    {...{ onClick: () => emit("remove", item.id) }}
                                 >
                                     {props.items.length > 1
                                         ? `${locale.next}(${props.items.length - 1})`

@@ -1,11 +1,12 @@
-import { computed, defineComponent, PropType } from "vue";
-import { Form as VForm } from "vee-validate";
+import { computed, defineComponent, PropType, type VNode } from "vue";
+import type { ComponentInstance, TemplateComponent } from "../../../types/component";
+import { Form as VForm, type SubmissionHandler } from "vee-validate";
 import { VqTableFilterHandler } from "./VqTableFilterHandler";
 
 //types
 import type { Form as VFormType } from "vee-validate";
 
-export const VqTableFilter = defineComponent({
+const VqTableFilterImpl = defineComponent({
     name: "VqTableFilter",
     props: {
         id: {
@@ -24,8 +25,11 @@ export const VqTableFilter = defineComponent({
 
         return () => (
             <>
-                {/* @ts-ignore vee-validate VForm types omit id */}
-                <VForm id={filterId.value} {...attrs} onSubmit={attrs.onSubmit ?? noopSubmit}>
+                <VForm
+                    {...{ id: filterId.value }}
+                    {...attrs}
+                    onSubmit={(attrs.onSubmit as SubmissionHandler | undefined) ?? noopSubmit}
+                >
                     <VqTableFilterHandler id={filterId.value} v-slots={slots} />
                 </VForm>
             </>
@@ -33,4 +37,15 @@ export const VqTableFilter = defineComponent({
     }
 });
 
-export type VqTableFilter = typeof VFormType & typeof VqTableFilter;
+ 
+/**
+ * Typed with vee-validate Form's props, which it passes through. Its default slot
+ * gets no slot props (unlike Form's), so only the slot itself is typed.
+ */
+export const VqTableFilter = VqTableFilterImpl as typeof VqTableFilterImpl &
+    TemplateComponent<
+        ComponentInstance<typeof VFormType>["$props"] &
+            ComponentInstance<typeof VqTableFilterImpl>["$props"],
+        { default?: () => VNode[] }
+    >;
+export type VqTableFilter = typeof VFormType & typeof VqTableFilterImpl;

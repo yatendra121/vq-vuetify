@@ -21,7 +21,7 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "skipLibCheck": true,
-        "types": ["node", "vue-router", "vuetify/components", "vue"],
+        "types": ["node", "vuetify/components", "vue"],
         "paths": {
             "@/*": ["./src/*"]
         }

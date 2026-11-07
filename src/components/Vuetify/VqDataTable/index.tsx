@@ -19,6 +19,7 @@ import { useAsyncAxios } from "@qnx/composables/axios";
 import { useListRepository } from "../../../composables/list";
 import { useListFilter } from "../../../composables/list/filter";
 import { buildListQuery } from "../../../composables/list/query";
+import type { ComponentInstance, TemplateComponent } from "../../../types/component";
 
 type TValue = unknown;
 interface SortByValue {
@@ -26,7 +27,7 @@ interface SortByValue {
     order: "asc" | "desc";
 }
 
-export const VqDataTable = defineComponent({
+const VqDataTableImpl = defineComponent({
     name: "VqDataTable",
     props: {
         id: {
@@ -200,7 +201,7 @@ export const VqDataTable = defineComponent({
                     onUpdate:options={updateOptions}
                     onUpdate:page={(val: number) => (defaultOptions.page = val)}
                     onUpdate:itemsPerPage={(val: number) => (defaultOptions.itemsPerPage = val)}
-                    onUpdate:sortBy={(val: any[]) => (defaultOptions.sortBy = val)}
+                    onUpdate:sortBy={(val: SortByValue[]) => (defaultOptions.sortBy = val)}
                     v-slots={slots}
                     {...attrs}
                 ></VDataTableServer>
@@ -210,7 +211,19 @@ export const VqDataTable = defineComponent({
 });
 
  
-export type VqDataTable = typeof VDataTableServer & typeof VqDataTable;
+type VDataTableServerInstance = ComponentInstance<typeof VDataTableServer>;
+
+/**
+ * Typed with VDataTableServer's props, events and slots, which it passes through,
+ * minus `items` and `itemsLength`: VqDataTable fetches and supplies those itself.
+ */
+export const VqDataTable = VqDataTableImpl as typeof VqDataTableImpl &
+    TemplateComponent<
+        Omit<VDataTableServerInstance["$props"], "items" | "itemsLength"> &
+            ComponentInstance<typeof VqDataTableImpl>["$props"],
+        VDataTableServerInstance["$slots"]
+    >;
+export type VqDataTable = typeof VDataTableServer & typeof VqDataTableImpl;
 
 /**
  * Creating composable function types to create strong typed component
@@ -221,7 +234,7 @@ export type ExtractComponentProps<TComponent> = TComponent extends new () => {
     ? P
     : never;
 
-type GenericProps = ExtractComponentProps<typeof VqDataTable>;
+type GenericProps = ExtractComponentProps<typeof VqDataTableImpl>;
 
 interface GenericSlotsProps<TValue> {
     item: TValue;
@@ -236,7 +249,7 @@ export function useVqDataTable<TValue = unknown>() {
         // Returning functions in `setup` means this is the render function
         return () => {
             // Event handlers will also be passed in the `props` object
-            return h(VqDataTable, props, slots);
+            return h(VqDataTableImpl, props, slots);
         };
     });
     return wrapper as typeof wrapper & {

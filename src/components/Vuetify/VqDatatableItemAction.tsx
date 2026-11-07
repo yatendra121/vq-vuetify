@@ -102,14 +102,14 @@ export const VqDatatableItemAction = defineComponent({
             <>
                 <VTooltip text={tooltipText.value}>
                     {{
-                        activator: ({ props: tooltipProps }: any) => (
+                        activator: ({ props: tooltipProps }: { props: Record<string, unknown> }) => (
                             <VBtn
                                 {...tooltipProps}
                                 variant="text"
                                 color="primary"
                                 icon={props.icon}
                                 aria-label={tooltipText.value}
-                                onClick={() => (dialog.value = true)}
+                                {...{ onClick: () => (dialog.value = true) }}
                                 {...attrs}
                             />
                         )
@@ -124,16 +124,14 @@ export const VqDatatableItemAction = defineComponent({
                             <VBtn
                                 variant="text"
                                 disabled={loading.value}
-                                /* @ts-ignore Vuetify VBtn types omit onClick */
-                                onClick={() => (dialog.value = false)}
+                                {...{ onClick: () => (dialog.value = false) }}
                             >
                                 {locale.cancel}
                             </VBtn>
                             <VBtn
                                 color="primary"
                                 loading={loading.value}
-                                /* @ts-ignore Vuetify VBtn types omit onClick */
-                                onClick={onConfirm}
+                                {...{ onClick: onConfirm }}
                             >
                                 {locale.confirm}
                             </VBtn>

@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { useVqField } from "../../../composables/field";
 import { VCheckbox } from "vuetify/components";
 
-export const VqCheckbox = defineComponent({
+const VqCheckboxImpl = defineComponent({
     name: "VqCheckbox",
     props: {
         name: {
@@ -28,4 +28,7 @@ export const VqCheckbox = defineComponent({
     }
 });
 
-export type VqCheckbox = typeof VCheckbox & typeof VqCheckbox;
+ 
+/** Typed with VCheckbox's props, events and slots, which it passes through. */
+export const VqCheckbox = VqCheckboxImpl as typeof VqCheckboxImpl & typeof VCheckbox;
+export type VqCheckbox = typeof VCheckbox & typeof VqCheckboxImpl;

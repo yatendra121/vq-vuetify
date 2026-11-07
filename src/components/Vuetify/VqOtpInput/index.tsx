@@ -2,7 +2,7 @@ import { defineComponent, toRef } from "vue";
 import { VMessages, VOtpInput } from "vuetify/components";
 import { useVqField } from "../../../composables/field";
 
-export const VqOtpInput = defineComponent({
+const VqOtpInputImpl = defineComponent({
     name: "VqOtpInput",
     props: {
         name: {
@@ -36,4 +36,7 @@ export const VqOtpInput = defineComponent({
     }
 });
 
-export type VqOtpInput = typeof VOtpInput & typeof VqOtpInput;
+ 
+/** Typed with VOtpInput's props, events and slots, which it passes through. */
+export const VqOtpInput = VqOtpInputImpl as typeof VqOtpInputImpl & typeof VOtpInput;
+export type VqOtpInput = typeof VOtpInput & typeof VqOtpInputImpl;

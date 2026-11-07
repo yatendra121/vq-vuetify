@@ -3,7 +3,7 @@ import { VTextField, VDialog, VMenu, VTimePicker } from "vuetify/components";
 import { openPickerOnKeydown, splitPickerAttrs, useVqField } from "../../../composables/field";
 import { useVqLocale } from "../../../config/locale";
 
-export const VqTimePicker = defineComponent({
+const VqTimePickerImpl = defineComponent({
     name: "VqTimePicker",
     // Attrs are placed by hand; the picker's aren't read until its menu first opens.
     inheritAttrs: false,
@@ -72,4 +72,7 @@ export const VqTimePicker = defineComponent({
     }
 });
 
-export type VqTimePicker = typeof VTimePicker & typeof VqTimePicker;
+ 
+/** Typed with VTimePicker's props, events and slots, which it passes through. */
+export const VqTimePicker = VqTimePickerImpl as typeof VqTimePickerImpl & typeof VTimePicker;
+export type VqTimePicker = typeof VTimePicker & typeof VqTimePickerImpl;

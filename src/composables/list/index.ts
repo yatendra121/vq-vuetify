@@ -50,7 +50,7 @@ export const useListRepository = (key: string) => {
      * @returns
      */
     const getItemIndex = (itemId: string | number) => {
-        return allList[key]?.items.findIndex((item: any) => item?.id === itemId) ?? -1;
+        return allList[key]?.items.findIndex((item: { id?: unknown } | null | undefined) => item?.id === itemId) ?? -1;
     };
 
     /**
@@ -92,13 +92,13 @@ export const updateItemKeyValue = (
     filterListId: string,
     itemId: string | number,
     key: string,
-    value: any
+    value: unknown
 ) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value, key);
 };
 
-export const updateItemValue = (filterListId: string, itemId: string | number, value: any) => {
+export const updateItemValue = (filterListId: string, itemId: string | number, value: unknown) => {
     const { updateListItemValue } = useListRepository(filterListId + "_filter");
     updateListItemValue(itemId, value);
 };

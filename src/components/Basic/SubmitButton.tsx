@@ -3,7 +3,7 @@ import { useFormStore } from "../../store/reactivity/form";
 import { useVqLocale } from "../../config/locale";
 import { VBtn } from "vuetify/components";
 
-export const VqSubmitBtn = defineComponent({
+const VqSubmitBtnImpl = defineComponent({
     name: "VqSubmitButton",
     props: {
         form: {
@@ -34,9 +34,7 @@ export const VqSubmitBtn = defineComponent({
             <>
                 <VBtn
                     loading={loading.value}
-                    /* @ts-ignore Vuetify VBtn types omit native button type */
-                    type="submit"
-                    form={props.form}
+                    {...{ type: "submit", form: props.form }}
                     color="primary"
                     v-slots={{
                         ...slots,
@@ -49,4 +47,7 @@ export const VqSubmitBtn = defineComponent({
     }
 });
 
-export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtn;
+ 
+/** Typed with VBtn's props, events and slots, which it passes through. */
+export const VqSubmitBtn = VqSubmitBtnImpl as typeof VqSubmitBtnImpl & typeof VBtn;
+export type VqSubmitBtn = typeof VBtn & typeof VqSubmitBtnImpl;

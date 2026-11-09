@@ -1,4 +1,12 @@
-## Unreleased
+## 0.9.0 (2026-11-09)
+
+Upgrade notes
+
+Nothing changes at runtime for existing code, but the stricter types can report new errors in apps that type-check:
+
+- Vuetify's prop types now apply to the Vq wrappers, so a loosely typed value (for example a `string` passed as a `sortBy` order) needs narrowing
+- `useVqForm().wrapper` requires `action`
+- `VqForm`'s `valuesSchema` must map field names to path strings
 
 Features
 
